@@ -73,18 +73,22 @@ namespace Highrise.Studio.Generated
 
         [MenuItem("Component/Lua/Checking Player Hidden")]
         private static void AddComponent1() => AddScript("Assets/Scripts/CheckingPlayerHidden.lua");
+        [MenuItem("Component/Lua/Detecting Collisions")]
+        private static void AddComponent2() => AddScript("Assets/Scripts/DetectingCollisions.lua");
+        [MenuItem("Component/Lua/Players In Scene")]
+        private static void AddComponent3() => AddScript("Assets/Scripts/PlayersInScene.lua");
         [MenuItem("Component/Lua/Ray Cast Player Seek")]
-        private static void AddComponent2() => AddScript("Assets/Scripts/RayCastPlayerSeek.lua");
+        private static void AddComponent4() => AddScript("Assets/Scripts/RayCastPlayerSeek.lua");
         [MenuItem("Component/Lua/Anchor Old")]
-        private static void AddComponent3() => AddScript("Packages/com.pz.studio/Runtime/Lua/AnchorOld.lua");
+        private static void AddComponent5() => AddScript("Packages/com.pz.studio/Runtime/Lua/AnchorOld.lua");
         [MenuItem("Component/Lua/General Chat")]
-        private static void AddComponent4() => AddScript("Packages/com.pz.studio/Runtime/Lua/GeneralChat.lua");
+        private static void AddComponent6() => AddScript("Packages/com.pz.studio/Runtime/Lua/GeneralChat.lua");
         [MenuItem("Component/Lua/Highrise Camera Controller")]
-        private static void AddComponent5() => AddScript("Packages/com.pz.studio/Runtime/Lua/HighriseCameraController.lua");
+        private static void AddComponent7() => AddScript("Packages/com.pz.studio/Runtime/Lua/HighriseCameraController.lua");
         [MenuItem("Component/Lua/RTS Camera")]
-        private static void AddComponent6() => AddScript("Packages/com.pz.studio/Runtime/Lua/RTSCamera.lua");
+        private static void AddComponent8() => AddScript("Packages/com.pz.studio/Runtime/Lua/RTSCamera.lua");
         [MenuItem("Component/Lua/Scene Loader")]
-        private static void AddComponent7() => AddScript("Packages/com.pz.studio/Runtime/Lua/SceneLoader.lua");
+        private static void AddComponent9() => AddScript("Packages/com.pz.studio/Runtime/Lua/SceneLoader.lua");
 
     }
 }

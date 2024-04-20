@@ -4,14 +4,25 @@ local eventToClient = Event.new("SendInfoClient")
 
 local target : GameObject = nil
 local moveToPlayer : boolean = false
+local isFirstPlayer : number = 1
 --local rayLength : number = 10.0
 
 function self:ClientAwake()
-    local objHidden : GameObject = self.gameObject
+    local objHidden : GameObject = self.gameObject -- GameObject.FindWithTag("Player_Hidden")
+    print("Obj Hidden: ", objHidden.name)
     local tapHandlerObj : TapHandler = objHidden:GetComponent(TapHandler)
 
-    tapHandlerObj.Tapped:Connect(function()
+    print("Tap Handler: ", tapHandlerObj.name)
+
+    if tapHandlerObj == nil then
+        print("Adding Tap Handler")
+        objHidden:AddComponent(TapHandler)
+        tapHandlerObj = objHidden:GetComponent(TapHandler)
+    end
+
+    tapHandlerObj.Tapped:Connect(function(hit)
         --Sending information to the server
+        print("Input Tapped: ", tostring(hit))
         eventToServer:FireServer()
     end)
 
@@ -23,7 +34,7 @@ function self:ClientAwake()
             tapHandlerObj.enabled = false
             moveToPlayer = true
         end
-    end)
+    end) 
 end
 
 function self:ServerAwake()
@@ -52,3 +63,27 @@ function self:Update()
         end
     end
 end
+
+--[[ 
+scene.PlayerJoined:Connect(function (scene, player : Player)
+    if isFirstPlayer == 1 then
+        print(player.name, " joined the game")
+        print("Tag Player: ", player.character)
+        --player.character.tag = "Seek"
+        --isFirstPlayer += 1
+    else
+        player.character.tag = "Player_Hidden"
+    end
+end)
+
+client.PlayerConnected:Connect(function (player)
+    if isFirstPlayer == 1 then
+        print(player.name, " joined the game")
+        print("Tag Player: ", player.character)
+        --player.character.tag = "Seek"
+        --isFirstPlayer += 1
+    else
+        player.character.tag = "Player_Hidden"
+    end
+end)   
+--]]

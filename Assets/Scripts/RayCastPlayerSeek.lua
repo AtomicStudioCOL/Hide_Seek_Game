@@ -4,6 +4,11 @@ local playerClient : GameObject = nil
 function self:ClientStart()
     print("Start: ", client.localPlayer.character.gameObject.name)
     playerClient = client.localPlayer.character.gameObject
+
+    Input.Tapped:Connect(function (hit : TapEvent)
+        print("Input Tapped: ", tostring(hit.position))
+        print(Input.Tapped.name, " ", tostring(hit.startFrame))
+    end)
 end
 
 function self:ClientUpdate()
@@ -23,9 +28,4 @@ function self:ClientUpdate()
             print("Collider Ray: ", hit.collider.name)
         end
     end
-
-    Input.Tapped:Connect(function ()
-        print("Input Tapped")
-        print(Input.Tapped.name)
-    end)
 end
