@@ -57,10 +57,13 @@ function self:Update()
 
     if moveToPlayer then
         local dis = Vector3.Distance(self.transform.position, target.transform.position)
-        
-        if dis >= 1.5 then
-            self.transform.position = Vector3.MoveTowards(self.transform.position, target.transform.position, 5 * Time.deltaTime)
-        end
+        self.transform.position = Vector3.MoveTowards(
+            self.transform.position, 
+            target.transform.position, 
+            5 * Time.deltaTime
+        )
+        --[[ if dis >= 1.5 then
+        end ]]
     end
 end
 

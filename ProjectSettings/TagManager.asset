@@ -6,7 +6,8 @@ TagManager:
   tags:
   - No_Player_Hidden
   - Player_Hidden
-  - Seek
+  - Seeker
+  - Menu
   layers:
   - Default
   - TransparentFX

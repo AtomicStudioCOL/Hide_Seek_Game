@@ -5,6 +5,7 @@ end
 function self:OnTriggerEnter(other : Collider)
     local enteringGameObject = other.gameObject
     print(enteringGameObject.name .. " has entered the trigger")
+    print(enteringGameObject:GetComponent(Character))
 end
 
 function self:OnTriggerExit(other : Collider)
