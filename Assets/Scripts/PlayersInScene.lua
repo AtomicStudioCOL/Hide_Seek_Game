@@ -2,14 +2,6 @@
 --!SerializeField
 local zoneDetectingSeeker : GameObject = nil
 --!SerializeField
-local menuSelecteObjHide : GameObject = nil
---!SerializeField
-local objHide01 : GameObject = nil
---!SerializeField
-local objHide02 : GameObject = nil
---!SerializeField
-local objHide03 : GameObject = nil
---!SerializeField
 local objsHides : GameObject = nil
 
 --Variables no publics
@@ -36,25 +28,32 @@ end
 function addZoneDetectionSeeker(target)
     tagZone = GameObject.Find(tostring(target) .. "(Clone)")
     local posZone = tagZone.transform.position + Vector3.new(0, 1.5, 0)
-    print("ARGS: ", target)
+
     zoneDetectingSeeker.transform.position = posZone
+    zoneDetectingSeeker.SetActive(zoneDetectingSeeker, true)
     isFollowingAlwaysSeeker = true
 end
 
-function activateMenuSelectedModelHide()
-    print("Activating Menu")
-    menuSelecteObjHide.SetActive(menuSelecteObjHide, true)
+function activateMenuSelectedModelHide(namePlayer)
+    if playersTag[namePlayer] == "Hiding" then
+        objsHides.SetActive(objsHides, true)
+    end
 end
 
 function self:ClientAwake()
-    sendInfoAddZoneSeeker:Connect(function (args)
-        menuSelecteObjHide.SetActive(menuSelecteObjHide, false)
-        addZoneDetectionSeeker(args)
+    sendInfoAddZoneSeeker:Connect(function (args, namePlayer)
+        if not playersTag[namePlayer] and client.localPlayer.name == namePlayer then
+            playersTag[namePlayer] = player_id.value
+            objsHides.SetActive(objsHides, false)
+            addZoneDetectionSeeker(args)
+        end
     end)
 
     sendActivateMenuHide:Connect(function (namePlayer)
-        print("sendActivateMenuHide: ", namePlayer)
-        activateMenuSelectedModelHide()
+        if not playersTag[namePlayer] and client.localPlayer.name == namePlayer then
+            playersTag[namePlayer] = player_id.value
+            activateMenuSelectedModelHide(namePlayer)
+        end
     end)
 end
 
@@ -63,16 +62,13 @@ function self:ServerAwake()
         player.CharacterChanged:Connect(function(player : Player, character : Character)
             if isFirstPlayer then
                 player_id.value = "Seeker"
-                playersTag[player.name] = player_id.value
 
                 local target = player.character.gameObject.name
-                sendInfoAddZoneSeeker:FireAllClients(target)
+                sendInfoAddZoneSeeker:FireAllClients(target, player.name)
                 
                 isFirstPlayer = false
             else
                 player_id.value = "Hiding"
-                playersTag[player.name] = player_id.value
-
                 sendActivateMenuHide:FireAllClients(player.name)
             end
         end)
@@ -91,10 +87,4 @@ function self:Update()
             5 * Time.deltaTime
         )
     end
-end
-
---UI
---!SerializeField
-local function AddCharacterToPlayer()
-    print("Adding Character To Player")
 end

@@ -1,10 +1,10 @@
+--Variable publics
 --!SerializeField
 local objHide01 : GameObject = nil
 --!SerializeField
 local objHide02 : GameObject = nil
 --!SerializeField
 local objHide03 : GameObject = nil
-
 --!SerializeField
 local btnObjHide01 : TapHandler = nil
 --!SerializeField
@@ -12,43 +12,82 @@ local btnObjHide02 : TapHandler = nil
 --!SerializeField
 local btnObjHide03 : TapHandler = nil
 
---local buttonTapRequest = Event.new("ButtonTapRequest")
---local buttonTapEvent = Event.new("ButtonTapEvent")
+--Variables
+local customeStorage = {}
+local isFollowingAlwaysHider = false
+local dressWear = nil
+local playerCurrent = nil
+local posOffset = Vector3.new(0, 0, 0)
+
+--Functions
+function followingToTarget(current, target, maxDistanceDelta, positionOffset)
+    current.transform.position = Vector3.MoveTowards(
+        current.transform.position, 
+        target.transform.position + positionOffset, 
+        maxDistanceDelta
+    )
+end
+
+function disableAllDresses()
+    for _,dress in ipairs(customeStorage) do
+        dress.SetActive(dress, false)
+    end
+end
+
+function addCostumePlayerHider(dress : GameObject, player : GameObject,  positionOffset : Vector3)
+    dressWear = dress
+    playerCurrent = player
+    posOffset = positionOffset
+    local posDress = playerCurrent.transform.position + posOffset
+
+    dressWear.transform.position = posDress
+    
+    disableAllDresses()
+    dressWear.SetActive(dressWear, true)
+    isFollowingAlwaysHider = true
+end
 
 function self:ClientAwake()
+    --Storage dress
+    customeStorage[1] = objHide01
+    customeStorage[2] = objHide02
+    customeStorage[3] = objHide03
+
     btnObjHide01.Tapped:Connect(function()
-        -- Insert code to execute locally when the button is tapped
-        --buttonTapRequest:FireServer() -- Send a Request to the Server
-        print("Button 01")
-        objHide01.SetActive(objHide01, true)
-        objHide02.SetActive(objHide02, false)
-        objHide03.SetActive(objHide03, false)
+        print("Disfraz 01")
+        addCostumePlayerHider(
+            customeStorage[1], 
+            game.localPlayer.character.gameObject,
+            Vector3.new(0, 1.579, 0)   
+        )
     end)
 
     btnObjHide02.Tapped:Connect(function()
-        print("Button 02")
-        objHide01.SetActive(objHide01, false)
-        objHide02.SetActive(objHide02, true)
-        objHide03.SetActive(objHide03, false)
+        print("Disfraz 02")
+        addCostumePlayerHider(
+            customeStorage[2], 
+            game.localPlayer.character.gameObject, 
+            Vector3.new(0, 0, 0)
+        )
     end)
 
     btnObjHide03.Tapped:Connect(function()
-        print("Button 03")
-        objHide01.SetActive(objHide01, false)
-        objHide02.SetActive(objHide02, false)
-        objHide03.SetActive(objHide03, true)
+        print("Disfraz 03")
+        addCostumePlayerHider(
+            customeStorage[3], 
+            game.localPlayer.character.gameObject, 
+            Vector3.new(0, 0, 0)
+        )
     end)
-
-    --[[ buttonTapEvent:Connect(function()
-        -- Insert code to execute on all clients when the button is tapped by any one
-        print("Hello World")
-        --To show which client is saying hello world you can concatenate 'Hello World' with client.localPlayer.name
-        print(client.localPlayer.name .. ": Hello World")
-    end) --]]
 end
 
---[[ function self:ServerAwake()
-    buttonTapRequest:Connect(function()
-        buttonTapEvent:FireAllClients() -- Send an Event to all Clients
-    end)
-end-- ]]
+function self:Update()
+    if isFollowingAlwaysHider then 
+        followingToTarget(
+            dressWear,
+            playerCurrent,
+            5 * Time.deltaTime,
+            posOffset
+        )
+    end
+end
