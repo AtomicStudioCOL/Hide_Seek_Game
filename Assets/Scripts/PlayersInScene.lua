@@ -1,14 +1,13 @@
---Variables publics
---!SerializeField
-local zoneDetectingSeeker : GameObject = nil
---!SerializeField
-local objsHides : GameObject = nil
+--Modules
+local managerGame = require("ManagerGame")
 
 --Variables no publics
-local tagZone : GameObject = nil
+local zoneDetectingSeeker : GameObject = nil
 local playersTag = {} -- Storage all player in the scene
+local tagZone : GameObject = nil
 local isFirstPlayer = true -- If it's first player or not
 local isFollowingAlwaysSeeker = false -- Start follow to the seeker is off
+local charPlayer : GameObject = nil
 
 --Network Values
 local player_id = StringValue.new("PlayerId", "")
@@ -17,42 +16,45 @@ local player_id = StringValue.new("PlayerId", "")
 local sendInfoAddZoneSeeker = Event.new("SendInfoAddZoneSeeker")
 local sendActivateMenuHide = Event.new("SendActivateMenuHide")
 
-function followingToTarget(current, target, maxDistanceDelta)
-    current.transform.position = Vector3.MoveTowards(
-        current.transform.position, 
-        target.transform.position + Vector3.new(0, 1.5, 0), 
-        maxDistanceDelta
+--Functions
+local function addZoneDetectionSeeker(target, namePlayer)
+    tagZone = target
+    managerGame.playerObjTag[namePlayer] = tagZone
+
+    managerGame.addCostumePlayers(
+        zoneDetectingSeeker, 
+        tagZone,
+        Vector3.new(0, 1.5, 0), 
+        playersTag[namePlayer],
+        {}
     )
 end
 
-function addZoneDetectionSeeker(target)
-    tagZone = GameObject.Find(tostring(target) .. "(Clone)")
-    local posZone = tagZone.transform.position + Vector3.new(0, 1.5, 0)
-
-    zoneDetectingSeeker.transform.position = posZone
-    zoneDetectingSeeker.SetActive(zoneDetectingSeeker, true)
-    isFollowingAlwaysSeeker = true
-end
-
-function activateMenuSelectedModelHide(namePlayer)
+local function activateMenuSelectedModelHide(player, namePlayer)
     if playersTag[namePlayer] == "Hiding" then
-        objsHides.SetActive(objsHides, true)
+        managerGame.playerObjTag[namePlayer] = player
+        managerGame.activateMenuModelHide(true)
     end
 end
 
+--Unity Functions
 function self:ClientAwake()
-    sendInfoAddZoneSeeker:Connect(function (args, namePlayer)
+    sendInfoAddZoneSeeker:Connect(function (char, namePlayer)
         if not playersTag[namePlayer] and client.localPlayer.name == namePlayer then
+            zoneDetectingSeeker = managerGame.zoneDetectingSeekerGlobal
+            charPlayer = char.gameObject
+
             playersTag[namePlayer] = player_id.value
-            objsHides.SetActive(objsHides, false)
-            addZoneDetectionSeeker(args)
+            managerGame.activateMenuModelHide(false)
+            addZoneDetectionSeeker(charPlayer, namePlayer)
         end
     end)
 
-    sendActivateMenuHide:Connect(function (namePlayer)
+    sendActivateMenuHide:Connect(function (char, namePlayer)
         if not playersTag[namePlayer] and client.localPlayer.name == namePlayer then
             playersTag[namePlayer] = player_id.value
-            activateMenuSelectedModelHide(namePlayer)
+            charPlayer = char.gameObject
+            activateMenuSelectedModelHide(charPlayer, namePlayer)
         end
     end)
 end
@@ -62,29 +64,16 @@ function self:ServerAwake()
         player.CharacterChanged:Connect(function(player : Player, character : Character)
             if isFirstPlayer then
                 player_id.value = "Seeker"
-
-                local target = player.character.gameObject.name
-                sendInfoAddZoneSeeker:FireAllClients(target, player.name)
-                
+                sendInfoAddZoneSeeker:FireAllClients(character, player.name)
                 isFirstPlayer = false
             else
                 player_id.value = "Hiding"
-                sendActivateMenuHide:FireAllClients(player.name)
+                sendActivateMenuHide:FireAllClients(character, player.name)
             end
         end)
     end)
 
-    server.PlayerDisconnected:Connect(function(player)
+    server.PlayerDisconnected:Connect(function(player : Player)
         playersTag[player.name] = nil
     end)
-end
-
-function self:Update()
-    if isFollowingAlwaysSeeker then 
-        followingToTarget(
-            zoneDetectingSeeker,
-            tagZone,
-            5 * Time.deltaTime
-        )
-    end
 end

@@ -1,3 +1,6 @@
+--Modules
+local managerGame = require("ManagerGame")
+
 --Variable publics
 --!SerializeField
 local objHide01 : GameObject = nil
@@ -17,10 +20,19 @@ local customeStorage = {}
 local isFollowingAlwaysHider = false
 local dressWear = nil
 local playerCurrent = nil
+local posDress = Vector3.new(0, 0, 0)
 local posOffset = Vector3.new(0, 0, 0)
+local playerCustomed = StringValue.new("PlayerCustomed", "")
+local objsCustome = {}
+
+--Events
+local showCustomeAllPlayersServer = Event.new("ShowCustomeAllPlayersServer")
+local showCustomeAllPlayersClient = Event.new("ShowCustomeAllPlayersClient")
 
 --Functions
 function followingToTarget(current, target, maxDistanceDelta, positionOffset)
+    if not current or not target then return end
+
     current.transform.position = Vector3.MoveTowards(
         current.transform.position, 
         target.transform.position + positionOffset, 
@@ -38,10 +50,12 @@ function addCostumePlayerHider(dress : GameObject, player : GameObject,  positio
     dressWear = dress
     playerCurrent = player
     posOffset = positionOffset
-    local posDress = playerCurrent.transform.position + posOffset
-
-    dressWear.transform.position = posDress
     
+    if playerCurrent then
+        posDress = playerCurrent.transform.position + posOffset
+    end
+    
+    dressWear.transform.position = posDress
     disableAllDresses()
     dressWear.SetActive(dressWear, true)
     isFollowingAlwaysHider = true
@@ -55,10 +69,24 @@ function self:ClientAwake()
 
     btnObjHide01.Tapped:Connect(function()
         print("Disfraz 01")
+        --playerCustomed = game.localPlayer.name
+        managerGame.playerActivateCustome.value = game.localPlayer.name
+        showCustomeAllPlayersServer:FireServer()
+
+        for name, player in pairs(objsCustome) do
+            print("Name player: ", name, " player obj: ", tostring(player))
+        end
+    end)
+
+    showCustomeAllPlayersClient:Connect(function()
+        print("Cliente: ", game.localPlayer.name)
+        print("Player que activo el disfraz: ", playerCustomed.value)
+        print("Player OBJ Table: ", tostring(objsCustome[playerCustomed.value]))
+
         addCostumePlayerHider(
             customeStorage[1], 
-            game.localPlayer.character.gameObject,
-            Vector3.new(0, 1.579, 0)   
+            objsCustome[playerCustomed.value], 
+            Vector3.new(0, 1.579, 0)
         )
     end)
 
@@ -80,6 +108,25 @@ function self:ClientAwake()
         )
     end)
 end
+
+function self:ServerAwake()
+    showCustomeAllPlayersServer:Connect(function(player : Player)
+        playerCustomed.value = player.name
+        showCustomeAllPlayersClient:FireAllClients()
+    end)
+
+    --[[ for name, player in pairs(managerGame.playerObjTag) do
+        print("Name player: ", name, " player obj: ", tostring(player))
+    end ]]
+end
+
+scene.PlayerJoined:Connect(function(scene : WorldScene, player : Player)
+    player.CharacterChanged:Connect(function (player : Player, character : Character)
+        print(tostring(player.name), " joined the scene.")
+        print(tostring(player.name), " changed their character to", tostring(character))
+        objsCustome[player.name] = character.gameObject
+    end)
+end)
 
 function self:Update()
     if isFollowingAlwaysHider then 
