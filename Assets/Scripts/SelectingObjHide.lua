@@ -24,6 +24,8 @@ local posDress = Vector3.new(0, 0, 0)
 local posOffset = Vector3.new(0, 0, 0)
 local playerCustomed = StringValue.new("PlayerCustomed", "")
 local objsCustome = {}
+local hasPlayersCustome = {}
+local updatedStorageCustome = true
 
 --Events
 local showCustomeAllPlayersServer = Event.new("ShowCustomeAllPlayersServer")
@@ -46,8 +48,13 @@ function disableAllDresses()
     end
 end
 
-function addCostumePlayerHider(dress : GameObject, player : GameObject,  positionOffset : Vector3)
-    dressWear = dress
+function addCostumePlayerHider(dress : GameObject, player : GameObject,  positionOffset : Vector3, instanceObj : boolean)
+    if instanceObj then 
+        dressWear = Object.Instantiate(dress)
+    else
+        dressWear = dress
+    end
+
     playerCurrent = player
     posOffset = positionOffset
     
@@ -69,33 +76,21 @@ function self:ClientAwake()
 
     btnObjHide01.Tapped:Connect(function()
         print("Disfraz 01")
-        --playerCustomed = game.localPlayer.name
-        managerGame.playerActivateCustome.value = game.localPlayer.name
-        showCustomeAllPlayersServer:FireServer()
-
-        for name, player in pairs(objsCustome) do
-            print("Name player: ", name, " player obj: ", tostring(player))
-        end
-    end)
-
-    showCustomeAllPlayersClient:Connect(function()
-        print("Cliente: ", game.localPlayer.name)
-        print("Player que activo el disfraz: ", playerCustomed.value)
-        print("Player OBJ Table: ", tostring(objsCustome[playerCustomed.value]))
-
         addCostumePlayerHider(
-            customeStorage[1], 
-            objsCustome[playerCustomed.value], 
-            Vector3.new(0, 1.579, 0)
+            customeStorage[1],
+            game.localPlayer.character.gameObject,
+            Vector3.new(0, 1.579, 0),
+            false
         )
     end)
 
     btnObjHide02.Tapped:Connect(function()
         print("Disfraz 02")
         addCostumePlayerHider(
-            customeStorage[2], 
-            game.localPlayer.character.gameObject, 
-            Vector3.new(0, 0, 0)
+            customeStorage[2],
+            game.localPlayer.character.gameObject,
+            Vector3.new(0, 0, 0),
+            false
         )
     end)
 
@@ -104,31 +99,19 @@ function self:ClientAwake()
         addCostumePlayerHider(
             customeStorage[3], 
             game.localPlayer.character.gameObject, 
-            Vector3.new(0, 0, 0)
+            Vector3.new(0, 0, 0),
+            false
         )
     end)
 end
 
-function self:ServerAwake()
-    showCustomeAllPlayersServer:Connect(function(player : Player)
-        playerCustomed.value = player.name
-        showCustomeAllPlayersClient:FireAllClients()
-    end)
-
-    --[[ for name, player in pairs(managerGame.playerObjTag) do
-        print("Name player: ", name, " player obj: ", tostring(player))
-    end ]]
-end
-
 scene.PlayerJoined:Connect(function(scene : WorldScene, player : Player)
     player.CharacterChanged:Connect(function (player : Player, character : Character)
-        print(tostring(player.name), " joined the scene.")
-        print(tostring(player.name), " changed their character to", tostring(character))
         objsCustome[player.name] = character.gameObject
     end)
 end)
 
-function self:Update()
+function self:ClientUpdate()
     if isFollowingAlwaysHider then 
         followingToTarget(
             dressWear,

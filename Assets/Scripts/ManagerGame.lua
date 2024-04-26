@@ -1,6 +1,6 @@
 --Variables publics
 --!SerializeField
-local zoneDetectingSeeker : GameObject = nil
+local playerPet : GameObject = nil
 --!SerializeField
 local objsHides : GameObject = nil
 --!SerializeField
@@ -17,7 +17,7 @@ local btnObjHide02 : TapHandler = nil
 local btnObjHide03 : TapHandler = nil
 
 --Variables Globals
-zoneDetectingSeekerGlobal = nil
+playerPetGlobal = nil
 objsHidesGlobal = nil
 objHide01Global = nil
 objHide02Global = nil
@@ -26,7 +26,7 @@ btnObjHide01Global = nil
 btnObjHide02Global = nil
 btnObjHide03Global = nil
 playerObjTag = {}
-playerActivateCustome = StringValue.new("PlayerActivateCustom", "")
+playersTag = {} -- Storage all player in the scene
 
 --Variables locals
 local dressWear = nil
@@ -41,7 +41,7 @@ local showCustomeAllPlayersClient = Event.new("ShowCustomeAllPlayersClient")
 --Local Functions
 local function followingToTarget(current, target, maxDistanceDelta, positionOffset)
     if not current or not target then return end
-
+    
     current.transform.position = Vector3.MoveTowards(
         current.transform.position, 
         target.transform.position + positionOffset, 
@@ -57,10 +57,6 @@ end
 
 --Global Functions
 function addCostumePlayers(dress : GameObject, player : GameObject,  positionOffset : Vector3, typeCharacter : string, customeStorage)
-    --[[ showCustomeAllPlayersServer:FireServer()
-    showCustomeAllPlayersClient:Connect(function()
-    end) ]]
-    print("Cliente actual: ", game.localPlayer.name)
     dressWear = dress
     playerCurrent = player
     posOffset = positionOffset
@@ -72,7 +68,6 @@ function addCostumePlayers(dress : GameObject, player : GameObject,  positionOff
 
     dressWear.SetActive(dressWear, true)
     isFollowingAlways = true
-    print("Dress: ", tostring(GameObject.Find(dressWear.name)))
 end
 
 function activateMenuModelHide(visible)
@@ -81,7 +76,7 @@ end
 
 --Unity Functions
 function self:ClientAwake()
-    zoneDetectingSeekerGlobal = zoneDetectingSeeker
+    playerPetGlobal = playerPet
     objsHidesGlobal = objsHides
     objHide01Global = objHide01
     objHide02Global = objHide02
@@ -90,12 +85,6 @@ function self:ClientAwake()
     btnObjHide02Global = btnObjHide02
     btnObjHide03Global = btnObjHide03
 end
-
---[[ function self:ServerAwake()
-    showCustomeAllPlayersServer:Connect(function(player : Player)
-        showCustomeAllPlayersClient:FireAllClients()
-    end)
-end ]]
 
 function self:Update()
     if isFollowingAlways then 
