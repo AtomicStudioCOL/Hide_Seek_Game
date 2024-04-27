@@ -1,0 +1,24 @@
+fileFormatVersion: 2
+guid: 4f89beb45b30cd046a52ec279fe7a026
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 1355218169, guid: 6f9c394430e33933bbac989b158f2ac4, type: 3}
+  _scriptType: 2
+  _defaultReferences:
+  - Name: zoneDetectingSeeker
+    Value: {fileID: 4766105417258002490, guid: 7ef12806d3000ba42a48c994a295e49b, type: 3}
+  - Name: menuSelecteObjHide
+    Value: {fileID: 6618639381677026434, guid: db37ff7e9f025fb4ea2829ddc14355a5, type: 3}
+  - Name: objHide01
+    Value: {fileID: 3837224670578109447, guid: e110360f01c2e4b4ebd3b21b87edecf8, type: 3}
+  - Name: objHide02
+    Value: {fileID: 6180475286629656807, guid: a15172cb856191641b53f4ab45a07779, type: 3}
+  - Name: objHide03
+    Value: {fileID: 8318705602049960158, guid: d3a955429ea7ee34c892779d567a8ae3, type: 3}
+  - Name: objsHides
+    Value: {fileID: 8078894544616682496, guid: c308c89b41383864e88729090fe878bf, type: 3}

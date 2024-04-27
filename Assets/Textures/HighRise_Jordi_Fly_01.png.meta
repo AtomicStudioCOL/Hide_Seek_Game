@@ -1,0 +1,642 @@
+fileFormatVersion: 2
+guid: 88a4f4c0859fde64caac27a4cbb71968
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 1024
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: HighRise_Jordi_Fly_01_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 846
+        width: 876
+        height: 846
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e5d7eeeadf804934281f7132776038dd
+      internalID: -771368402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HighRise_Jordi_Fly_01_1
+      rect:
+        serializedVersion: 2
+        x: 876
+        y: 846
+        width: 876
+        height: 846
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3672a91ce13456d4b912ba6420aa3f06
+      internalID: 36624196
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HighRise_Jordi_Fly_01_2
+      rect:
+        serializedVersion: 2
+        x: 1752
+        y: 846
+        width: 876
+        height: 846
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d14e893fa64602544a9c457863b301c8
+      internalID: -1259709055
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HighRise_Jordi_Fly_01_3
+      rect:
+        serializedVersion: 2
+        x: 2628
+        y: 846
+        width: 876
+        height: 846
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d9db9c81d44f452458741e3075fdc640
+      internalID: 1512393082
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HighRise_Jordi_Fly_01_4
+      rect:
+        serializedVersion: 2
+        x: 3504
+        y: 846
+        width: 876
+        height: 846
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a692a605be20a5548a5b2b6ff130ab5d
+      internalID: -380762202
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HighRise_Jordi_Fly_01_5
+      rect:
+        serializedVersion: 2
+        x: 4380
+        y: 846
+        width: 876
+        height: 846
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f713998da11242f4cabe903a01e1c3be
+      internalID: -229236171
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HighRise_Jordi_Fly_01_6
+      rect:
+        serializedVersion: 2
+        x: 5256
+        y: 846
+        width: 876
+        height: 846
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5752b2ad30c091d4aa952c8a560630be
+      internalID: 653251461
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HighRise_Jordi_Fly_01_7
+      rect:
+        serializedVersion: 2
+        x: 6132
+        y: 846
+        width: 876
+        height: 846
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4bee0c3efd9d393448b1b3a69a3c0997
+      internalID: 830449750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HighRise_Jordi_Fly_01_8
+      rect:
+        serializedVersion: 2
+        x: 7008
+        y: 846
+        width: 876
+        height: 846
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9da03d20a26e358448091aac03b3ee54
+      internalID: -1519020533
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HighRise_Jordi_Fly_01_9
+      rect:
+        serializedVersion: 2
+        x: 7884
+        y: 846
+        width: 876
+        height: 846
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fa1f072e37164404bbebf86e4cd03456
+      internalID: -661883605
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HighRise_Jordi_Fly_01_10
+      rect:
+        serializedVersion: 2
+        x: 8760
+        y: 846
+        width: 876
+        height: 846
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 94d7148ceaaa6f74982692ce65873e4a
+      internalID: 297119112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HighRise_Jordi_Fly_01_11
+      rect:
+        serializedVersion: 2
+        x: 9636
+        y: 846
+        width: 876
+        height: 846
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4d57c1fdf46ddbc458cacfa6cea60e8d
+      internalID: 436995950
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HighRise_Jordi_Fly_01_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 876
+        height: 846
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 76cdc46cc8003d641a8574fa2ac7f3cc
+      internalID: -2127246784
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HighRise_Jordi_Fly_01_13
+      rect:
+        serializedVersion: 2
+        x: 876
+        y: 0
+        width: 876
+        height: 846
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 53c0a9cea09999a4fb48fe627605e01c
+      internalID: 1995535271
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HighRise_Jordi_Fly_01_14
+      rect:
+        serializedVersion: 2
+        x: 1752
+        y: 0
+        width: 876
+        height: 846
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 23e709ecc4c5b334ba2660f49d6d3ef6
+      internalID: 974320952
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HighRise_Jordi_Fly_01_15
+      rect:
+        serializedVersion: 2
+        x: 2628
+        y: 0
+        width: 876
+        height: 846
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fbc4dd9c010ad6a47b0dd3ac45216415
+      internalID: 810095716
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HighRise_Jordi_Fly_01_16
+      rect:
+        serializedVersion: 2
+        x: 3504
+        y: 0
+        width: 876
+        height: 846
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 859b7b48d189c254a924cecef49460e8
+      internalID: 979965744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HighRise_Jordi_Fly_01_17
+      rect:
+        serializedVersion: 2
+        x: 4380
+        y: 0
+        width: 876
+        height: 846
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 33a90cf2d297d5a4fa914fdadc0396dd
+      internalID: 843942132
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HighRise_Jordi_Fly_01_18
+      rect:
+        serializedVersion: 2
+        x: 5256
+        y: 0
+        width: 876
+        height: 846
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 473172bde0d3b0a49953059011ab97b5
+      internalID: -1015225170
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HighRise_Jordi_Fly_01_19
+      rect:
+        serializedVersion: 2
+        x: 6132
+        y: 0
+        width: 876
+        height: 846
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3af25f44f25ee8d43b851186431f5a3a
+      internalID: -2126660981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HighRise_Jordi_Fly_01_20
+      rect:
+        serializedVersion: 2
+        x: 7008
+        y: 0
+        width: 876
+        height: 846
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e72d567291f53fa4798c5169f521af7c
+      internalID: -2045674677
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HighRise_Jordi_Fly_01_21
+      rect:
+        serializedVersion: 2
+        x: 7884
+        y: 0
+        width: 876
+        height: 846
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 92e72d0666c010d4b91cfc69d1fe9abf
+      internalID: -117719359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HighRise_Jordi_Fly_01_22
+      rect:
+        serializedVersion: 2
+        x: 8760
+        y: 0
+        width: 876
+        height: 846
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e8abb51fe651b754788085a1cab335b7
+      internalID: -1878534689
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HighRise_Jordi_Fly_01_23
+      rect:
+        serializedVersion: 2
+        x: 9636
+        y: 0
+        width: 876
+        height: 846
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 33118a419b5f52b469dfe8d4175a365f
+      internalID: 1725473585
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 8bf8077420aa5204ab7ff600d1bb766b
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      HighRise_Jordi_Fly_01_0: -771368402
+      HighRise_Jordi_Fly_01_1: 36624196
+      HighRise_Jordi_Fly_01_10: 297119112
+      HighRise_Jordi_Fly_01_11: 436995950
+      HighRise_Jordi_Fly_01_12: -2127246784
+      HighRise_Jordi_Fly_01_13: 1995535271
+      HighRise_Jordi_Fly_01_14: 974320952
+      HighRise_Jordi_Fly_01_15: 810095716
+      HighRise_Jordi_Fly_01_16: 979965744
+      HighRise_Jordi_Fly_01_17: 843942132
+      HighRise_Jordi_Fly_01_18: -1015225170
+      HighRise_Jordi_Fly_01_19: -2126660981
+      HighRise_Jordi_Fly_01_2: -1259709055
+      HighRise_Jordi_Fly_01_20: -2045674677
+      HighRise_Jordi_Fly_01_21: -117719359
+      HighRise_Jordi_Fly_01_22: -1878534689
+      HighRise_Jordi_Fly_01_23: 1725473585
+      HighRise_Jordi_Fly_01_3: 1512393082
+      HighRise_Jordi_Fly_01_4: -380762202
+      HighRise_Jordi_Fly_01_5: -229236171
+      HighRise_Jordi_Fly_01_6: 653251461
+      HighRise_Jordi_Fly_01_7: 830449750
+      HighRise_Jordi_Fly_01_8: -1519020533
+      HighRise_Jordi_Fly_01_9: -661883605
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
