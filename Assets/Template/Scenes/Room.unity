@@ -2440,6 +2440,37 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4493585093827132993, guid: 1c6b08e5bc7744948b4497a19e3f535f, type: 3}
+--- !u!1 &426415469
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 426415470}
+  m_Layer: 0
+  m_Name: RespawnPlayerHiding
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &426415470
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 426415469}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -4.25, y: 0.275, z: -62}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &473765013
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6875,31 +6906,31 @@ MonoBehaviour:
   - Property: {fileID: -2487679651543698528, guid: 5bf9b46e92aad47ed9faec56891fc6e3,
       type: 3}
     Value:
-      rid: 5254678813097853577
+      rid: 5254678829740327562
   - Property: {fileID: 427459632973059124, guid: 5bf9b46e92aad47ed9faec56891fc6e3,
       type: 3}
     Value:
-      rid: 5254678813097853578
+      rid: 5254678829740327563
   - Property: {fileID: 4269188703926874057, guid: 5bf9b46e92aad47ed9faec56891fc6e3,
       type: 3}
     Value:
-      rid: 5254678813097853579
+      rid: 5254678829740327564
   - Property: {fileID: 7674784592742225608, guid: 5bf9b46e92aad47ed9faec56891fc6e3,
       type: 3}
     Value:
-      rid: 5254678813097853580
+      rid: 5254678829740327565
   - Property: {fileID: 4823445463608216645, guid: 5bf9b46e92aad47ed9faec56891fc6e3,
       type: 3}
     Value:
-      rid: 5254678813097853581
+      rid: 5254678829740327566
   - Property: {fileID: 8980195292836664827, guid: 5bf9b46e92aad47ed9faec56891fc6e3,
       type: 3}
     Value:
-      rid: 5254678813097853582
+      rid: 5254678829740327567
   - Property: {fileID: 3731020602240347621, guid: 5bf9b46e92aad47ed9faec56891fc6e3,
       type: 3}
     Value:
-      rid: 5254678813097853583
+      rid: 5254678829740327568
   _uiOutput: 0
   _uiOutputSettings:
     rid: -2
@@ -6915,31 +6946,31 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 5254678813097853577
+    - rid: 5254678829740327562
       type: {class: NumberLuaPropertyValue, ns: Highrise.Lua, asm: com.pz.highrise.lua}
       data:
         _value: 15
-    - rid: 5254678813097853578
+    - rid: 5254678829740327563
       type: {class: NumberLuaPropertyValue, ns: Highrise.Lua, asm: com.pz.highrise.lua}
       data:
         _value: 10
-    - rid: 5254678813097853579
+    - rid: 5254678829740327564
       type: {class: NumberLuaPropertyValue, ns: Highrise.Lua, asm: com.pz.highrise.lua}
       data:
         _value: 50
-    - rid: 5254678813097853580
+    - rid: 5254678829740327565
       type: {class: NumberLuaPropertyValue, ns: Highrise.Lua, asm: com.pz.highrise.lua}
       data:
         _value: 30
-    - rid: 5254678813097853581
+    - rid: 5254678829740327566
       type: {class: NumberLuaPropertyValue, ns: Highrise.Lua, asm: com.pz.highrise.lua}
       data:
         _value: 30
-    - rid: 5254678813097853582
+    - rid: 5254678829740327567
       type: {class: NumberLuaPropertyValue, ns: Highrise.Lua, asm: com.pz.highrise.lua}
       data:
         _value: 45
-    - rid: 5254678813097853583
+    - rid: 5254678829740327568
       type: {class: BooleanLuaPropertyValue, ns: Highrise.Lua, asm: com.pz.highrise.lua}
       data:
         _value: 1
@@ -7208,7 +7239,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.083333336
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 6a3f1fadc8687f74f8e659ba4839046a, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 731cb336865238241b5bed3e29eea5a7, type: 2}
   m_BuildHeightMesh: 0
 --- !u!4 &1332807718
 Transform:
@@ -7314,7 +7345,7 @@ MonoBehaviour:
   - Property: {fileID: 4170381004130898669, guid: eb16f2ee53160bd418c52ebab1b1f378,
       type: 3}
     Value:
-      rid: 5254678813097853576
+      rid: 5254678829740327559
   _uiOutput: 0
   _uiOutputSettings:
     rid: -2
@@ -7324,7 +7355,7 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 5254678813097853576
+    - rid: 5254678829740327559
       type: {class: AudioClipGlue/AudioClipLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
@@ -8017,27 +8048,27 @@ MonoBehaviour:
   - Property: {fileID: -250738243916599976, guid: b42653f77a0afc647bf5c6a03763b11c,
       type: 3}
     Value:
-      rid: 5254678813097853562
+      rid: 5254678829740327544
   - Property: {fileID: -7329542028520930677, guid: b42653f77a0afc647bf5c6a03763b11c,
       type: 3}
     Value:
-      rid: 5254678813097853563
+      rid: 5254678829740327545
   - Property: {fileID: 7087893429836001588, guid: b42653f77a0afc647bf5c6a03763b11c,
       type: 3}
     Value:
-      rid: 5254678813097853564
+      rid: 5254678829740327546
   - Property: {fileID: 5665720565464128793, guid: b42653f77a0afc647bf5c6a03763b11c,
       type: 3}
     Value:
-      rid: 5254678813097853565
+      rid: 5254678829740327547
   - Property: {fileID: -7496398153106375926, guid: b42653f77a0afc647bf5c6a03763b11c,
       type: 3}
     Value:
-      rid: 5254678813097853566
+      rid: 5254678829740327548
   - Property: {fileID: 9001914284498970659, guid: b42653f77a0afc647bf5c6a03763b11c,
       type: 3}
     Value:
-      rid: 5254678813097853567
+      rid: 5254678829740327549
   _uiOutput: 0
   _uiOutputSettings:
     rid: -2
@@ -8052,32 +8083,32 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 5254678813097853562
+    - rid: 5254678829740327544
       type: {class: GameObjectGlue/GameObjectLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
         _value: {fileID: 177980447}
-    - rid: 5254678813097853563
+    - rid: 5254678829740327545
       type: {class: GameObjectGlue/GameObjectLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
         _value: {fileID: 1797701551}
-    - rid: 5254678813097853564
+    - rid: 5254678829740327546
       type: {class: GameObjectGlue/GameObjectLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
         _value: {fileID: 1595760260}
-    - rid: 5254678813097853565
+    - rid: 5254678829740327547
       type: {class: TapHandlerGlue/TapHandlerLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
         _value: {fileID: 3110038509298062726}
-    - rid: 5254678813097853566
+    - rid: 5254678829740327548
       type: {class: TapHandlerGlue/TapHandlerLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
         _value: {fileID: 3110038509298062725}
-    - rid: 5254678813097853567
+    - rid: 5254678829740327549
       type: {class: TapHandlerGlue/TapHandlerLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
@@ -8123,39 +8154,44 @@ MonoBehaviour:
   - Property: {fileID: -127988225428066277, guid: aa92ea622b7f1cc4ab1d8c162a6abd8c,
       type: 3}
     Value:
-      rid: 5254678813097853568
+      rid: 5254678829740327550
+  - Property: {fileID: -4395290810316614150, guid: aa92ea622b7f1cc4ab1d8c162a6abd8c,
+      type: 3}
+    Value:
+      rid: 5254678829740327551
   - Property: {fileID: 1563203103397969276, guid: aa92ea622b7f1cc4ab1d8c162a6abd8c,
       type: 3}
     Value:
-      rid: 5254678813097853569
+      rid: 5254678829740327552
   - Property: {fileID: -250738243916599976, guid: aa92ea622b7f1cc4ab1d8c162a6abd8c,
       type: 3}
     Value:
-      rid: 5254678813097853570
+      rid: 5254678829740327553
   - Property: {fileID: -7329542028520930677, guid: aa92ea622b7f1cc4ab1d8c162a6abd8c,
       type: 3}
     Value:
-      rid: 5254678813097853571
+      rid: 5254678829740327554
   - Property: {fileID: 7087893429836001588, guid: aa92ea622b7f1cc4ab1d8c162a6abd8c,
       type: 3}
     Value:
-      rid: 5254678813097853572
+      rid: 5254678829740327555
   - Property: {fileID: 5665720565464128793, guid: aa92ea622b7f1cc4ab1d8c162a6abd8c,
       type: 3}
     Value:
-      rid: 5254678813097853573
+      rid: 5254678829740327556
   - Property: {fileID: -7496398153106375926, guid: aa92ea622b7f1cc4ab1d8c162a6abd8c,
       type: 3}
     Value:
-      rid: 5254678813097853574
+      rid: 5254678829740327557
   - Property: {fileID: 9001914284498970659, guid: aa92ea622b7f1cc4ab1d8c162a6abd8c,
       type: 3}
     Value:
-      rid: 5254678813097853575
+      rid: 5254678829740327558
   _uiOutput: 0
   _uiOutputSettings:
     rid: -2
   m_playerPet: {fileID: 1745904662}
+  m_pointRespawnPlayerHider: {fileID: 426415469}
   m_objsHides: {fileID: 197557663}
   m_objHide01: {fileID: 177980447}
   m_objHide02: {fileID: 1797701551}
@@ -8168,42 +8204,47 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 5254678813097853568
+    - rid: 5254678829740327550
       type: {class: GameObjectGlue/GameObjectLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
         _value: {fileID: 1745904662}
-    - rid: 5254678813097853569
+    - rid: 5254678829740327551
+      type: {class: GameObjectGlue/GameObjectLuaPropertyValue, ns: Highrise.Lua.Glue,
+        asm: com.pz.highrise.lua.glue}
+      data:
+        _value: {fileID: 426415469}
+    - rid: 5254678829740327552
       type: {class: GameObjectGlue/GameObjectLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
         _value: {fileID: 197557663}
-    - rid: 5254678813097853570
+    - rid: 5254678829740327553
       type: {class: GameObjectGlue/GameObjectLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
         _value: {fileID: 177980447}
-    - rid: 5254678813097853571
+    - rid: 5254678829740327554
       type: {class: GameObjectGlue/GameObjectLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
         _value: {fileID: 1797701551}
-    - rid: 5254678813097853572
+    - rid: 5254678829740327555
       type: {class: GameObjectGlue/GameObjectLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
         _value: {fileID: 1595760260}
-    - rid: 5254678813097853573
+    - rid: 5254678829740327556
       type: {class: TapHandlerGlue/TapHandlerLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
         _value: {fileID: 3110038509298062726}
-    - rid: 5254678813097853574
+    - rid: 5254678829740327557
       type: {class: TapHandlerGlue/TapHandlerLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
         _value: {fileID: 3110038509298062725}
-    - rid: 5254678813097853575
+    - rid: 5254678829740327558
       type: {class: TapHandlerGlue/TapHandlerLuaPropertyValue, ns: Highrise.Lua.Glue,
         asm: com.pz.highrise.lua.glue}
       data:
@@ -8430,6 +8471,37 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1522408655}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1531287354
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1531287355}
+  m_Layer: 0
+  m_Name: -------------------------
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1531287355
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1531287354}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1535773072 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 17dbe6b06c541874aa2d0e86315270bb,
@@ -12179,6 +12251,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Pumpkin_C
       objectReference: {fileID: 0}
+    - target: {fileID: 8433567680633999766, guid: 57b65d12fd501b34f99eba89084aac08,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9097796487359220524, guid: 57b65d12fd501b34f99eba89084aac08,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -12246,6 +12323,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Wooden Coffin A
+      objectReference: {fileID: 0}
+    - target: {fileID: 5048044654940103875, guid: f38b2eceda12cf643bce187ee1d46b2a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5568016436056817273, guid: f38b2eceda12cf643bce187ee1d46b2a,
         type: 3}
@@ -12386,54 +12468,54 @@ PrefabInstance:
     - target: {fileID: 1928837434055441542, guid: 75b85ff96969ed2408338803da942004,
         type: 3}
       propertyPath: _properties.Array.data[0].Value
-      value: 5254678813097853560
+      value: 5254678829740327240
       objectReference: {fileID: 0}
     - target: {fileID: 1928837434055441542, guid: 75b85ff96969ed2408338803da942004,
         type: 3}
       propertyPath: _properties.Array.data[1].Value
-      value: 5254678813097853561
+      value: 5254678829740327241
       objectReference: {fileID: 0}
     - target: {fileID: 1928837434055441542, guid: 75b85ff96969ed2408338803da942004,
         type: 3}
-      propertyPath: managedReferences[5254678813097853554]
+      propertyPath: managedReferences[5254678829740327219]
       value: com.pz.highrise.lua.glue Highrise.Lua.Glue.GameObjectGlue/GameObjectLuaPropertyValue
       objectReference: {fileID: 0}
     - target: {fileID: 1928837434055441542, guid: 75b85ff96969ed2408338803da942004,
         type: 3}
-      propertyPath: managedReferences[5254678813097853555]
+      propertyPath: managedReferences[5254678829740327220]
       value: com.pz.highrise.lua.glue Highrise.Lua.Glue.GameObjectGlue/GameObjectLuaPropertyValue
       objectReference: {fileID: 0}
     - target: {fileID: 1928837434055441542, guid: 75b85ff96969ed2408338803da942004,
         type: 3}
-      propertyPath: managedReferences[5254678813097853560]
+      propertyPath: managedReferences[5254678829740327240]
       value: com.pz.highrise.lua.glue Highrise.Lua.Glue.GameObjectGlue/GameObjectLuaPropertyValue
       objectReference: {fileID: 0}
     - target: {fileID: 1928837434055441542, guid: 75b85ff96969ed2408338803da942004,
         type: 3}
-      propertyPath: managedReferences[5254678813097853561]
+      propertyPath: managedReferences[5254678829740327241]
       value: com.pz.highrise.lua.glue Highrise.Lua.Glue.GameObjectGlue/GameObjectLuaPropertyValue
       objectReference: {fileID: 0}
     - target: {fileID: 1928837434055441542, guid: 75b85ff96969ed2408338803da942004,
         type: 3}
-      propertyPath: managedReferences[5254678813097853554]._value
+      propertyPath: managedReferences[5254678829740327219]._value
       value: 
       objectReference: {fileID: 7354734728424125481, guid: 52b0ebca3cc0e9241a26ea581800bfb7,
         type: 3}
     - target: {fileID: 1928837434055441542, guid: 75b85ff96969ed2408338803da942004,
         type: 3}
-      propertyPath: managedReferences[5254678813097853555]._value
+      propertyPath: managedReferences[5254678829740327220]._value
       value: 
       objectReference: {fileID: 2602231374797837610, guid: 855c90c429434444fbe3ca2b5507ab04,
         type: 3}
     - target: {fileID: 1928837434055441542, guid: 75b85ff96969ed2408338803da942004,
         type: 3}
-      propertyPath: managedReferences[5254678813097853560]._value
+      propertyPath: managedReferences[5254678829740327240]._value
       value: 
       objectReference: {fileID: 7354734728424125481, guid: 52b0ebca3cc0e9241a26ea581800bfb7,
         type: 3}
     - target: {fileID: 1928837434055441542, guid: 75b85ff96969ed2408338803da942004,
         type: 3}
-      propertyPath: managedReferences[5254678813097853561]._value
+      propertyPath: managedReferences[5254678829740327241]._value
       value: 
       objectReference: {fileID: 2602231374797837610, guid: 855c90c429434444fbe3ca2b5507ab04,
         type: 3}
@@ -12578,10 +12660,15 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3036566309206296312, guid: c308c89b41383864e88729090fe878bf,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3954460047440005156, guid: c308c89b41383864e88729090fe878bf,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.553
+      value: -4.39
       objectReference: {fileID: 0}
     - target: {fileID: 3954460047440005156, guid: c308c89b41383864e88729090fe878bf,
         type: 3}
@@ -12591,7 +12678,7 @@ PrefabInstance:
     - target: {fileID: 3954460047440005156, guid: c308c89b41383864e88729090fe878bf,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.314
+      value: -50.55
       objectReference: {fileID: 0}
     - target: {fileID: 3954460047440005156, guid: c308c89b41383864e88729090fe878bf,
         type: 3}
@@ -12628,10 +12715,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4235253098379920924, guid: c308c89b41383864e88729090fe878bf,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6376010275735586580, guid: c308c89b41383864e88729090fe878bf,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8078894544616682496, guid: c308c89b41383864e88729090fe878bf,
         type: 3}
       propertyPath: m_Name
       value: BtnsObjsHide
+      objectReference: {fileID: 0}
+    - target: {fileID: 8078894544616682496, guid: c308c89b41383864e88729090fe878bf,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -12828,6 +12930,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Spooky Tree_ A
       objectReference: {fileID: 0}
+    - target: {fileID: 5005931873754413795, guid: 4a92fcc1363d74746932f3d4de48e22a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5634975277581836377, guid: 4a92fcc1363d74746932f3d4de48e22a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -12896,6 +13003,8 @@ SceneRoots:
   - {fileID: 12576113}
   - {fileID: 102391957}
   - {fileID: 3110038509298062723}
+  - {fileID: 426415470}
   - {fileID: 1113855646}
   - {fileID: 1406206142}
   - {fileID: 1468366889}
+  - {fileID: 1531287355}

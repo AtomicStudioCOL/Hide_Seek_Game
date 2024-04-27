@@ -2,6 +2,8 @@
 --!SerializeField
 local playerPet : GameObject = nil
 --!SerializeField
+local pointRespawnPlayerHider : GameObject = nil
+--!SerializeField
 local objsHides : GameObject = nil
 --!SerializeField
 local objHide01 : GameObject = nil
@@ -18,6 +20,7 @@ local btnObjHide03 : TapHandler = nil
 
 --Variables Globals
 playerPetGlobal = nil
+pointRespawnPlayerHiderGlobal = nil
 objsHidesGlobal = nil
 objHide01Global = nil
 objHide02Global = nil
@@ -35,8 +38,8 @@ local posOffset = Vector3.new(0, 0, 0)
 local isFollowingAlways = false
 
 --Events
-local showCustomeAllPlayersServer = Event.new("ShowCustomeAllPlayersServer")
-local showCustomeAllPlayersClient = Event.new("ShowCustomeAllPlayersClient")
+local deleteCustomePlayerServer = Event.new("DeleteCustomePlayerServer")
+local deleteCustomePlayerClient = Event.new("DeleteCustomePlayerClient")
 
 --Local Functions
 local function followingToTarget(current, target, maxDistanceDelta, positionOffset)
@@ -77,6 +80,7 @@ end
 --Unity Functions
 function self:ClientAwake()
     playerPetGlobal = playerPet
+    pointRespawnPlayerHiderGlobal = pointRespawnPlayerHider
     objsHidesGlobal = objsHides
     objHide01Global = objHide01
     objHide02Global = objHide02

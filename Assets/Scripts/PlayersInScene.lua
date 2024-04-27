@@ -2,6 +2,7 @@
 local managerGame = require("ManagerGame")
 
 --Variables no publics
+local pointRespawnPlayerHider : GameObject = nil
 local playerPet : GameObject = nil
 local isFirstPlayer = true -- If it's first player or not
 local charPlayer : GameObject = nil
@@ -26,6 +27,12 @@ local function addZoneDetectionSeeker(target, namePlayer)
     )
 end
 
+local function respawnStartPlayerHiding(objPlayer : GameObject, character : Character)
+    character:Teleport(pointRespawnPlayerHider.transform.position, function()
+        print("Move Player to new Respawm place")
+    end)
+end
+
 local function activateMenuSelectedModelHide(player, namePlayer)
     if managerGame.playersTag[namePlayer] == "Hiding" then
         managerGame.playerObjTag[namePlayer] = player
@@ -38,6 +45,7 @@ function self:ClientAwake()
     sendInfoAddZoneSeeker:Connect(function (char, namePlayer)
         if not managerGame.playersTag[namePlayer] and client.localPlayer.name == namePlayer then
             playerPet = managerGame.playerPetGlobal
+            pointRespawnPlayerHider = managerGame.pointRespawnPlayerHiderGlobal
             charPlayer = char.gameObject
 
             managerGame.playersTag[namePlayer] = player_id.value
@@ -48,10 +56,14 @@ function self:ClientAwake()
 
     sendActivateMenuHide:Connect(function (char, namePlayer)
         if not managerGame.playersTag[namePlayer] and client.localPlayer.name == namePlayer then
-            managerGame.playersTag[namePlayer] = player_id.value
+            pointRespawnPlayerHider = managerGame.pointRespawnPlayerHiderGlobal
             charPlayer = char.gameObject
+            
+            managerGame.playersTag[namePlayer] = player_id.value
             activateMenuSelectedModelHide(charPlayer, namePlayer)
         end
+
+        respawnStartPlayerHiding(char.gameObject, char)
     end)
 end
 
