@@ -140,7 +140,6 @@ Thumbs.db
 *.flv
 *.mov
 *.wmv
-*.fbx
 
 # Directories to ignore
 target/

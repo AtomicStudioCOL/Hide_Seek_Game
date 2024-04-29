@@ -22,15 +22,12 @@ local function addZoneDetectionSeeker(target, namePlayer)
         playerPet, 
         target,
         Vector3.new(0.1, 1.5, -0.6), 
-        managerGame.playersTag[namePlayer],
-        {}
+        managerGame.playersTag[namePlayer]
     )
 end
 
-local function respawnStartPlayerHiding(objPlayer : GameObject, character : Character)
-    character:Teleport(pointRespawnPlayerHider.transform.position, function()
-        print("Move Player to new Respawm place")
-    end)
+local function respawnStartPlayerHiding(character : Character)
+    character:Teleport(pointRespawnPlayerHider.transform.position, function()end)
 end
 
 local function activateMenuSelectedModelHide(player, namePlayer)
@@ -62,12 +59,13 @@ function self:ClientAwake()
             managerGame.playersTag[namePlayer] = player_id.value
             activateMenuSelectedModelHide(charPlayer, namePlayer)
         end
-
-        respawnStartPlayerHiding(char.gameObject, char)
+        respawnStartPlayerHiding(char)
     end)
 end
 
 function self:ServerAwake()
+    isFirstPlayer = true
+
     server.PlayerConnected:Connect(function(player : Player)
         player.CharacterChanged:Connect(function(player : Player, character : Character)
             if isFirstPlayer then
@@ -83,5 +81,6 @@ function self:ServerAwake()
 
     server.PlayerDisconnected:Connect(function(player : Player)
         managerGame.playersTag[player.name] = nil
+        --Cuando se salga un jugador si es el buscador se debe terminar el juego, o que se reinicie el juego para elegir otro buscador
     end)
 end
