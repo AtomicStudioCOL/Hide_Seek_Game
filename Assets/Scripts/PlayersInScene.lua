@@ -5,7 +5,6 @@ local managerGame = require("ManagerGame")
 local pointRespawnPlayerHider : GameObject = nil
 local playerPet : GameObject = nil
 local charPlayer : GameObject = nil
-local isFirstPlayer = true -- If it's first player or not
 
 --Network Values
 local player_id = StringValue.new("PlayerId", "")
@@ -18,21 +17,12 @@ local sendActivateMenuHide = Event.new("SendActivateMenuHide")
 local function addZoneDetectionSeeker(target, namePlayer)
     managerGame.playerObjTag[namePlayer] = target
 
-    --[[ managerGame.addCostumePlayers(
-        playerPet, 
-        target,
-        Vector3.new(0.1, 1.5, -0.6), 
-        managerGame.playersTag[namePlayer],
-        game.localPlayer.name
-    ) --]]
-
-    Timer.After(10, function() 
+    Timer.After(3, function() 
         managerGame.showFlyFireAllPlayersServer:FireServer(
             game.localPlayer.name,
             Vector3.new(0.1, 1.5, -0.6)
         )
     end)
-
 end
 
 local function respawnStartPlayerHiding(character : Character)
@@ -57,13 +47,7 @@ function self:ClientAwake()
             managerGame.playersTag[namePlayer] = player_id.value
             managerGame.activateMenuModelHide(false)
             addZoneDetectionSeeker(charPlayer, namePlayer)
-            managerGame.infoSeekerGlobal:SetActive(true)
-            managerGame.infoIntroGlobal:SetActive(true)
-            managerGame.infoHidingGlobal:SetActive(false)
-
-            Timer.After(5, function ()
-                managerGame.infoIntroGlobal:SetActive(false)
-            end)
+            managerGame.disabledDetectingCollisionsAllPlayersServer:FireServer()
         end
     end)
 
@@ -74,36 +58,23 @@ function self:ClientAwake()
             
             managerGame.playersTag[namePlayer] = player_id.value
             activateMenuSelectedModelHide(charPlayer, namePlayer)
-            managerGame.infoSeekerGlobal:SetActive(false)
-            managerGame.infoIntroGlobal:SetActive(true)
-            managerGame.infoHidingGlobal:SetActive(true)
-
-            Timer.After(5, function ()
-                managerGame.infoIntroGlobal:SetActive(false)
-            end)
         end
         respawnStartPlayerHiding(char)
     end)
 end
 
 function self:ServerAwake()
-    isFirstPlayer = true
-
     server.PlayerConnected:Connect(function(player : Player)
         player.CharacterChanged:Connect(function(player : Player, character : Character)
-            if isFirstPlayer then
+            if managerGame.isFirstPlayer.value then
                 player_id.value = "Seeker"
                 sendInfoAddZoneSeeker:FireAllClients(character, player.name)
-                isFirstPlayer = false
+                managerGame.isFirstPlayer.value = false
+                managerGame.whoIsSeeker.value = player.name
             else
                 player_id.value = "Hiding"
                 sendActivateMenuHide:FireAllClients(character, player.name)
             end
         end)
-    end)
-
-    server.PlayerDisconnected:Connect(function(player : Player)
-        managerGame.playersTag[player.name] = nil
-        --Cuando se salga un jugador si es el buscador se debe terminar el juego, o que se reinicie el juego para elegir otro buscador
     end)
 end

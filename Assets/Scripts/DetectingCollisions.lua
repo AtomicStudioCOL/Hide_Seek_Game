@@ -50,8 +50,8 @@ function self:OnCollisionEnter(collision : Collision)
     local collidedObj = collision.collider.gameObject -- Obj with the what the player collided
     local seeker = game.localPlayer.character.gameObject
     if seekerPlayer == collidedObj then return end -- Return why the player is colliding whit the same
-
-    if seeker ~= collidedObj and collidedObj.name == seeker.name then
+    
+    if seeker ~= collidedObj and collidedObj.name == seeker.name and game.localPlayer.name == managerGame.whoIsSeeker.value then
         --VFX and SFX when the seeker find a player
         local vfx = Object.Instantiate(vfxFoundPlayer)
         local posVfx = vfx.transform.position
