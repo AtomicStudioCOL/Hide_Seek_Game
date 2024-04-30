@@ -60,6 +60,11 @@ function self:OnCollisionEnter(collision : Collision)
         audioManager.playSound(audioManager.soundFoundPlayerGlobal)
 
         collidedObj.SetActive(collidedObj, false)
+        for namePlayer, objPlayer in pairs(managerGame.objsCustome) do
+            if objPlayer == collidedObj then
+                managerGame.deleteCustomePlayerFoundServer:FireServer(namePlayer)
+            end
+        end
 
         if not isAddedGhost then
             AddGhostFollowingSeeker(seeker, ghostFoundFirstPlayer)
