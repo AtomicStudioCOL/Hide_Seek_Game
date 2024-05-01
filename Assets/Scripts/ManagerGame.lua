@@ -2,36 +2,64 @@
 --!SerializeField
 local playerPet : GameObject = nil
 --!SerializeField
-local pointRespawnPlayerHider : GameObject = nil
+local pointRespawnPlayerHider01 : GameObject = nil
 --!SerializeField
-local objsHides : GameObject = nil
+local pointRespawnPlayerHider02 : GameObject = nil
 --!SerializeField
-local objHide01 : GameObject = nil
+local pointRespawnPlayerHider03 : GameObject = nil
 --!SerializeField
-local objHide02 : GameObject = nil
+local pointRespawnPlayerHider04 : GameObject = nil
 --!SerializeField
-local objHide03 : GameObject = nil
+local objsHides01 : GameObject = nil
 --!SerializeField
-local btnObjHide01 : TapHandler = nil
+local objsHides02 : GameObject = nil
 --!SerializeField
-local btnObjHide02 : TapHandler = nil
+local objsHides0304 : GameObject = nil
 --!SerializeField
-local btnObjHide03 : TapHandler = nil
+local custome01 : GameObject = nil
+--!SerializeField
+local custome02 : GameObject = nil
+--!SerializeField
+local custome03 : GameObject = nil
+--!SerializeField
+local btnObjHide01Point01 : TapHandler = nil
+--!SerializeField
+local btnObjHide02Point01 : TapHandler = nil
+--!SerializeField
+local btnObjHide03Point01 : TapHandler = nil
+--!SerializeField
+local btnObjHide01Point02 : TapHandler = nil
+--!SerializeField
+local btnObjHide02Point02 : TapHandler = nil
+--!SerializeField
+local btnObjHide03Point02 : TapHandler = nil
+--!SerializeField
+local btnObjHide01Point0304 : TapHandler = nil
+--!SerializeField
+local btnObjHide02Point0304 : TapHandler = nil
+--!SerializeField
+local btnObjHide03Point0304 : TapHandler = nil
+--!SerializeField
+local navMeshAgentWithoutHiders : GameObject = nil
+--!SerializeField
+local navMeshAgentWithHiders : GameObject = nil
+--!SerializeField
+local doorSeeker : GameObject = nil
 
 --Variables Globals
 playerPetGlobal = nil
-pointRespawnPlayerHiderGlobal = nil
-objsHidesGlobal = nil
-btnObjHide01Global = nil
-btnObjHide02Global = nil
-btnObjHide03Global = nil
+pointsRespawnPlayerHiderGlobal = {} -- Storage all points respawn. {[n] = point_respawn}
+objsHidesGlobal = {} -- Storage all stand custome. {[n] = stand_custome}
+btnsObjHides = {} -- Storage all buttons of the hides objects. {["Point Respawn"] = {[n] = btn}}
 playerObjTag = {} -- Storage the gameobject joined to the player [NamePlayer - GameObject]
 playersTag = {} -- Storage all player in the scene [NamePlayer - TypePlayer]
 customeStorage = {} -- Storage all costumes
 objsCustome = {} -- Storage the gameobject joined to the player globally [NamePlayer - GameObject]
 customePlayers = {} -- Players whit its custome [NamePlayer -> {["Dress"] = Custome, ["Offset"] = Vector3.new()}]
+standCustomePlayers = {} -- Players whit its stand custome {[NamePlayer] = num_stand_custome}
 isFirstPlayer = BoolValue.new("IsFirstPlayer", true) -- Verified if is the first client and assign the seeker's role
 whoIsSeeker = StringValue.new("WhoIsSeeker", "") -- Storage the seeker's name
+numRespawnPlayerHiding = IntValue.new("NumRespawnPlayerHiding", 1)
 
 --Variables locals
 local dressWear = nil
@@ -44,12 +72,12 @@ local isFollowingAlways = false
 local cleanCustomeWhenPlayerLeftGameClient = Event.new("CleanCustomeWhenPlayerLeftGameClient")
 showCustomeAllPlayersServer = Event.new("ShowCustomeAllPlayersServer")
 showCustomeAllPlayersClient = Event.new("ShowCustomeAllPlayersClient")
-showFlyFireAllPlayersServer = Event.new("ShowFlyFireAllPlayersServer")
-showFlyFireAllPlayersClient = Event.new("ShowFlyFireAllPlayersClient")
 deleteCustomePlayerFoundServer = Event.new("DeleteCustomePlayerFoundServer")
 deleteCustomePlayerFoundClient = Event.new("DeleteCustomePlayerFoundClient")
 disabledDetectingCollisionsAllPlayersServer = Event.new("DisabledDetectingCollisionsAllPlayersServer")
 disabledDetectingCollisionsAllPlayersClient = Event.new("DisabledDetectingCollisionsAllPlayersClient")
+releasePlayerServer = Event.new("ReleasePlayerServer")
+releasePlayerClient = Event.new("ReleasePlayerClient")
 
 --Local Functions
 function followingToTarget(current, target, maxDistanceDelta, positionOffset)
@@ -98,8 +126,9 @@ function addCostumePlayers(dress : GameObject, player : GameObject,  positionOff
     isFollowingAlways = true
 end
 
-function activateMenuModelHide(visible)
-    objsHidesGlobal.SetActive(objsHidesGlobal, visible)
+function activateMenuModelHide(visible, standCustome)
+    if standCustome == 0 then return end
+    objsHidesGlobal[standCustome]:SetActive(visible)
 end
 
 function cleanCustomeAndStopTrackingPlayer(namePlayer)
@@ -112,16 +141,64 @@ end
 
 --Unity Functions
 function self:ClientAwake()
-    playerPetGlobal = playerPet
-    pointRespawnPlayerHiderGlobal = pointRespawnPlayerHider
-    objsHidesGlobal = objsHides
-    btnObjHide01Global = btnObjHide01
-    btnObjHide02Global = btnObjHide02
-    btnObjHide03Global = btnObjHide03
+    navMeshAgentWithoutHiders:SetActive(true)
+    navMeshAgentWithHiders:SetActive(false)
+    doorSeeker:SetActive(true)
 
-    customeStorage[1] = objHide01
-    customeStorage[2] = objHide02
-    customeStorage[3] = objHide03
+    releasePlayerClient:Connect(function(namePlayer, offset)
+        navMeshAgentWithoutHiders:SetActive(false)
+        navMeshAgentWithHiders:SetActive(true)
+        doorSeeker:SetActive(false)
+
+        addCostumePlayers(
+            playerPet, 
+            objsCustome[namePlayer], 
+            offset, 
+            "Seeker",
+            namePlayer
+        )
+
+        if playersTag[game.localPlayer.name] == "Seeker" then
+            Timer.After(2, function()
+                playerPet:GetComponent("DetectingCollisions").enabled = true
+            end)
+        end
+    end)
+
+    playerPetGlobal = playerPet -- Player pet
+
+    --Points respawn
+    pointsRespawnPlayerHiderGlobal[1] = pointRespawnPlayerHider01
+    pointsRespawnPlayerHiderGlobal[2] = pointRespawnPlayerHider02
+    pointsRespawnPlayerHiderGlobal[3] = pointRespawnPlayerHider03
+    pointsRespawnPlayerHiderGlobal[4] = pointRespawnPlayerHider04
+    
+    --Stand custome
+    objsHidesGlobal[1] = objsHides01
+    objsHidesGlobal[2] = objsHides02
+    objsHidesGlobal[3] = objsHides0304
+
+    --Buttons Select custome
+    btnsObjHides["PointRespawn01"] = {
+        [1] = btnObjHide01Point01,
+        [2] = btnObjHide02Point01,
+        [3] = btnObjHide03Point01,
+    }
+    btnsObjHides["PointRespawn02"] = {
+        [1] = btnObjHide01Point02,
+        [2] = btnObjHide02Point02,
+        [3] = btnObjHide03Point02,
+    }
+    btnsObjHides["PointRespawn0304"] = {
+        [1] = btnObjHide01Point0304,
+        [2] = btnObjHide02Point0304,
+        [3] = btnObjHide03Point0304,
+    }
+
+    --The player custome
+    customeStorage[1] = custome01
+    customeStorage[2] = custome02
+    customeStorage[3] = custome03
 
     disabledDetectingCollisionsAllPlayersClient:Connect(function()
         playerPet:GetComponent("DetectingCollisions").enabled = false
@@ -145,25 +222,9 @@ function self:ClientAwake()
         end
     end)
 
-    showFlyFireAllPlayersClient:Connect(function(namePlayer, offset)
-        addCostumePlayers(
-            playerPet, 
-            objsCustome[namePlayer], 
-            offset, 
-            "Seeker",
-            namePlayer
-        )
-        
-        if playersTag[game.localPlayer.name] == "Seeker" then
-            Timer.After(2, function()
-                playerPet:GetComponent("DetectingCollisions").enabled = true
-            end)
-        end
-    end)
-
     deleteCustomePlayerFoundClient:Connect(function(namePlayer)
         if game.localPlayer.name == namePlayer then
-            activateMenuModelHide(false)
+            activateMenuModelHide(false, standCustomePlayers[namePlayer])
         end
 
         cleanCustomeAndStopTrackingPlayer(namePlayer)
@@ -179,16 +240,16 @@ function self:ServerAwake()
         showCustomeAllPlayersClient:FireAllClients(numDress, namePlayer, offset)
     end)
 
-    showFlyFireAllPlayersServer:Connect(function(player : Player, namePlayer, offset)
-        showFlyFireAllPlayersClient:FireAllClients(namePlayer, offset)
-    end)
-
     deleteCustomePlayerFoundServer:Connect(function(player : Player, namePlayer)
         deleteCustomePlayerFoundClient:FireAllClients(namePlayer)
     end)
 
     disabledDetectingCollisionsAllPlayersServer:Connect(function(player : Player)
         disabledDetectingCollisionsAllPlayersClient:FireAllClients()
+    end)
+
+    releasePlayerServer:Connect(function(player : Player, namePlayer, offset)
+        releasePlayerClient:FireAllClients(namePlayer, offset)
     end)
 
     server.PlayerDisconnected:Connect(function(player : Player)

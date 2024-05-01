@@ -68,12 +68,10 @@ function self:OnCollisionEnter(collision : Collision)
 
         if not isAddedGhost then
             AddGhostFollowingSeeker(seeker, ghostFoundFirstPlayer)
-            print("Num Ghost: ", tostring(numPlayersFound))
             isAddedGhost = true
             numPlayersFound += 1
         else
             --Actualizar UI con esta información
-            print("Num players Found: ", tostring(numPlayersFound))
             numPlayersFound += 1
         end
         

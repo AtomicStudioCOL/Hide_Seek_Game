@@ -5,6 +5,7 @@ local managerGame = require("ManagerGame")
 local pointRespawnPlayerHider : GameObject = nil
 local playerPet : GameObject = nil
 local charPlayer : GameObject = nil
+local isFirstReleaseSeeker = true
 
 --Network Values
 local player_id = StringValue.new("PlayerId", "")
@@ -14,25 +15,14 @@ local sendInfoAddZoneSeeker = Event.new("SendInfoAddZoneSeeker")
 local sendActivateMenuHide = Event.new("SendActivateMenuHide")
 
 --Functions
-local function addZoneDetectionSeeker(target, namePlayer)
-    managerGame.playerObjTag[namePlayer] = target
-
-    Timer.After(3, function() 
-        managerGame.showFlyFireAllPlayersServer:FireServer(
-            game.localPlayer.name,
-            Vector3.new(0.1, 1.5, -0.6)
-        )
-    end)
-end
-
 local function respawnStartPlayerHiding(character : Character)
     character:Teleport(pointRespawnPlayerHider.transform.position, function()end)
 end
 
-local function activateMenuSelectedModelHide(player, namePlayer)
+local function activateMenuSelectedModelHide(player, namePlayer, numStandCustome)
     if managerGame.playersTag[namePlayer] == "Hiding" then
         managerGame.playerObjTag[namePlayer] = player
-        managerGame.activateMenuModelHide(true)
+        managerGame.activateMenuModelHide(true, numStandCustome)
     end
 end
 
@@ -41,24 +31,37 @@ function self:ClientAwake()
     sendInfoAddZoneSeeker:Connect(function (char, namePlayer)
         if not managerGame.playersTag[namePlayer] and client.localPlayer.name == namePlayer then
             playerPet = managerGame.playerPetGlobal
-            pointRespawnPlayerHider = managerGame.pointRespawnPlayerHiderGlobal
+            pointRespawnPlayerHider = managerGame.pointsRespawnPlayerHiderGlobal[managerGame.numRespawnPlayerHiding.value]
             charPlayer = char.gameObject
 
             managerGame.playersTag[namePlayer] = player_id.value
-            managerGame.activateMenuModelHide(false)
-            addZoneDetectionSeeker(charPlayer, namePlayer)
+            managerGame.activateMenuModelHide(false, 0)
+            managerGame.playerObjTag[namePlayer] = charPlayer
             managerGame.disabledDetectingCollisionsAllPlayersServer:FireServer()
         end
     end)
 
     sendActivateMenuHide:Connect(function (char, namePlayer)
-        if not managerGame.playersTag[namePlayer] and client.localPlayer.name == namePlayer then
-            pointRespawnPlayerHider = managerGame.pointRespawnPlayerHiderGlobal
-            charPlayer = char.gameObject
-            
+        pointRespawnPlayerHider = managerGame.pointsRespawnPlayerHiderGlobal[managerGame.numRespawnPlayerHiding.value]
+
+        if game.localPlayer.name == namePlayer then
+            charPlayer = char.gameobject
             managerGame.playersTag[namePlayer] = player_id.value
-            activateMenuSelectedModelHide(charPlayer, namePlayer)
+            
+            if managerGame.numRespawnPlayerHiding.value == 3 or managerGame.numRespawnPlayerHiding.value == 4 then
+                activateMenuSelectedModelHide(charPlayer, namePlayer, 3)
+                managerGame.standCustomePlayers[namePlayer] = 3
+            else
+                activateMenuSelectedModelHide(charPlayer, namePlayer, managerGame.numRespawnPlayerHiding.value)
+                managerGame.standCustomePlayers[namePlayer] = managerGame.numRespawnPlayerHiding.value
+
+                if managerGame.numRespawnPlayerHiding.value == 2 and isFirstReleaseSeeker then
+                    managerGame.releasePlayerServer:FireServer(managerGame.whoIsSeeker.value, Vector3.new(0.1, 1.5, -0.6))
+                    isFirstReleaseSeeker = false
+                end
+            end
         end
+        
         respawnStartPlayerHiding(char)
     end)
 end
@@ -74,6 +77,12 @@ function self:ServerAwake()
             else
                 player_id.value = "Hiding"
                 sendActivateMenuHide:FireAllClients(character, player.name)
+                managerGame.numRespawnPlayerHiding.value += 1
+
+                if managerGame.numRespawnPlayerHiding.value == 5 then
+                    print("Reset Respawn")
+                    managerGame.numRespawnPlayerHiding.value = 1
+                end
             end
         end)
     end)
