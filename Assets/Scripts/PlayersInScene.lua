@@ -49,7 +49,13 @@ function self:ClientAwake()
             managerGame.disabledDetectingCollisionsAllPlayersServer:FireServer()
 
             activateGameWhenExistTwoMorePlayerHiding()
-            uiManager.SetInfoSeeker('Hello, Seeker! You gotta to search for the other players hidden around the map.')
+            uiManager.SetInfoPlayers('Hello, Seeker! You gotta to search for the other players hidden around the map.')
+
+            Timer.After(10, function()
+                if managerGame.numRespawnPlayerHiding.value < 2 then
+                    uiManager.SetInfoPlayers('Waiting for players to begin the search for those in hiding. There must be at least two players hiding on the stage.')
+                end
+            end)
         end
     end)
 
@@ -69,7 +75,7 @@ function self:ClientAwake()
             end
 
             activateGameWhenExistTwoMorePlayerHiding()
-            uiManager.SetInfoHider('Hello, hiders! Choose a costume from the pedestals, then run and hide around the map.')
+            uiManager.SetInfoPlayers('Hello, hiders! Choose a costume from the pedestals, then run and hide around the map.')
         end
         
         respawnStartPlayerHiding(char)

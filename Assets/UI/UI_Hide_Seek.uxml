@@ -8,7 +8,7 @@
 >
 
   <hr:UILuaView class="hide_seek" picking-mode="Ignore">
-    <hr:UILabel name="infoPlayerSeeker" picking-mode="Ignore">
+    <hr:UILabel name="infoPlayers" picking-mode="Ignore">
     </hr:UILabel>
 
     <hr:UILabel name="infoPlayerHiding" picking-mode="Ignore">

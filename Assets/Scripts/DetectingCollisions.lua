@@ -16,6 +16,7 @@ local ghost : GameObject = nil
 local playerSeeker : GameObject = nil
 local isAddedGhost : boolean = false
 local numPlayersFound : number = 0
+local uiManager = nil
 
 --Functions
 local function followingToTarget(current, target, maxDistanceDelta, positionOffset)
@@ -41,6 +42,8 @@ end
 
 --Unity Functions
 function self:Awake()
+    uiManager = managerGame.UIManagerGlobal:GetComponent("UI_Hide_Seek")
+
     if managerGame.playersTag[game.localPlayer.name] == tagSeeker then
         seekerPlayer = managerGame.playerObjTag[game.localPlayer.name]
     end
@@ -75,6 +78,8 @@ function self:OnCollisionEnter(collision : Collision)
             numPlayersFound += 1
         end
         
+        uiManager.SetInfoPlayers('Players Found: ' .. tostring(numPlayersFound))
+
         --Delete VFX add
         Timer.After(2, function()
             if not vfx then return end

@@ -5,9 +5,9 @@
     height: 100%;
 }
 
-.hide_seek #infoPlayerSeeker{
+.hide_seek #infoPlayers{
     -unity-text-auto-size-mode: fit;
-    margin: 45px 15px auto 15px;
+    margin: 45px 15px 5px 15px;
     font-size: 200%;
     -unity-font-style: bold;
     white-space: normal;
@@ -16,7 +16,7 @@
 
 .hide_seek #infoPlayerHiding{
     -unity-text-auto-size-mode: fit;
-    margin: 45px 15px auto 15px;
+    margin: auto 15px auto 15px;
     font-size: 200%;
     -unity-font-style: bold;
     white-space: normal;

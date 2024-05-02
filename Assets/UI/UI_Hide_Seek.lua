@@ -1,18 +1,18 @@
 --!Type(UI)
 
 --!Bind
-local infoPlayerSeeker : UILabel = nil
+local infoPlayers : UILabel = nil
 --!Bind
 local infoPlayerHiding : UILabel = nil
 
-function SetInfoSeeker(text)
-    infoPlayerSeeker.visible = true
-    infoPlayerSeeker:SetPrelocalizedText(text, false)
+function SetInfoPlayers(text)
+    infoPlayers.visible = true
+    infoPlayers:SetPrelocalizedText(text, false)
     infoPlayerHiding.visible = false
 end
 
 function SetInfoHider(text)
-    infoPlayerHiding.visible = true
+    --infoPlayerHiding.visible = true
     infoPlayerHiding:SetPrelocalizedText(text, false)
-    infoPlayerSeeker.visible = false
+    --infoPlayers.visible = false
 end

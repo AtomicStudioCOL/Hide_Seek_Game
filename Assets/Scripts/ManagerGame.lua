@@ -71,6 +71,7 @@ local playerCurrent = nil
 local posDress = Vector3.new(0, 0, 0)
 local posOffset = Vector3.new(0, 0, 0)
 local isFollowingAlways = false
+local uiManager = nil
 
 --Events
 local cleanCustomeWhenPlayerLeftGameClient = Event.new("CleanCustomeWhenPlayerLeftGameClient")
@@ -145,34 +146,9 @@ end
 
 --Unity Functions
 function self:ClientAwake()
-    navMeshAgentWithoutHiders:SetActive(true)
-    navMeshAgentWithHiders:SetActive(false)
-    doorSeeker:SetActive(true)
-
-    releasePlayerClient:Connect(function(namePlayer, offset)
-        navMeshAgentWithoutHiders:SetActive(false)
-        navMeshAgentWithHiders:SetActive(true)
-        doorSeeker:SetActive(false)
-
-        if not playerPet.activeSelf then
-            addCostumePlayers(
-                playerPet, 
-                objsCustome[namePlayer], 
-                offset, 
-                "Seeker",
-                namePlayer
-            )
-    
-            if playersTag[game.localPlayer.name] == "Seeker" then
-                Timer.After(2, function()
-                    playerPet:GetComponent("DetectingCollisions").enabled = true
-                end)
-            end
-        end
-    end)
-
     playerPetGlobal = playerPet -- Player pet
     UIManagerGlobal = UIManager
+    uiManager = UIManagerGlobal:GetComponent("UI_Hide_Seek")
 
     --Points respawn
     pointsRespawnPlayerHiderGlobal[1] = pointRespawnPlayerHider01
@@ -206,6 +182,35 @@ function self:ClientAwake()
     customeStorage[1] = custome01
     customeStorage[2] = custome02
     customeStorage[3] = custome03
+    
+    navMeshAgentWithoutHiders:SetActive(true)
+    navMeshAgentWithHiders:SetActive(false)
+    doorSeeker:SetActive(true)
+
+    releasePlayerClient:Connect(function(namePlayer, offset)
+        navMeshAgentWithoutHiders:SetActive(false)
+        navMeshAgentWithHiders:SetActive(true)
+        doorSeeker:SetActive(false)
+
+        if not playerPet.activeSelf then
+            addCostumePlayers(
+                playerPet, 
+                objsCustome[namePlayer], 
+                offset, 
+                "Seeker",
+                namePlayer
+            )
+    
+            if playersTag[game.localPlayer.name] == "Seeker" then
+                uiManager.SetInfoPlayers('There are enough players on stage for you to start the search; go get them.')
+
+                Timer.After(3, function()
+                    playerPet:GetComponent("DetectingCollisions").enabled = true
+                    uiManager.SetInfoPlayers('Players Found: 0')
+                end)
+            end
+        end
+    end)
 
     disabledDetectingCollisionsAllPlayersClient:Connect(function()
         playerPet:GetComponent("DetectingCollisions").enabled = false
@@ -232,6 +237,7 @@ function self:ClientAwake()
     deleteCustomePlayerFoundClient:Connect(function(namePlayer)
         if game.localPlayer.name == namePlayer then
             activateMenuModelHide(false, standCustomePlayers[namePlayer])
+            uiManager.SetInfoPlayers("We're sorry, you've been found by the seeker. You're free to explore the world. If you'd like to try again, please re-enter the game.")
         end
 
         cleanCustomeAndStopTrackingPlayer(namePlayer)
