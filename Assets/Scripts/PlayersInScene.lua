@@ -5,7 +5,7 @@ local managerGame = require("ManagerGame")
 local pointRespawnPlayerHider : GameObject = nil
 local playerPet : GameObject = nil
 local charPlayer : GameObject = nil
-local isFirstReleaseSeeker = true
+local uiManager = nil
 
 --Network Values
 local player_id = StringValue.new("PlayerId", "")
@@ -26,8 +26,17 @@ local function activateMenuSelectedModelHide(player, namePlayer, numStandCustome
     end
 end
 
+local function activateGameWhenExistTwoMorePlayerHiding()
+    if managerGame.numRespawnPlayerHiding.value >= 2 and managerGame.isFirstReleaseSeeker.value then
+        managerGame.releasePlayerServer:FireServer(managerGame.whoIsSeeker.value, Vector3.new(0.1, 1.5, -0.6))
+        managerGame.isFirstReleaseSeeker.value = false
+    end
+end
+
 --Unity Functions
 function self:ClientAwake()
+    uiManager = managerGame.UIManagerGlobal:GetComponent("UI_Hide_Seek")
+
     sendInfoAddZoneSeeker:Connect(function (char, namePlayer)
         if not managerGame.playersTag[namePlayer] and client.localPlayer.name == namePlayer then
             playerPet = managerGame.playerPetGlobal
@@ -38,6 +47,9 @@ function self:ClientAwake()
             managerGame.activateMenuModelHide(false, 0)
             managerGame.playerObjTag[namePlayer] = charPlayer
             managerGame.disabledDetectingCollisionsAllPlayersServer:FireServer()
+
+            activateGameWhenExistTwoMorePlayerHiding()
+            uiManager.SetInfoSeeker('Hello, Seeker! You gotta to search for the other players hidden around the map.')
         end
     end)
 
@@ -54,12 +66,10 @@ function self:ClientAwake()
             else
                 activateMenuSelectedModelHide(charPlayer, namePlayer, managerGame.numRespawnPlayerHiding.value)
                 managerGame.standCustomePlayers[namePlayer] = managerGame.numRespawnPlayerHiding.value
-
-                if managerGame.numRespawnPlayerHiding.value == 2 and isFirstReleaseSeeker then
-                    managerGame.releasePlayerServer:FireServer(managerGame.whoIsSeeker.value, Vector3.new(0.1, 1.5, -0.6))
-                    isFirstReleaseSeeker = false
-                end
             end
+
+            activateGameWhenExistTwoMorePlayerHiding()
+            uiManager.SetInfoHider('Hello, hiders! Choose a costume from the pedestals, then run and hide around the map.')
         end
         
         respawnStartPlayerHiding(char)
@@ -80,7 +90,6 @@ function self:ServerAwake()
                 managerGame.numRespawnPlayerHiding.value += 1
 
                 if managerGame.numRespawnPlayerHiding.value == 5 then
-                    print("Reset Respawn")
                     managerGame.numRespawnPlayerHiding.value = 1
                 end
             end

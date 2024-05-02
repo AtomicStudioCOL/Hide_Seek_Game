@@ -45,8 +45,11 @@ local navMeshAgentWithoutHiders : GameObject = nil
 local navMeshAgentWithHiders : GameObject = nil
 --!SerializeField
 local doorSeeker : GameObject = nil
+--!SerializeField
+local UIManager : GameObject = nil
 
 --Variables Globals
+UIManagerGlobal = nil
 playerPetGlobal = nil
 pointsRespawnPlayerHiderGlobal = {} -- Storage all points respawn. {[n] = point_respawn}
 objsHidesGlobal = {} -- Storage all stand custome. {[n] = stand_custome}
@@ -60,6 +63,7 @@ standCustomePlayers = {} -- Players whit its stand custome {[NamePlayer] = num_s
 isFirstPlayer = BoolValue.new("IsFirstPlayer", true) -- Verified if is the first client and assign the seeker's role
 whoIsSeeker = StringValue.new("WhoIsSeeker", "") -- Storage the seeker's name
 numRespawnPlayerHiding = IntValue.new("NumRespawnPlayerHiding", 1)
+isFirstReleaseSeeker = BoolValue.new("IsFirstReleaseSeeker", true)
 
 --Variables locals
 local dressWear = nil
@@ -150,22 +154,25 @@ function self:ClientAwake()
         navMeshAgentWithHiders:SetActive(true)
         doorSeeker:SetActive(false)
 
-        addCostumePlayers(
-            playerPet, 
-            objsCustome[namePlayer], 
-            offset, 
-            "Seeker",
-            namePlayer
-        )
-
-        if playersTag[game.localPlayer.name] == "Seeker" then
-            Timer.After(2, function()
-                playerPet:GetComponent("DetectingCollisions").enabled = true
-            end)
+        if not playerPet.activeSelf then
+            addCostumePlayers(
+                playerPet, 
+                objsCustome[namePlayer], 
+                offset, 
+                "Seeker",
+                namePlayer
+            )
+    
+            if playersTag[game.localPlayer.name] == "Seeker" then
+                Timer.After(2, function()
+                    playerPet:GetComponent("DetectingCollisions").enabled = true
+                end)
+            end
         end
     end)
 
     playerPetGlobal = playerPet -- Player pet
+    UIManagerGlobal = UIManager
 
     --Points respawn
     pointsRespawnPlayerHiderGlobal[1] = pointRespawnPlayerHider01
@@ -256,6 +263,10 @@ function self:ServerAwake()
         if whoIsSeeker.value == player.name then
             isFirstPlayer.value = true
             playersTag[whoIsSeeker.value] = nil
+            isFirstReleaseSeeker.value = true
+        else
+            numRespawnPlayerHiding.value -= 1
+            isFirstReleaseSeeker.value = true
         end
 
         cleanCustomeWhenPlayerLeftGameClient:FireAllClients(player.name)
