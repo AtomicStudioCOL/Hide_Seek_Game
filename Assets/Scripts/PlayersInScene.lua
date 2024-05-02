@@ -4,8 +4,8 @@ local managerGame = require("ManagerGame")
 --Variables no publics
 local pointRespawnPlayerHider : GameObject = nil
 local playerPet : GameObject = nil
-local isFirstPlayer = true -- If it's first player or not
 local charPlayer : GameObject = nil
+local uiManager = nil
 
 --Network Values
 local player_id = StringValue.new("PlayerId", "")
@@ -15,73 +15,90 @@ local sendInfoAddZoneSeeker = Event.new("SendInfoAddZoneSeeker")
 local sendActivateMenuHide = Event.new("SendActivateMenuHide")
 
 --Functions
-local function addZoneDetectionSeeker(target, namePlayer)
-    managerGame.playerObjTag[namePlayer] = target
-
-    managerGame.addCostumePlayers(
-        playerPet, 
-        target,
-        Vector3.new(0.1, 1.5, -0.6), 
-        managerGame.playersTag[namePlayer],
-        {}
-    )
+local function respawnStartPlayerHiding(character : Character)
+    character:Teleport(pointRespawnPlayerHider.transform.position, function()end)
 end
 
-local function respawnStartPlayerHiding(objPlayer : GameObject, character : Character)
-    character:Teleport(pointRespawnPlayerHider.transform.position, function()
-        print("Move Player to new Respawm place")
-    end)
-end
-
-local function activateMenuSelectedModelHide(player, namePlayer)
+local function activateMenuSelectedModelHide(player, namePlayer, numStandCustome)
     if managerGame.playersTag[namePlayer] == "Hiding" then
         managerGame.playerObjTag[namePlayer] = player
-        managerGame.activateMenuModelHide(true)
+        managerGame.activateMenuModelHide(true, numStandCustome)
+    end
+end
+
+local function activateGameWhenExistTwoMorePlayerHiding()
+    if managerGame.numRespawnPlayerHiding.value >= 2 and managerGame.isFirstReleaseSeeker.value then
+        managerGame.releasePlayerServer:FireServer(managerGame.whoIsSeeker.value, Vector3.new(0.1, 1.5, -0.6))
+        managerGame.isFirstReleaseSeeker.value = false
     end
 end
 
 --Unity Functions
 function self:ClientAwake()
+    uiManager = managerGame.UIManagerGlobal:GetComponent("UI_Hide_Seek")
+
     sendInfoAddZoneSeeker:Connect(function (char, namePlayer)
         if not managerGame.playersTag[namePlayer] and client.localPlayer.name == namePlayer then
             playerPet = managerGame.playerPetGlobal
-            pointRespawnPlayerHider = managerGame.pointRespawnPlayerHiderGlobal
+            pointRespawnPlayerHider = managerGame.pointsRespawnPlayerHiderGlobal[managerGame.numRespawnPlayerHiding.value]
             charPlayer = char.gameObject
 
             managerGame.playersTag[namePlayer] = player_id.value
-            managerGame.activateMenuModelHide(false)
-            addZoneDetectionSeeker(charPlayer, namePlayer)
+            managerGame.activateMenuModelHide(false, 0)
+            managerGame.playerObjTag[namePlayer] = charPlayer
+            managerGame.disabledDetectingCollisionsAllPlayersServer:FireServer()
+
+            activateGameWhenExistTwoMorePlayerHiding()
+            uiManager.SetInfoPlayers('Hello, Seeker! You gotta to search for the other players hidden around the map.')
+
+            Timer.After(10, function()
+                if managerGame.numRespawnPlayerHiding.value < 2 then
+                    uiManager.SetInfoPlayers('Waiting for players to begin the search for those in hiding. There must be at least two players hiding on the stage.')
+                end
+            end)
         end
     end)
 
     sendActivateMenuHide:Connect(function (char, namePlayer)
-        if not managerGame.playersTag[namePlayer] and client.localPlayer.name == namePlayer then
-            pointRespawnPlayerHider = managerGame.pointRespawnPlayerHiderGlobal
-            charPlayer = char.gameObject
-            
-            managerGame.playersTag[namePlayer] = player_id.value
-            activateMenuSelectedModelHide(charPlayer, namePlayer)
-        end
+        pointRespawnPlayerHider = managerGame.pointsRespawnPlayerHiderGlobal[managerGame.numRespawnPlayerHiding.value]
 
-        respawnStartPlayerHiding(char.gameObject, char)
+        if game.localPlayer.name == namePlayer then
+            charPlayer = char.gameobject
+            managerGame.playersTag[namePlayer] = player_id.value
+            
+            if managerGame.numRespawnPlayerHiding.value == 3 or managerGame.numRespawnPlayerHiding.value == 4 then
+                activateMenuSelectedModelHide(charPlayer, namePlayer, 3)
+                managerGame.standCustomePlayers[namePlayer] = 3
+            else
+                activateMenuSelectedModelHide(charPlayer, namePlayer, managerGame.numRespawnPlayerHiding.value)
+                managerGame.standCustomePlayers[namePlayer] = managerGame.numRespawnPlayerHiding.value
+            end
+
+            activateGameWhenExistTwoMorePlayerHiding()
+            uiManager.SetInfoPlayers('Hello, hiders! Choose a costume from the pedestals, then run and hide around the map.')
+        end
+        
+        respawnStartPlayerHiding(char)
     end)
 end
 
 function self:ServerAwake()
     server.PlayerConnected:Connect(function(player : Player)
         player.CharacterChanged:Connect(function(player : Player, character : Character)
-            if isFirstPlayer then
+            if managerGame.isFirstPlayer.value then
                 player_id.value = "Seeker"
                 sendInfoAddZoneSeeker:FireAllClients(character, player.name)
-                isFirstPlayer = false
+                managerGame.isFirstPlayer.value = false
+                managerGame.whoIsSeeker.value = player.name
             else
                 player_id.value = "Hiding"
                 sendActivateMenuHide:FireAllClients(character, player.name)
+                managerGame.numRespawnPlayerHiding.value += 1
+
+                if managerGame.numRespawnPlayerHiding.value == 5 then
+                    managerGame.numRespawnPlayerHiding.value = 1
+                end
             end
         end)
-    end)
-
-    server.PlayerDisconnected:Connect(function(player : Player)
-        managerGame.playersTag[player.name] = nil
     end)
 end

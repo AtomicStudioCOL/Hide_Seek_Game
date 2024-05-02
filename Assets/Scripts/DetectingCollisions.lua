@@ -16,6 +16,7 @@ local ghost : GameObject = nil
 local playerSeeker : GameObject = nil
 local isAddedGhost : boolean = false
 local numPlayersFound : number = 0
+local uiManager = nil
 
 --Functions
 local function followingToTarget(current, target, maxDistanceDelta, positionOffset)
@@ -41,6 +42,8 @@ end
 
 --Unity Functions
 function self:Awake()
+    uiManager = managerGame.UIManagerGlobal:GetComponent("UI_Hide_Seek")
+
     if managerGame.playersTag[game.localPlayer.name] == tagSeeker then
         seekerPlayer = managerGame.playerObjTag[game.localPlayer.name]
     end
@@ -50,8 +53,8 @@ function self:OnCollisionEnter(collision : Collision)
     local collidedObj = collision.collider.gameObject -- Obj with the what the player collided
     local seeker = game.localPlayer.character.gameObject
     if seekerPlayer == collidedObj then return end -- Return why the player is colliding whit the same
-
-    if seeker ~= collidedObj and collidedObj.name == seeker.name then
+    
+    if seeker ~= collidedObj and collidedObj.name == seeker.name and game.localPlayer.name == managerGame.whoIsSeeker.value then
         --VFX and SFX when the seeker find a player
         local vfx = Object.Instantiate(vfxFoundPlayer)
         local posVfx = vfx.transform.position
@@ -60,18 +63,23 @@ function self:OnCollisionEnter(collision : Collision)
         audioManager.playSound(audioManager.soundFoundPlayerGlobal)
 
         collidedObj.SetActive(collidedObj, false)
+        for namePlayer, objPlayer in pairs(managerGame.objsCustome) do
+            if objPlayer == collidedObj then
+                managerGame.deleteCustomePlayerFoundServer:FireServer(namePlayer)
+            end
+        end
 
         if not isAddedGhost then
             AddGhostFollowingSeeker(seeker, ghostFoundFirstPlayer)
-            print("Num Ghost: ", tostring(numPlayersFound))
             isAddedGhost = true
             numPlayersFound += 1
         else
             --Actualizar UI con esta información
-            print("Num players Found: ", tostring(numPlayersFound))
             numPlayersFound += 1
         end
         
+        uiManager.SetInfoPlayers('Players Found: ' .. tostring(numPlayersFound))
+
         --Delete VFX add
         Timer.After(2, function()
             if not vfx then return end

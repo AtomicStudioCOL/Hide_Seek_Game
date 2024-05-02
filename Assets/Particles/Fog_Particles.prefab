@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1569358655598574241}
   - component: {fileID: 6943521109319130017}
   - component: {fileID: 3843531872450721254}
-  - component: {fileID: 5058338266788720942}
+  - component: {fileID: 2085762174951106171}
   m_Layer: 0
   m_Name: Fog_Particles
   m_TagString: Untagged
@@ -27,13 +27,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6200295102370251648}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.24999999, y: -0.75000006, z: -0.43301275, w: 0.43301266}
+  m_LocalRotation: {x: -0.6695024, y: -0.25987136, z: -0.076611474, w: 0.6916387}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -60, y: -120, z: 0}
+  m_LocalEulerAnglesHint: {x: -75, y: -96.998, z: 69.227}
 --- !u!198 &6943521109319130017
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -752,7 +752,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 50
+      value: 40
       mode: 0
       spread: 0
       speed:
@@ -4831,7 +4831,7 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &5058338266788720942
+--- !u!114 &2085762174951106171
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4840,12 +4840,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 6200295102370251648}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -173044334, guid: 5e99434f214126023bd8db55a8296c39, type: 3}
+  m_Script: {fileID: 1415471765, guid: 991a4badf00d28384a32b2c089782f03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _networkId: 0
   _script: {fileID: -974389366465450183, guid: 6a23481befbf07441a0b460099308070, type: 3}
   _properties: []
+  _uiOutput: 0
+  _uiOutputSettings:
+    rid: -2
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }

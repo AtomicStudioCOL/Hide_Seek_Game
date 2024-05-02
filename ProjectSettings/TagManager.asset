@@ -3,21 +3,17 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags:
-  - No_Player_Hidden
-  - Player_Hidden
-  - Seeker
-  - Menu
+  tags: []
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Preview
   - Water
   - UI
-  - 
-  - 
-  - 
+  - Character
+  - CharacterTrigger
+  - Tappable
   - 
   - 
   - 
