@@ -47,8 +47,11 @@ local navMeshAgentWithHiders : GameObject = nil
 local doorSeeker : GameObject = nil
 --!SerializeField
 local UIManager : GameObject = nil
+--!SerializeField
+local CameraManager : GameObject = nil
 
 --Variables Globals
+CameraManagerGlobal = nil
 UIManagerGlobal = nil
 playerPetGlobal = nil
 pointsRespawnPlayerHiderGlobal = {} -- Storage all points respawn. {[n] = point_respawn}
@@ -148,6 +151,7 @@ end
 function self:ClientAwake()
     playerPetGlobal = playerPet -- Player pet
     UIManagerGlobal = UIManager
+    CameraManagerGlobal = CameraManager
     uiManager = UIManagerGlobal:GetComponent("UI_Hide_Seek")
 
     --Points respawn
@@ -202,12 +206,15 @@ function self:ClientAwake()
             )
     
             if playersTag[game.localPlayer.name] == "Seeker" then
-                uiManager.SetInfoPlayers('There are enough players on stage for you to start the search; go get them.')
-
-                Timer.After(3, function()
-                    playerPet:GetComponent("DetectingCollisions").enabled = true
-                    uiManager.SetInfoPlayers('Players Found: 0')
+                Timer.After(5, function()
+                    uiManager.SetInfoPlayers('There are enough players on stage for you to start the search; go get them.')
+                    
+                    Timer.After(3, function()
+                        playerPet:GetComponent("DetectingCollisions").enabled = true
+                        uiManager.SetInfoPlayers('Players Found: 0')
+                    end)
                 end)
+
             end
         end
     end)

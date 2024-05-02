@@ -6,6 +6,8 @@ local pointRespawnPlayerHider : GameObject = nil
 local playerPet : GameObject = nil
 local charPlayer : GameObject = nil
 local uiManager = nil
+local cameraManagerHiding = nil
+local cameraManagerSeeker = nil
 
 --Network Values
 local player_id = StringValue.new("PlayerId", "")
@@ -36,6 +38,8 @@ end
 --Unity Functions
 function self:ClientAwake()
     uiManager = managerGame.UIManagerGlobal:GetComponent("UI_Hide_Seek")
+    cameraManagerSeeker = managerGame.CameraManagerGlobal:GetComponent("CameraManager")
+    cameraManagerHiding = managerGame.CameraManagerGlobal:GetComponent("RTSCamera")
 
     sendInfoAddZoneSeeker:Connect(function (char, namePlayer)
         if not managerGame.playersTag[namePlayer] and client.localPlayer.name == namePlayer then
@@ -52,10 +56,13 @@ function self:ClientAwake()
             uiManager.SetInfoPlayers('Hello, Seeker! You gotta to search for the other players hidden around the map.')
 
             Timer.After(10, function()
-                if managerGame.numRespawnPlayerHiding.value < 2 then
+                if managerGame.numRespawnPlayerHiding.value <= 2 then
                     uiManager.SetInfoPlayers('Waiting for players to begin the search for those in hiding. There must be at least two players hiding on the stage.')
                 end
             end)
+
+            cameraManagerSeeker.enabled = true
+            cameraManagerHiding.enabled = false
         end
     end)
 
@@ -76,6 +83,9 @@ function self:ClientAwake()
 
             activateGameWhenExistTwoMorePlayerHiding()
             uiManager.SetInfoPlayers('Hello, hiders! Choose a costume from the pedestals, then run and hide around the map.')
+
+            cameraManagerSeeker.enabled = false
+            cameraManagerHiding.enabled = true
         end
         
         respawnStartPlayerHiding(char)

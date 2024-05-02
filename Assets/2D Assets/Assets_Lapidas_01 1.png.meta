@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a8aa5556a327b35468e11235d82d9cdb
+guid: bb2a3d2b23b48a14082c8dd225c40a4c
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -93,24 +93,11 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
-    buildTarget: Windows Store Apps
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Assets_Lapidas_01_0
+      name: Assets_Lapidas_01 1_0
       rect:
         serializedVersion: 2
         x: 34
@@ -124,14 +111,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 78b0d3cd3233fa04c8974e063b9f74e1
-      internalID: 59257911
+      spriteID: 7d66312bfbab9e147af563ad1e574c45
+      internalID: 1384820326
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Assets_Lapidas_01_1
+      name: Assets_Lapidas_01 1_1
       rect:
         serializedVersion: 2
         x: 242
@@ -145,14 +132,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e735096a95b131b42ac22c1b672283c9
-      internalID: -883902933
+      spriteID: 0ebb7fdb97e654942a315b04afa23db6
+      internalID: -1098903999
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Assets_Lapidas_01_2
+      name: Assets_Lapidas_01 1_2
       rect:
         serializedVersion: 2
         x: 449
@@ -166,14 +153,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f74b7427cb8e60c47b77ffa88974e1ce
-      internalID: 808271420
+      spriteID: dd53a451b345fad4dae04a8bac2cb44d
+      internalID: -1864906367
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Assets_Lapidas_01_3
+      name: Assets_Lapidas_01 1_3
       rect:
         serializedVersion: 2
         x: 652
@@ -187,14 +174,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 530161463c4f1e147898e474df42c6be
-      internalID: -610579180
+      spriteID: ce1c47bef1255a349939c9ea06a4220b
+      internalID: 1070775910
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Assets_Lapidas_01_4
+      name: Assets_Lapidas_01 1_4
       rect:
         serializedVersion: 2
         x: 42
@@ -208,14 +195,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d741d1178028a3a429ce844e9310b756
-      internalID: -235375110
+      spriteID: 9d8185257c672bf4bb141b0cb91e5d77
+      internalID: 158688374
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Assets_Lapidas_01_5
+      name: Assets_Lapidas_01 1_5
       rect:
         serializedVersion: 2
         x: 246
@@ -229,14 +216,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4341680870009d54399d7645ef5d90a1
-      internalID: -1524362566
+      spriteID: e6f2e940aa4f5024d87e67ce37ce531a
+      internalID: -486668930
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Assets_Lapidas_01_6
+      name: Assets_Lapidas_01 1_6
       rect:
         serializedVersion: 2
         x: 455
@@ -250,14 +237,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f337c234e4d96e4408143bdfec1fc355
-      internalID: -1872877237
+      spriteID: 4510d2b5e0f10d646a7259304d30b599
+      internalID: -1862451264
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Assets_Lapidas_01_7
+      name: Assets_Lapidas_01 1_7
       rect:
         serializedVersion: 2
         x: 684
@@ -271,8 +258,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6987378cfda487740a9512f1c9a3d32b
-      internalID: -1944803691
+      spriteID: ac8736c96bcf6ac4db4c2559f53e7fcb
+      internalID: -921384742
       vertices: []
       indices: 
       edges: []
@@ -280,7 +267,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 027e9e317294d8f4490d2dc3cec6eece
+    spriteID: 2b63354a491ef42479f515a6b8b72c1d
     internalID: 0
     vertices: []
     indices: 
@@ -288,14 +275,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Assets_Lapidas_01_0: 59257911
-      Assets_Lapidas_01_1: -883902933
-      Assets_Lapidas_01_2: 808271420
-      Assets_Lapidas_01_3: -610579180
-      Assets_Lapidas_01_4: -235375110
-      Assets_Lapidas_01_5: -1524362566
-      Assets_Lapidas_01_6: -1872877237
-      Assets_Lapidas_01_7: -1944803691
+      Assets_Lapidas_01 1_0: 1384820326
+      Assets_Lapidas_01 1_1: -1098903999
+      Assets_Lapidas_01 1_2: -1864906367
+      Assets_Lapidas_01 1_3: 1070775910
+      Assets_Lapidas_01 1_4: 158688374
+      Assets_Lapidas_01 1_5: -486668930
+      Assets_Lapidas_01 1_6: -1862451264
+      Assets_Lapidas_01 1_7: -921384742
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
