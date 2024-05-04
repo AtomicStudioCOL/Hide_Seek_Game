@@ -20,6 +20,8 @@ PluginImporter:
       type: 3}
     Highrise.Lua.Generated.HighriseCameraController: {fileID: 2800000, guid: 7b17fa3987cfb1748a297e97f9214051,
       type: 3}
+    Highrise.Lua.Generated.InfoGameModule: {fileID: 2800000, guid: 7b17fa3987cfb1748a297e97f9214051,
+      type: 3}
     Highrise.Lua.Generated.ManagerGame: {fileID: 2800000, guid: 7b17fa3987cfb1748a297e97f9214051,
       type: 3}
     Highrise.Lua.Generated.ManagerPlayerHiding: {fileID: 2800000, guid: 7b17fa3987cfb1748a297e97f9214051,
@@ -39,6 +41,8 @@ PluginImporter:
     Highrise.Lua.Generated.SelectingObjHide: {fileID: 2800000, guid: 7b17fa3987cfb1748a297e97f9214051,
       type: 3}
     Highrise.Lua.Generated.UIHideSeek: {fileID: 2800000, guid: 7b17fa3987cfb1748a297e97f9214051,
+      type: 3}
+    Highrise.Lua.Generated.WinningSystemManager: {fileID: 2800000, guid: 7b17fa3987cfb1748a297e97f9214051,
       type: 3}
   executionOrder: {}
   defineConstraints: []

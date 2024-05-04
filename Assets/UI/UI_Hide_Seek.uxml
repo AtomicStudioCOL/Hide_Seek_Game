@@ -11,7 +11,7 @@
     <hr:UILabel name="infoPlayers" picking-mode="Ignore">
     </hr:UILabel>
 
-    <hr:UILabel name="infoPlayerHiding" picking-mode="Ignore">
+    <hr:UILabel name="countdownGame" picking-mode="Ignore">
     </hr:UILabel>
   </hr:UILuaView>
 

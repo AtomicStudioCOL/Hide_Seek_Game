@@ -15,8 +15,8 @@ local ghostFollowingSeeker : boolean = false
 local ghost : GameObject = nil
 local playerSeeker : GameObject = nil
 local isAddedGhost : boolean = false
-local numPlayersFound : number = 0
 local uiManager = nil
+local infoGameModule = nil
 
 --Functions
 local function followingToTarget(current, target, maxDistanceDelta, positionOffset)
@@ -43,6 +43,7 @@ end
 --Unity Functions
 function self:Awake()
     uiManager = managerGame.UIManagerGlobal:GetComponent("UI_Hide_Seek")
+    infoGameModule = managerGame.InfoGameModuleGlobal
 
     if managerGame.playersTag[game.localPlayer.name] == tagSeeker then
         seekerPlayer = managerGame.playerObjTag[game.localPlayer.name]
@@ -53,7 +54,8 @@ function self:OnCollisionEnter(collision : Collision)
     local collidedObj = collision.collider.gameObject -- Obj with the what the player collided
     local seeker = game.localPlayer.character.gameObject
     if seekerPlayer == collidedObj then return end -- Return why the player is colliding whit the same
-    
+    if collidedObj == managerGame.objsCustome[managerGame.whoIsSeeker.value] then return end
+
     if seeker ~= collidedObj and collidedObj.name == seeker.name and game.localPlayer.name == managerGame.whoIsSeeker.value then
         --VFX and SFX when the seeker find a player
         local vfx = Object.Instantiate(vfxFoundPlayer)
@@ -72,14 +74,14 @@ function self:OnCollisionEnter(collision : Collision)
         if not isAddedGhost then
             AddGhostFollowingSeeker(seeker, ghostFoundFirstPlayer)
             isAddedGhost = true
-            numPlayersFound += 1
+            managerGame.updateNumPlayersFound:FireServer()
         else
             --Actualizar UI con esta información
-            numPlayersFound += 1
+            managerGame.updateNumPlayersFound:FireServer()
         end
         
-        uiManager.SetInfoPlayers('Players Found: ' .. tostring(numPlayersFound))
-
+        --uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["NumPlayersFound"])
+        
         --Delete VFX add
         Timer.After(2, function()
             if not vfx then return end

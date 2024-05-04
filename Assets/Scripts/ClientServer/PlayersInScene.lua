@@ -8,6 +8,7 @@ local charPlayer : GameObject = nil
 local uiManager = nil
 local cameraManagerHiding = nil
 local cameraManagerSeeker = nil
+local infoGameModule = nil
 
 --Network Values
 local player_id = StringValue.new("PlayerId", "")
@@ -31,7 +32,6 @@ end
 local function activateGameWhenExistTwoMorePlayerHiding()
     if managerGame.numRespawnPlayerHiding.value >= 2 and managerGame.isFirstReleaseSeeker.value then
         managerGame.releasePlayerServer:FireServer(managerGame.whoIsSeeker.value, Vector3.new(0.1, 1.5, -0.6))
-        managerGame.isFirstReleaseSeeker.value = false
     end
 end
 
@@ -40,6 +40,7 @@ function self:ClientAwake()
     uiManager = managerGame.UIManagerGlobal:GetComponent("UI_Hide_Seek")
     cameraManagerSeeker = managerGame.CameraManagerGlobal:GetComponent("CameraManager")
     cameraManagerHiding = managerGame.CameraManagerGlobal:GetComponent("RTSCamera")
+    infoGameModule = managerGame.InfoGameModuleGlobal
 
     sendInfoAddZoneSeeker:Connect(function (char, namePlayer)
         if not managerGame.playersTag[namePlayer] and client.localPlayer.name == namePlayer then
@@ -53,11 +54,12 @@ function self:ClientAwake()
             managerGame.disabledDetectingCollisionsAllPlayersServer:FireServer()
 
             activateGameWhenExistTwoMorePlayerHiding()
-            uiManager.SetInfoPlayers('Hello, Seeker! You gotta to search for the other players hidden around the map.')
+            uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["Intro"])
 
-            Timer.After(10, function()
-                if managerGame.numRespawnPlayerHiding.value <= 2 then
-                    uiManager.SetInfoPlayers('Waiting for players to begin the search for those in hiding. There must be at least two players hiding on the stage.')
+            Timer.After(5, function()
+                if (managerGame.numRespawnPlayerHiding.value - 1) < 2 then
+                    --uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["WaintingPlayers"])
+                    uiManager.SetInfoPlayers("Waiting for two or more players to hide: " .. tostring(managerGame.numPlayerHidingCurrently.value))
                 end
             end)
 
@@ -82,10 +84,17 @@ function self:ClientAwake()
             end
 
             activateGameWhenExistTwoMorePlayerHiding()
-            uiManager.SetInfoPlayers('Hello, hiders! Choose a costume from the pedestals, then run and hide around the map.')
+            uiManager.SetInfoPlayers(infoGameModule.HiderTexts["Intro"])
+
+            Timer.After(10, function() uiManager.DisabledInfoPlayerHiding() end)
 
             cameraManagerSeeker.enabled = false
             cameraManagerHiding.enabled = true
+        end
+
+        if managerGame.whoIsSeeker.value == game.localPlayer.name then
+            --uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["WaintingPlayers"])
+            uiManager.SetInfoPlayers("Waiting for two or more players to hide: " .. tostring(managerGame.numPlayerHidingCurrently.value))
         end
         
         respawnStartPlayerHiding(char)
@@ -102,11 +111,16 @@ function self:ServerAwake()
                 managerGame.whoIsSeeker.value = player.name
             else
                 player_id.value = "Hiding"
+                managerGame.numPlayerHidingCurrently.value += 1 
                 sendActivateMenuHide:FireAllClients(character, player.name)
                 managerGame.numRespawnPlayerHiding.value += 1
 
                 if managerGame.numRespawnPlayerHiding.value == 5 then
                     managerGame.numRespawnPlayerHiding.value = 1
+                end
+
+                if not managerGame.isFirstReleaseSeeker.value then
+                    managerGame.updateNumPlayersHiding:FireAllClients()
                 end
             end
         end)

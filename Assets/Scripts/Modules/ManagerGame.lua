@@ -2,6 +2,8 @@
 --!SerializeField
 local playerPet : GameObject = nil
 --!SerializeField
+local pointRespawnPlayerSeeker : GameObject = nil
+--!SerializeField
 local pointRespawnPlayerHider01 : GameObject = nil
 --!SerializeField
 local pointRespawnPlayerHider02 : GameObject = nil
@@ -53,7 +55,9 @@ local CameraManager : GameObject = nil
 --Variables Globals
 CameraManagerGlobal = nil
 UIManagerGlobal = nil
+InfoGameModuleGlobal = nil
 playerPetGlobal = nil
+pointRespawnPlayerSeekerGlobal = nil
 pointsRespawnPlayerHiderGlobal = {} -- Storage all points respawn. {[n] = point_respawn}
 objsHidesGlobal = {} -- Storage all stand custome. {[n] = stand_custome}
 btnsObjHides = {} -- Storage all buttons of the hides objects. {["Point Respawn"] = {[n] = btn}}
@@ -65,7 +69,9 @@ customePlayers = {} -- Players whit its custome [NamePlayer -> {["Dress"] = Cust
 standCustomePlayers = {} -- Players whit its stand custome {[NamePlayer] = num_stand_custome}
 isFirstPlayer = BoolValue.new("IsFirstPlayer", true) -- Verified if is the first client and assign the seeker's role
 whoIsSeeker = StringValue.new("WhoIsSeeker", "") -- Storage the seeker's name
-numRespawnPlayerHiding = IntValue.new("NumRespawnPlayerHiding", 1)
+numRespawnPlayerHiding = IntValue.new("NumRespawnPlayerHiding", 1) -- Point current of respawn of the new player
+numPlayerHidingCurrently = IntValue.new("NumPlayerHidingCurrently", 0) -- Number of players hiding currently
+numPlayersFound = IntValue.new("NumPlayersFound", 0) -- Amount of players Found
 isFirstReleaseSeeker = BoolValue.new("IsFirstReleaseSeeker", true)
 
 --Variables locals
@@ -75,9 +81,11 @@ local posDress = Vector3.new(0, 0, 0)
 local posOffset = Vector3.new(0, 0, 0)
 local isFollowingAlways = false
 local uiManager = nil
+local infoGameModule = nil
 
 --Events
 local cleanCustomeWhenPlayerLeftGameClient = Event.new("CleanCustomeWhenPlayerLeftGameClient")
+local updatePlayersFound = Event.new("UpdatePlayersFound")
 showCustomeAllPlayersServer = Event.new("ShowCustomeAllPlayersServer")
 showCustomeAllPlayersClient = Event.new("ShowCustomeAllPlayersClient")
 deleteCustomePlayerFoundServer = Event.new("DeleteCustomePlayerFoundServer")
@@ -86,6 +94,8 @@ disabledDetectingCollisionsAllPlayersServer = Event.new("DisabledDetectingCollis
 disabledDetectingCollisionsAllPlayersClient = Event.new("DisabledDetectingCollisionsAllPlayersClient")
 releasePlayerServer = Event.new("ReleasePlayerServer")
 releasePlayerClient = Event.new("ReleasePlayerClient")
+updateNumPlayersHiding = Event.new("UpdateNumPlayersHiding")
+updateNumPlayersFound = Event.new("UpdateNumPlayersFound")
 
 --Local Functions
 function followingToTarget(current, target, maxDistanceDelta, positionOffset)
@@ -153,6 +163,11 @@ function self:ClientAwake()
     UIManagerGlobal = UIManager
     CameraManagerGlobal = CameraManager
     uiManager = UIManagerGlobal:GetComponent("UI_Hide_Seek")
+    infoGameModule = self.gameObject:GetComponent("InfoGameModule")
+    InfoGameModuleGlobal = infoGameModule
+
+    --Point respawn Seeker
+    pointRespawnPlayerSeekerGlobal = pointRespawnPlayerSeeker
 
     --Points respawn
     pointsRespawnPlayerHiderGlobal[1] = pointRespawnPlayerHider01
@@ -206,16 +221,30 @@ function self:ClientAwake()
             )
     
             if playersTag[game.localPlayer.name] == "Seeker" then
-                Timer.After(5, function()
-                    uiManager.SetInfoPlayers('There are enough players on stage for you to start the search; go get them.')
+                Timer.After(2, function()
+                    uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["GoSeeker"])
                     
                     Timer.After(3, function()
                         playerPet:GetComponent("DetectingCollisions").enabled = true
-                        uiManager.SetInfoPlayers('Players Found: 0')
+                        --uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["NumPlayersFound"])
+                        uiManager.SetInfoPlayers("Players Found: " .. tostring(numPlayersFound.value) .. '/' .. tostring(numPlayerHidingCurrently.value))
                     end)
                 end)
 
             end
+        end
+    end)
+
+    updateNumPlayersHiding:Connect(function()
+        if playersTag[game.localPlayer.name] == "Seeker" then
+            --uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["NumPlayersFound"])
+            uiManager.SetInfoPlayers("Players Found: " .. tostring(numPlayersFound.value) .. '/' .. tostring(numPlayerHidingCurrently.value))
+        end
+    end)
+
+    updatePlayersFound:Connect(function()
+        if playersTag[game.localPlayer.name] == "Seeker" then
+            uiManager.SetInfoPlayers("Players Found: " .. tostring(numPlayersFound.value) .. '/' .. tostring(numPlayerHidingCurrently.value))
         end
     end)
 
@@ -244,7 +273,12 @@ function self:ClientAwake()
     deleteCustomePlayerFoundClient:Connect(function(namePlayer)
         if game.localPlayer.name == namePlayer then
             activateMenuModelHide(false, standCustomePlayers[namePlayer])
-            uiManager.SetInfoPlayers("We're sorry, you've been found by the seeker. You're free to explore the world. If you'd like to try again, please re-enter the game.")
+            uiManager.SetInfoPlayers(infoGameModule.HiderTexts["PlayerFound"])
+            Timer.After(5, function()
+                uiManager.SetInfoPlayers(infoGameModule.HiderTexts["TryAgain"])
+
+                Timer.After(3, function() uiManager.DisabledInfoPlayerHiding() end)
+            end)
         end
 
         cleanCustomeAndStopTrackingPlayer(namePlayer)
@@ -270,6 +304,12 @@ function self:ServerAwake()
 
     releasePlayerServer:Connect(function(player : Player, namePlayer, offset)
         releasePlayerClient:FireAllClients(namePlayer, offset)
+        isFirstReleaseSeeker.value = false
+    end)
+
+    updateNumPlayersFound:Connect(function(player: Player)
+        numPlayersFound.value += 1
+        updatePlayersFound:FireAllClients()
     end)
 
     server.PlayerDisconnected:Connect(function(player : Player)
@@ -279,9 +319,12 @@ function self:ServerAwake()
             isFirstReleaseSeeker.value = true
         else
             numRespawnPlayerHiding.value -= 1
+            numPlayerHidingCurrently.value -= 1
             isFirstReleaseSeeker.value = true
+            updateNumPlayersHiding:FireAllClients()
         end
 
+        objsCustome[player.name] = nil --Contain the players in scene
         cleanCustomeWhenPlayerLeftGameClient:FireAllClients(player.name)
     end)
 end
