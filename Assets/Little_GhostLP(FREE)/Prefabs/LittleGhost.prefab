@@ -629,7 +629,7 @@ GameObject:
   - component: {fileID: 2602231374797837620}
   - component: {fileID: 2602231374797837611}
   m_Layer: 0
-  m_Name: LittleGhost_LP (4)
+  m_Name: LittleGhost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

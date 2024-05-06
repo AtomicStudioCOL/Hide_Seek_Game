@@ -1,14 +1,14 @@
 local managerGame = require("ManagerGame")
 
 SeekerTexts = {
-    ["Intro"] = "Hello, Seeker! You gotta to search for the other players hidden around the map.",
-    ["WaintingPlayers"] = "Waiting for players " .. tostring(managerGame.numRespawnPlayerHiding.value) .. "/2",
+    ["Intro"] = "You're on the Seeker's team! You have to search for other players hidden around the maps as Props.",
+    ["WaintingPlayers"] = "Waiting for players: " .. tostring(managerGame.numRespawnPlayerHiding.value),
     ["GoSeeker"] = "Come on, Seeker, find them!",
     ["NumPlayersFound"] = "Players Found: " .. tostring(managerGame.numPlayersFound.value) .. '/' .. tostring(managerGame.numRespawnPlayerHiding.value - 1)
 }
 
 HiderTexts = {
-    ["Intro"] = "Hello, hiders! Choose a costume from the pedestals, then run and hide around the map.",
-    ["PlayerFound"] = "We apologize, but you've been discovered by the Seeker. Feel free to explore the surroundings.",
-    ["TryAgain"] = "If you wish to attempt again, please rejoin the game."
+    ["Intro"] = "You're on the Hider's team! Choose a costume from the pedestals, then run and hide around the map.",
+    ["PlayerFound"] = "Someone has discovered you. You are free to explore the surroundings.",
+    ["TryAgain"] = "If you want to try again, please rejoin the game."
 }

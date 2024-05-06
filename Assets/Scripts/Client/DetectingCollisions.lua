@@ -11,12 +11,12 @@ local ghostFoundFirstPlayer : GameObject = nil
 --Variables
 local seekerPlayer : GameObject = nil
 local tagSeeker : string = "Seeker"
-local ghostFollowingSeeker : boolean = false
-local ghost : GameObject = nil
 local playerSeeker : GameObject = nil
-local isAddedGhost : boolean = false
 local uiManager = nil
 local infoGameModule = nil
+ghost = nil
+isAddedGhost = false
+ghostFollowingSeeker = false
 
 --Functions
 local function followingToTarget(current, target, maxDistanceDelta, positionOffset)
@@ -68,6 +68,7 @@ function self:OnCollisionEnter(collision : Collision)
         for namePlayer, objPlayer in pairs(managerGame.objsCustome) do
             if objPlayer == collidedObj then
                 managerGame.deleteCustomePlayerFoundServer:FireServer(namePlayer)
+                managerGame.tagPlayerFound[namePlayer] = "Found"
             end
         end
 
@@ -80,13 +81,13 @@ function self:OnCollisionEnter(collision : Collision)
             managerGame.updateNumPlayersFound:FireServer()
         end
         
-        --uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["NumPlayersFound"])
-        
         --Delete VFX add
         Timer.After(2, function()
             if not vfx then return end
             Object.Destroy(vfx)
         end)
+
+        audioManager.pauseAlertPlayerSeeker(audioManager.audioAlertPlayerSeeker, 0)
     end
 end
 

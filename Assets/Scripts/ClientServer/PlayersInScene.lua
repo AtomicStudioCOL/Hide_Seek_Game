@@ -30,8 +30,18 @@ local function activateMenuSelectedModelHide(player, namePlayer, numStandCustome
 end
 
 local function activateGameWhenExistTwoMorePlayerHiding()
-    if managerGame.numRespawnPlayerHiding.value >= 2 and managerGame.isFirstReleaseSeeker.value then
+    if managerGame.numPlayerHidingCurrently.value >= 2 and managerGame.isFirstReleaseSeeker.value then
         managerGame.releasePlayerServer:FireServer(managerGame.whoIsSeeker.value, Vector3.new(0.1, 1.5, -0.6))
+    end
+end
+
+local function mustWaitForPlayers()
+    if managerGame.numPlayerHidingCurrently.value <= 2 then
+        uiManager.SetInfoPlayers("Waiting for players: " .. tostring(managerGame.numPlayerHidingCurrently.value))
+        
+        if managerGame.numPlayerHidingCurrently.value == 2 then
+            activateGameWhenExistTwoMorePlayerHiding()
+        end
     end
 end
 
@@ -56,12 +66,7 @@ function self:ClientAwake()
             activateGameWhenExistTwoMorePlayerHiding()
             uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["Intro"])
 
-            Timer.After(5, function()
-                if (managerGame.numRespawnPlayerHiding.value - 1) < 2 then
-                    --uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["WaintingPlayers"])
-                    uiManager.SetInfoPlayers("Waiting for two or more players to hide: " .. tostring(managerGame.numPlayerHidingCurrently.value))
-                end
-            end)
+            Timer.After(5, mustWaitForPlayers)
 
             cameraManagerSeeker.enabled = true
             cameraManagerHiding.enabled = false
@@ -93,8 +98,7 @@ function self:ClientAwake()
         end
 
         if managerGame.whoIsSeeker.value == game.localPlayer.name then
-            --uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["WaintingPlayers"])
-            uiManager.SetInfoPlayers("Waiting for two or more players to hide: " .. tostring(managerGame.numPlayerHidingCurrently.value))
+            mustWaitForPlayers()
         end
         
         respawnStartPlayerHiding(char)

@@ -67,6 +67,7 @@ customeStorage = {} -- Storage all costumes
 objsCustome = {} -- Storage the gameobject joined to the player globally [NamePlayer - GameObject]
 customePlayers = {} -- Players whit its custome [NamePlayer -> {["Dress"] = Custome, ["Offset"] = Vector3.new()}]
 standCustomePlayers = {} -- Players whit its stand custome {[NamePlayer] = num_stand_custome}
+tagPlayerFound = {} -- Player what was found - {[NamePlayer] = "Found" or nil}
 isFirstPlayer = BoolValue.new("IsFirstPlayer", true) -- Verified if is the first client and assign the seeker's role
 whoIsSeeker = StringValue.new("WhoIsSeeker", "") -- Storage the seeker's name
 numRespawnPlayerHiding = IntValue.new("NumRespawnPlayerHiding", 1) -- Point current of respawn of the new player
@@ -157,6 +158,12 @@ function cleanCustomeAndStopTrackingPlayer(namePlayer)
     end
 end
 
+function lockedPlayerSeeker()
+    navMeshAgentWithoutHiders:SetActive(true)
+    navMeshAgentWithHiders:SetActive(false)
+    doorSeeker:SetActive(true)
+end
+
 --Unity Functions
 function self:ClientAwake()
     playerPetGlobal = playerPet -- Player pet
@@ -202,42 +209,35 @@ function self:ClientAwake()
     customeStorage[2] = custome02
     customeStorage[3] = custome03
     
-    navMeshAgentWithoutHiders:SetActive(true)
-    navMeshAgentWithHiders:SetActive(false)
-    doorSeeker:SetActive(true)
+    lockedPlayerSeeker()
 
     releasePlayerClient:Connect(function(namePlayer, offset)
         navMeshAgentWithoutHiders:SetActive(false)
         navMeshAgentWithHiders:SetActive(true)
         doorSeeker:SetActive(false)
 
-        if not playerPet.activeSelf then
-            addCostumePlayers(
-                playerPet, 
-                objsCustome[namePlayer], 
-                offset, 
-                "Seeker",
-                namePlayer
-            )
-    
-            if playersTag[game.localPlayer.name] == "Seeker" then
-                Timer.After(2, function()
-                    uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["GoSeeker"])
-                    
-                    Timer.After(3, function()
-                        playerPet:GetComponent("DetectingCollisions").enabled = true
-                        --uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["NumPlayersFound"])
-                        uiManager.SetInfoPlayers("Players Found: " .. tostring(numPlayersFound.value) .. '/' .. tostring(numPlayerHidingCurrently.value))
-                    end)
-                end)
+        addCostumePlayers(
+            playerPet, 
+            objsCustome[namePlayer], 
+            offset, 
+            "Seeker",
+            namePlayer
+        )
 
-            end
+        if playersTag[game.localPlayer.name] == "Seeker" then
+            Timer.After(2, function()
+                uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["GoSeeker"])
+                
+                Timer.After(3, function()
+                    playerPet:GetComponent("DetectingCollisions").enabled = true
+                    uiManager.SetInfoPlayers("Players Found: " .. tostring(numPlayersFound.value) .. '/' .. tostring(numPlayerHidingCurrently.value))
+                end)
+            end)
         end
     end)
 
     updateNumPlayersHiding:Connect(function()
         if playersTag[game.localPlayer.name] == "Seeker" then
-            --uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["NumPlayersFound"])
             uiManager.SetInfoPlayers("Players Found: " .. tostring(numPlayersFound.value) .. '/' .. tostring(numPlayerHidingCurrently.value))
         end
     end)
@@ -317,6 +317,7 @@ function self:ServerAwake()
             isFirstPlayer.value = true
             playersTag[whoIsSeeker.value] = nil
             isFirstReleaseSeeker.value = true
+            whoIsSeeker.value = ""
         else
             numRespawnPlayerHiding.value -= 1
             numPlayerHidingCurrently.value -= 1
