@@ -22,16 +22,20 @@ local function respawnStartPlayerHiding(character : Character)
     character:Teleport(pointRespawnPlayerHider.transform.position, function()end)
 end
 
-local function activateMenuSelectedModelHide(player, namePlayer, numStandCustome)
+local function activateMenuSelectedModelHide(player, namePlayer, numStandCustome, numRoad)
     if managerGame.playersTag[namePlayer] == "Hiding" then
         managerGame.playerObjTag[namePlayer] = player
-        managerGame.activateMenuModelHide(true, numStandCustome)
+        managerGame.activateMenuModelHide(true, numStandCustome, numRoad)
     end
 end
 
 local function activateGameWhenExistTwoMorePlayerHiding()
     if managerGame.numPlayerHidingCurrently.value >= 2 and managerGame.isFirstReleaseSeeker.value then
-        managerGame.releasePlayerServer:FireServer(managerGame.whoIsSeeker.value, Vector3.new(0.1, 1.5, -0.6))
+        managerGame.releasePlayerServer:FireServer(
+            managerGame.whoIsSeeker.value, 
+            Vector3.new(0.1, 1.5, -0.6), 
+            Vector3.new(0, 55, 0)
+        )
     end
 end
 
@@ -45,11 +49,26 @@ local function mustWaitForPlayers()
     end
 end
 
+--Esto es nuevo y estamos revisando que pasa cuando el seeker sale del juego sea durante el juego o cuando este el contador de fin de juego - Jhalexso
+function selectNewSeeker(namePlayer, id)
+    managerGame.playersTag[namePlayer] = id
+    managerGame.activateMenuModelHide(false, 0, 0)
+    managerGame.disabledDetectingCollisionsAllPlayersServer:FireServer()
+
+    activateGameWhenExistTwoMorePlayerHiding()
+    uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["Intro"])
+
+    Timer.After(5, mustWaitForPlayers)
+
+    cameraManagerSeeker.enabled = true
+    cameraManagerHiding.enabled = false
+end
+
 --Unity Functions
 function self:ClientAwake()
     uiManager = managerGame.UIManagerGlobal:GetComponent("UI_Hide_Seek")
     cameraManagerSeeker = managerGame.CameraManagerGlobal:GetComponent("CameraManager")
-    cameraManagerHiding = managerGame.CameraManagerGlobal:GetComponent("RTSCamera")
+    cameraManagerHiding = managerGame.CameraManagerGlobal:GetComponent("MyRTSCam")
     infoGameModule = managerGame.InfoGameModuleGlobal
 
     sendInfoAddZoneSeeker:Connect(function (char, namePlayer)
@@ -57,19 +76,9 @@ function self:ClientAwake()
             playerPet = managerGame.playerPetGlobal
             pointRespawnPlayerHider = managerGame.pointsRespawnPlayerHiderGlobal[managerGame.numRespawnPlayerHiding.value]
             charPlayer = char.gameObject
-
-            managerGame.playersTag[namePlayer] = player_id.value
-            managerGame.activateMenuModelHide(false, 0)
+            
+            selectNewSeeker(namePlayer, player_id.value)
             managerGame.playerObjTag[namePlayer] = charPlayer
-            managerGame.disabledDetectingCollisionsAllPlayersServer:FireServer()
-
-            activateGameWhenExistTwoMorePlayerHiding()
-            uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["Intro"])
-
-            Timer.After(5, mustWaitForPlayers)
-
-            cameraManagerSeeker.enabled = true
-            cameraManagerHiding.enabled = false
         end
     end)
 
@@ -81,13 +90,14 @@ function self:ClientAwake()
             managerGame.playersTag[namePlayer] = player_id.value
             
             if managerGame.numRespawnPlayerHiding.value == 3 or managerGame.numRespawnPlayerHiding.value == 4 then
-                activateMenuSelectedModelHide(charPlayer, namePlayer, 3)
+                activateMenuSelectedModelHide(charPlayer, namePlayer, 3, managerGame.numRespawnPlayerHiding.value)
                 managerGame.standCustomePlayers[namePlayer] = 3
             else
-                activateMenuSelectedModelHide(charPlayer, namePlayer, managerGame.numRespawnPlayerHiding.value)
+                activateMenuSelectedModelHide(charPlayer, namePlayer, managerGame.numRespawnPlayerHiding.value, managerGame.numRespawnPlayerHiding.value)
                 managerGame.standCustomePlayers[namePlayer] = managerGame.numRespawnPlayerHiding.value
             end
 
+            managerGame.roadToPedestalCustom[namePlayer] = managerGame.numRespawnPlayerHiding.value
             activateGameWhenExistTwoMorePlayerHiding()
             uiManager.SetInfoPlayers(infoGameModule.HiderTexts["Intro"])
 

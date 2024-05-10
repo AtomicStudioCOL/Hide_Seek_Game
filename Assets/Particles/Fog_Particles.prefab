@@ -4849,6 +4849,7 @@ MonoBehaviour:
   _uiOutput: 0
   _uiOutputSettings:
     rid: -2
+  _copyFromPropertiesVersion: 1
   references:
     version: 2
     RefIds:

@@ -18,6 +18,14 @@ local objsHides02 : GameObject = nil
 --!SerializeField
 local objsHides0304 : GameObject = nil
 --!SerializeField
+local roadPedestal01 : GameObject = nil
+--!SerializeField
+local roadPedestal02 : GameObject = nil
+--!SerializeField
+local roadPedestal03 : GameObject = nil
+--!SerializeField
+local roadPedestal04 : GameObject = nil
+--!SerializeField
 local custome01 : GameObject = nil
 --!SerializeField
 local custome02 : GameObject = nil
@@ -51,6 +59,18 @@ local doorSeeker : GameObject = nil
 local UIManager : GameObject = nil
 --!SerializeField
 local CameraManager : GameObject = nil
+--!SerializeField
+local zoneGreen : GameObject = nil
+--!SerializeField
+local zoneOrange : GameObject = nil
+--!SerializeField
+local doorsClosedZoneGreen : GameObject = nil
+--!SerializeField
+local doorsOpenZoneGreen : GameObject = nil
+--!SerializeField
+local doorsClosedZoneOrange : GameObject = nil
+--!SerializeField
+local doorsOpenZoneOrange : GameObject = nil
 
 --Variables Globals
 CameraManagerGlobal = nil
@@ -58,8 +78,15 @@ UIManagerGlobal = nil
 InfoGameModuleGlobal = nil
 playerPetGlobal = nil
 pointRespawnPlayerSeekerGlobal = nil
+zoneGreenGlobal = nil
+zoneOrangeGlobal = nil
+doorsClosedZoneGreenGlobal = nil
+doorsOpenZoneGreenGlobal = nil
+doorsClosedZoneOrangeGlobal = nil
+doorsOpenZoneOrangeGlobal = nil
 pointsRespawnPlayerHiderGlobal = {} -- Storage all points respawn. {[n] = point_respawn}
 objsHidesGlobal = {} -- Storage all stand custome. {[n] = stand_custome}
+roadPedestalsGlobal = {} -- Storage the road to the pedestals
 btnsObjHides = {} -- Storage all buttons of the hides objects. {["Point Respawn"] = {[n] = btn}}
 playerObjTag = {} -- Storage the gameobject joined to the player [NamePlayer - GameObject]
 playersTag = {} -- Storage all player in the scene [NamePlayer - TypePlayer]
@@ -67,6 +94,7 @@ customeStorage = {} -- Storage all costumes
 objsCustome = {} -- Storage the gameobject joined to the player globally [NamePlayer - GameObject]
 customePlayers = {} -- Players whit its custome [NamePlayer -> {["Dress"] = Custome, ["Offset"] = Vector3.new()}]
 standCustomePlayers = {} -- Players whit its stand custome {[NamePlayer] = num_stand_custome}
+roadToPedestalCustom = {} -- Players whit its road to custome pedestal {[NamePlayer] = num_road}
 tagPlayerFound = {} -- Player what was found - {[NamePlayer] = "Found" or nil}
 isFirstPlayer = BoolValue.new("IsFirstPlayer", true) -- Verified if is the first client and assign the seeker's role
 whoIsSeeker = StringValue.new("WhoIsSeeker", "") -- Storage the seeker's name
@@ -74,6 +102,9 @@ numRespawnPlayerHiding = IntValue.new("NumRespawnPlayerHiding", 1) -- Point curr
 numPlayerHidingCurrently = IntValue.new("NumPlayerHidingCurrently", 0) -- Number of players hiding currently
 numPlayersFound = IntValue.new("NumPlayersFound", 0) -- Amount of players Found
 isFirstReleaseSeeker = BoolValue.new("IsFirstReleaseSeeker", true)
+wasCalculatedRandomMap = BoolValue.new("WasCalculatedRandomMap", false)
+hasBeginGame = BoolValue.new("HasBeginGame", false)
+opcMap = IntValue.new("MapRandom", 1)
 
 --Variables locals
 local dressWear = nil
@@ -99,7 +130,7 @@ updateNumPlayersHiding = Event.new("UpdateNumPlayersHiding")
 updateNumPlayersFound = Event.new("UpdateNumPlayersFound")
 
 --Local Functions
-function followingToTarget(current, target, maxDistanceDelta, positionOffset)
+function followingToTarget(current : GameObject, target, maxDistanceDelta, positionOffset)
     if not current or not target then return end
 
     current.transform.position = Vector3.MoveTowards(
@@ -116,7 +147,7 @@ local function disableAllDresses()
 end
 
 --Global Functions
-function addCostumePlayers(dress : GameObject, player : GameObject,  positionOffset : Vector3, typeCharacter : string, namePlayer)
+function addCostumePlayers(dress : GameObject, player : GameObject,  positionOffset : Vector3, rotationCustome, typeCharacter : string, namePlayer)
     if typeCharacter == "Hiding" then 
         dressWear = Object.Instantiate(dress)
         disableAllDresses() 
@@ -124,7 +155,8 @@ function addCostumePlayers(dress : GameObject, player : GameObject,  positionOff
         customePlayers[namePlayer] = {
             ["Dress"] = dressWear,
             ["Player"] = objsCustome[namePlayer],
-            ["Offset"] = positionOffset
+            ["Offset"] = positionOffset,
+            ["Rotation"] = rotationCustome
         }
     elseif typeCharacter == "Seeker" then
         dressWear = dress
@@ -132,7 +164,8 @@ function addCostumePlayers(dress : GameObject, player : GameObject,  positionOff
         customePlayers[namePlayer] = {
             ["Dress"] = dressWear,
             ["Player"] = objsCustome[namePlayer],
-            ["Offset"] = positionOffset
+            ["Offset"] = positionOffset,
+            ["Rotation"] = rotationCustome
         }
     end
 
@@ -141,13 +174,16 @@ function addCostumePlayers(dress : GameObject, player : GameObject,  positionOff
     posDress = player.transform.position + positionOffset
 
     dressWear.transform.position = posDress
+    dressWear.transform.eulerAngles = rotationCustome
     dressWear.SetActive(dressWear, true)
     isFollowingAlways = true
 end
 
-function activateMenuModelHide(visible, standCustome)
-    if standCustome == 0 then return end
+function activateMenuModelHide(visible, standCustome, numRoad)
+    if standCustome == 0 and numRoad == 0 then return end
+
     objsHidesGlobal[standCustome]:SetActive(visible)
+    roadPedestalsGlobal[numRoad]:SetActive(visible)
 end
 
 function cleanCustomeAndStopTrackingPlayer(namePlayer)
@@ -169,6 +205,12 @@ function self:ClientAwake()
     playerPetGlobal = playerPet -- Player pet
     UIManagerGlobal = UIManager
     CameraManagerGlobal = CameraManager
+    zoneGreenGlobal = zoneGreen
+    zoneOrangeGlobal = zoneOrange
+    doorsClosedZoneGreenGlobal = doorsClosedZoneGreen
+    doorsOpenZoneGreenGlobal = doorsOpenZoneGreen
+    doorsClosedZoneOrangeGlobal = doorsClosedZoneOrange
+    doorsOpenZoneOrangeGlobal = doorsOpenZoneOrange
     uiManager = UIManagerGlobal:GetComponent("UI_Hide_Seek")
     infoGameModule = self.gameObject:GetComponent("InfoGameModule")
     InfoGameModuleGlobal = infoGameModule
@@ -186,6 +228,12 @@ function self:ClientAwake()
     objsHidesGlobal[1] = objsHides01
     objsHidesGlobal[2] = objsHides02
     objsHidesGlobal[3] = objsHides0304
+
+    --Road to Pedestals
+    roadPedestalsGlobal[1] = roadPedestal01
+    roadPedestalsGlobal[2] = roadPedestal02
+    roadPedestalsGlobal[3] = roadPedestal03
+    roadPedestalsGlobal[4] = roadPedestal04
 
     --Buttons Select custome
     btnsObjHides["PointRespawn01"] = {
@@ -211,7 +259,7 @@ function self:ClientAwake()
     
     lockedPlayerSeeker()
 
-    releasePlayerClient:Connect(function(namePlayer, offset)
+    releasePlayerClient:Connect(function(namePlayer, offset, rotationFireFly)
         navMeshAgentWithoutHiders:SetActive(false)
         navMeshAgentWithHiders:SetActive(true)
         doorSeeker:SetActive(false)
@@ -219,7 +267,8 @@ function self:ClientAwake()
         addCostumePlayers(
             playerPet, 
             objsCustome[namePlayer], 
-            offset, 
+            offset,
+            rotationFireFly, 
             "Seeker",
             namePlayer
         )
@@ -252,7 +301,7 @@ function self:ClientAwake()
         playerPet:GetComponent("DetectingCollisions").enabled = false
     end)
 
-    showCustomeAllPlayersClient:Connect(function(numDress, namePlayer, offset)
+    showCustomeAllPlayersClient:Connect(function(numDress, namePlayer, offset, rotationCustome)
         --Replied to all clients except sender
         if namePlayer ~= game.localPlayer.name then
             if customePlayers[namePlayer] then
@@ -264,6 +313,7 @@ function self:ClientAwake()
                 customeStorage[numDress], 
                 objsCustome[namePlayer], 
                 offset, 
+                rotationCustome,
                 "Hiding",
                 namePlayer
             )
@@ -272,7 +322,7 @@ function self:ClientAwake()
 
     deleteCustomePlayerFoundClient:Connect(function(namePlayer)
         if game.localPlayer.name == namePlayer then
-            activateMenuModelHide(false, standCustomePlayers[namePlayer])
+            activateMenuModelHide(false, standCustomePlayers[namePlayer], roadToPedestalCustom[namePlayer])
             uiManager.SetInfoPlayers(infoGameModule.HiderTexts["PlayerFound"])
             Timer.After(5, function()
                 uiManager.SetInfoPlayers(infoGameModule.HiderTexts["TryAgain"])
@@ -290,8 +340,8 @@ function self:ClientAwake()
 end
 
 function self:ServerAwake()
-    showCustomeAllPlayersServer:Connect(function(player : Player, numDress, namePlayer, offset)
-        showCustomeAllPlayersClient:FireAllClients(numDress, namePlayer, offset)
+    showCustomeAllPlayersServer:Connect(function(player : Player, numDress, namePlayer, offset, rotationCustome)
+        showCustomeAllPlayersClient:FireAllClients(numDress, namePlayer, offset, rotationCustome)
     end)
 
     deleteCustomePlayerFoundServer:Connect(function(player : Player, namePlayer)
@@ -302,9 +352,10 @@ function self:ServerAwake()
         disabledDetectingCollisionsAllPlayersClient:FireAllClients()
     end)
 
-    releasePlayerServer:Connect(function(player : Player, namePlayer, offset)
-        releasePlayerClient:FireAllClients(namePlayer, offset)
+    releasePlayerServer:Connect(function(player : Player, namePlayer, offset, rotationFireFly)
+        releasePlayerClient:FireAllClients(namePlayer, offset, rotationFireFly)
         isFirstReleaseSeeker.value = false
+        hasBeginGame.value = true
     end)
 
     updateNumPlayersFound:Connect(function(player: Player)
@@ -321,6 +372,7 @@ function self:ServerAwake()
         else
             numRespawnPlayerHiding.value -= 1
             numPlayerHidingCurrently.value -= 1
+            numPlayersFound.value -= 1
             isFirstReleaseSeeker.value = true
             updateNumPlayersHiding:FireAllClients()
         end
@@ -350,7 +402,7 @@ function self:Update()
     end
 end
 
-scene.PlayerJoined:Connect(function(scene : WorldScene, player : Player)
+scene.PlayerJoined:Connect(function(scene, player : Player)
     player.CharacterChanged:Connect(function (player : Player, character : Character)
         objsCustome[player.name] = character.gameObject
     end)

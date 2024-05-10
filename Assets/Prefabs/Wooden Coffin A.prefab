@@ -11,17 +11,17 @@ PrefabInstance:
     - target: {fileID: 8230428968349038579, guid: 4e711aeb7b12c3b488c081b3025a9ab8,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 2
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 8230428968349038579, guid: 4e711aeb7b12c3b488c081b3025a9ab8,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 2
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 8230428968349038579, guid: 4e711aeb7b12c3b488c081b3025a9ab8,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 2
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 8230428968349038579, guid: 4e711aeb7b12c3b488c081b3025a9ab8,
         type: 3}
@@ -41,27 +41,27 @@ PrefabInstance:
     - target: {fileID: 8230428968349038579, guid: 4e711aeb7b12c3b488c081b3025a9ab8,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.29883623
+      value: -0.42261827
       objectReference: {fileID: 0}
     - target: {fileID: 8230428968349038579, guid: 4e711aeb7b12c3b488c081b3025a9ab8,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.29883623
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8230428968349038579, guid: 4e711aeb7b12c3b488c081b3025a9ab8,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.64085644
+      value: 0.9063079
       objectReference: {fileID: 0}
     - target: {fileID: 8230428968349038579, guid: 4e711aeb7b12c3b488c081b3025a9ab8,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.64085644
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 8230428968349038579, guid: 4e711aeb7b12c3b488c081b3025a9ab8,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 90
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8230428968349038579, guid: 4e711aeb7b12c3b488c081b3025a9ab8,
         type: 3}
@@ -81,12 +81,12 @@ PrefabInstance:
     - target: {fileID: 8751491499007880521, guid: 4e711aeb7b12c3b488c081b3025a9ab8,
         type: 3}
       propertyPath: m_Name
-      value: Wooden Coffin A Variant
+      value: Wooden Coffin A
       objectReference: {fileID: 0}
     - target: {fileID: 8751491499007880521, guid: 4e711aeb7b12c3b488c081b3025a9ab8,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

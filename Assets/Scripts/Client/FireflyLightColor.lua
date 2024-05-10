@@ -35,7 +35,7 @@ end
 local function ClosestHider()
     for key, value in pairs(managerGame.objsCustome) do
         if tostring(value) == 'null' then continue end
-        print(`Player was found: {managerGame.tagPlayerFound[key]}`)
+        --print(`Player was found: {managerGame.tagPlayerFound[key]}`)
         
         if key ~= managerGame.whoIsSeeker.value and managerGame.tagPlayerFound[key] ~= "Found" then
             if math.abs(value.transform.position.x - seeker.transform.position.x) < distanceToRed
