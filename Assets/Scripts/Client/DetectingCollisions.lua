@@ -8,12 +8,14 @@ local vfxFoundPlayer : GameObject = nil
 --!SerializeField
 local ghostFoundFirstPlayer : GameObject = nil
 
---Variables
+--Local Variables
 local seekerPlayer : GameObject = nil
 local tagSeeker : string = "Seeker"
 local playerSeeker : GameObject = nil
 local uiManager = nil
 local infoGameModule = nil
+
+--Global Variables
 ghost = nil
 isAddedGhost = false
 ghostFollowingSeeker = false
@@ -38,6 +40,22 @@ local function AddGhostFollowingSeeker(seeker, ghostFollow)
     ghost.transform.position = posGhost
     ghost:SetActive(true)
     ghostFollowingSeeker = true
+end
+
+function ResetFireFlyPlayerSeeker()
+    if not managerGame.playerPetGlobal then return end
+    managerGame.playerPetGlobal:SetActive(false)
+end
+
+function ResetFireFlyCollision(status)
+    if not managerGame.playerPetGlobal then return end
+    managerGame.playerPetGlobal:GetComponent("DetectingCollisions")
+end
+
+function ResetGhostPlayerSeeker()
+    if ghost then ghost:SetActive(false) end
+    isAddedGhost = false
+    ghostFollowingSeeker = false
 end
 
 --Unity Functions
@@ -77,7 +95,6 @@ function self:OnCollisionEnter(collision : Collision)
             isAddedGhost = true
             managerGame.updateNumPlayersFound:FireServer()
         else
-            --Actualizar UI con esta información
             managerGame.updateNumPlayersFound:FireServer()
         end
         

@@ -36,6 +36,7 @@ local lastDirection : Vector2 = Vector2.zero     -- the direction of the last fr
 local target = Vector3.zero                      -- the point the camera is looking at
 local offset = Vector3.zero                      -- the offset from the Target
 
+local charPlayer : Character = nil
 local InertiaMinVelocity = 0.5; -- prevents the infinite slow drag at the end of inertia
 local InertiaStepDuration = 1 / 60; -- each "inertia step" is normalized to 60fps
 local MaxSwipeVelocity = 400 -- the maximum velocity of a swipe to apply inertia with
@@ -61,6 +62,7 @@ if centerOnCharacterWhenSpawned then
 
     localCharacterInstantiatedEvent = client.localPlayer.CharacterChanged:Connect(function(player, character)
         if character then
+            charPlayer = character
             OnLocalCharacter(player, character)
         end
     end)
@@ -229,6 +231,7 @@ function UpdatePosition()
 
     cameraRig.position = cameraPos
     cameraRig:LookAt(target)
+    --cameraRig.position = cameraRig.position + (charPlayer.gameObject.transform.position + cameraOffset)
     cameraRig.position = cameraRig.position + cameraOffset
 end
 

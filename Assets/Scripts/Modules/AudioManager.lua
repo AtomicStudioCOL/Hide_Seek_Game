@@ -29,7 +29,6 @@ function playAlertPlayerSeeker(source : AudioSource, vol : number)
 end
 
 function pauseAlertPlayerSeeker(source : AudioSource, vol : number)
-    --print(`Pause Alert: {source}`)
     if tostring(source) ~= "null" and source ~= nil then
         if source.isPlaying then
             audioAlertPlayerSeeker = source

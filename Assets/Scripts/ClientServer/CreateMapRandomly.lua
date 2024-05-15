@@ -17,6 +17,37 @@ local opcMapRandomly = {
 local createMapServer = Event.new("CreateMapServer")
 local createMapClient = Event.new("CreateMapClient")
 
+--Functions
+local function enableDoorsZoneMap(statusDoor)
+    doorsClosedZoneGreen:SetActive(statusDoor['doorClosedZG'])
+    doorsOpenZoneGreen:SetActive(statusDoor['doorOpenZG'])
+    doorsClosedZoneOrange:SetActive(statusDoor['doorClosedZO'])
+    doorsOpenZoneOrange:SetActive(statusDoor['doorOpenZO'])
+end
+
+local function enableZoneMapChosen()
+    for _,zone in ipairs(opcMapRandomly[managerGame.opcMap.value]) do
+        if not zones[zone] then continue end
+        zones[zone]:SetActive(true)
+        
+        if managerGame.opcMap.value == 2 then
+            enableDoorsZoneMap({
+                ['doorClosedZG'] = false,
+                ['doorOpenZG'] = true,
+                ['doorClosedZO'] = true,
+                ['doorOpenZO'] = false
+            })
+        elseif managerGame.opcMap.value == 3 then
+            enableDoorsZoneMap({
+                ['doorClosedZG'] = false,
+                ['doorOpenZG'] = true,
+                ['doorClosedZO'] = false,
+                ['doorOpenZO'] = true
+            })
+        end
+    end
+end
+
 --Unity Functions
 function self:ClientAwake()
     zones[1] = managerGame.zoneGreenGlobal
@@ -26,29 +57,16 @@ function self:ClientAwake()
     doorsClosedZoneOrange = managerGame.doorsClosedZoneOrangeGlobal
     doorsOpenZoneOrange = managerGame.doorsOpenZoneOrangeGlobal
 
-    doorsClosedZoneGreen:SetActive(true)
-    doorsOpenZoneGreen:SetActive(false)
-    doorsClosedZoneOrange:SetActive(false)
-    doorsOpenZoneOrange:SetActive(false)
+    enableDoorsZoneMap({
+        ['doorClosedZG'] = true,
+        ['doorOpenZG'] = false,
+        ['doorClosedZO'] = false,
+        ['doorOpenZO'] = false
+    })
 
     createMapClient:Connect(function(namePlayer)
-        if namePlayer == game.localPlayer.name then    
-            for _,zone in ipairs(opcMapRandomly[managerGame.opcMap.value]) do
-                if not zones[zone] then continue end
-                zones[zone]:SetActive(true)
-                
-                if managerGame.opcMap.value == 2 then
-                    doorsClosedZoneGreen:SetActive(false)
-                    doorsOpenZoneGreen:SetActive(true)
-                    doorsClosedZoneOrange:SetActive(true)
-                    doorsOpenZoneOrange:SetActive(false)
-                elseif managerGame.opcMap.value == 3 then
-                    doorsClosedZoneGreen:SetActive(false)
-                    doorsOpenZoneGreen:SetActive(true)
-                    doorsClosedZoneOrange:SetActive(false)
-                    doorsOpenZoneOrange:SetActive(true)
-                end
-            end
+        if namePlayer == game.localPlayer.name then
+            enableZoneMapChosen()
         end
     end)
 end
@@ -59,7 +77,6 @@ function self:ServerAwake()
             if player.name == managerGame.whoIsSeeker.value then
                 managerGame.opcMap.value = math.random(1, 3)
             end
-
             createMapClient:FireAllClients(player.name)        
         end)
     end)

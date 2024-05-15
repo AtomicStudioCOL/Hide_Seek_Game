@@ -116,8 +116,8 @@ local uiManager = nil
 local infoGameModule = nil
 
 --Events
-local cleanCustomeWhenPlayerLeftGameClient = Event.new("CleanCustomeWhenPlayerLeftGameClient")
 local updatePlayersFound = Event.new("UpdatePlayersFound")
+cleanCustomeWhenPlayerLeftGameClient = Event.new("CleanCustomeWhenPlayerLeftGameClient")
 showCustomeAllPlayersServer = Event.new("ShowCustomeAllPlayersServer")
 showCustomeAllPlayersClient = Event.new("ShowCustomeAllPlayersClient")
 deleteCustomePlayerFoundServer = Event.new("DeleteCustomePlayerFoundServer")
@@ -172,7 +172,7 @@ function addCostumePlayers(dress : GameObject, player : GameObject,  positionOff
     playerCurrent = player
     posOffset = positionOffset
     posDress = player.transform.position + positionOffset
-
+    
     dressWear.transform.position = posDress
     dressWear.transform.eulerAngles = rotationCustome
     dressWear.SetActive(dressWear, true)
@@ -188,6 +188,10 @@ end
 
 function cleanCustomeAndStopTrackingPlayer(namePlayer)
     if customePlayers[namePlayer] then
+        if namePlayer == whoIsSeeker.value then return end
+        if customePlayers[namePlayer] == nil or tostring(customePlayers[namePlayer]) == 'null' then return end
+        if customePlayers[namePlayer]["Dress"] == nil or tostring(customePlayers[namePlayer]["Dress"]) == 'null' then return end
+        
         Object.Destroy(customePlayers[namePlayer]["Dress"])
         customePlayers[namePlayer] = nil
         isFollowingAlways = false
@@ -274,13 +278,10 @@ function self:ClientAwake()
         )
 
         if playersTag[game.localPlayer.name] == "Seeker" then
-            Timer.After(2, function()
-                uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["GoSeeker"])
-                
-                Timer.After(3, function()
-                    playerPet:GetComponent("DetectingCollisions").enabled = true
-                    uiManager.SetInfoPlayers("Players Found: " .. tostring(numPlayersFound.value) .. '/' .. tostring(numPlayerHidingCurrently.value))
-                end)
+            uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["GoSeeker"])
+            Timer.After(2, function() 
+                playerPet:GetComponent("DetectingCollisions").enabled = true
+                uiManager.SetInfoPlayers("Players Found: " .. tostring(numPlayersFound.value) .. '/' .. tostring(numPlayerHidingCurrently.value))
             end)
         end
     end)
@@ -324,9 +325,9 @@ function self:ClientAwake()
         if game.localPlayer.name == namePlayer then
             activateMenuModelHide(false, standCustomePlayers[namePlayer], roadToPedestalCustom[namePlayer])
             uiManager.SetInfoPlayers(infoGameModule.HiderTexts["PlayerFound"])
+            
             Timer.After(5, function()
                 uiManager.SetInfoPlayers(infoGameModule.HiderTexts["TryAgain"])
-
                 Timer.After(3, function() uiManager.DisabledInfoPlayerHiding() end)
             end)
         end
@@ -370,9 +371,9 @@ function self:ServerAwake()
             isFirstReleaseSeeker.value = true
             whoIsSeeker.value = ""
         else
-            numRespawnPlayerHiding.value -= 1
-            numPlayerHidingCurrently.value -= 1
-            numPlayersFound.value -= 1
+            if numRespawnPlayerHiding.value > 0 then numRespawnPlayerHiding.value -= 1 end
+            if numPlayerHidingCurrently.value > 0 then numPlayerHidingCurrently.value -= 1 end
+            if numPlayersFound.value > 0 then numPlayersFound.value -= 1 end
             isFirstReleaseSeeker.value = true
             updateNumPlayersHiding:FireAllClients()
         end
@@ -393,6 +394,8 @@ function self:Update()
     end
 
     for player, info in pairs (customePlayers) do
+        if not customePlayers[player] then continue end
+
         followingToTarget(
             info["Dress"],
             info["Player"],

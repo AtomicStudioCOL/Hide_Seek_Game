@@ -15,10 +15,10 @@
 }
 
 .hide_seek #countdownGame{
-    -unity-text-auto-size-mode: fit;
-    margin: auto 15px auto 15px;
-    font-size: 200%;
-    -unity-font-style: bold;
+    margin: 20px 35px 5px 35px;
+    font-size: 32;
     white-space: normal;
     color: rgba(255, 50, 200, 1);
+    -unity-text-auto-size-mode: fit;
+    -unity-font-style: bold;
 }
