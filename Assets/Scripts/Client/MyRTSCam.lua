@@ -36,7 +36,7 @@ local lastDirection : Vector2 = Vector2.zero     -- the direction of the last fr
 local target = Vector3.zero                      -- the point the camera is looking at
 local offset = Vector3.zero                      -- the offset from the Target
 
-local charPlayer : Character = nil
+charPlayer = nil
 local InertiaMinVelocity = 0.5; -- prevents the infinite slow drag at the end of inertia
 local InertiaStepDuration = 1 / 60; -- each "inertia step" is normalized to 60fps
 local MaxSwipeVelocity = 400 -- the maximum velocity of a swipe to apply inertia with

@@ -7,21 +7,18 @@ local countdownGame = require("CountdownGame")
 local gameObjectParent = self.gameObject
 local scriptPlayersInScene = nil
 local detectingCollisions = nil
-local pointRespawnHiddenPlayers : GameObject = nil
 local uiManager = nil
 local isCreatedCoroutine = false
 
 --Events
-local startCountdownAllClients = Event.new("StartCountdownEndGame")
-local endCountdownAllClients = Event.new("EndCountdownGame")
-local resetNetworkValuesGame = Event.new("ResetNetworkValuesGame")
-local updateRespawnPlayersHiding = Event.new("UpdateRespawnPlayersHiding")
-local sendRestPlayersRestartServer = Event.new("SendRestPlayersRestartServer")
-local sendRestPlayersRestartClient = Event.new("SendRestPlayersRestartClient")
-local restartGameLeaveSeekerPlayer = Event.new("RestartGameLeaveSeekerPlayer")
-local updateWhoIsNewSeeker = Event.new('UpdateWhoIsNewSeeker')
-local eventRespawnAllPlayers = Event.new('EventRespawnAllPlayers')
-local eventUpdateCountdownBeforeEndGame = Event.new('EventUpdateCountdownBeforeEndGame')
+local startCountdownAllClients = Event.new("StartCountdownEndGame") -- Event for when the game to finished
+local endCountdownAllClients = Event.new("EndCountdownGame") -- Event for when the end game has been stopped
+local resetNetworkValuesGame = Event.new("ResetNetworkValuesGame") -- Event for reset all network values before start the game
+local sendRestPlayersRestartServer = Event.new("SendRestPlayersRestartServer") -- Event to the server for indicate to the rest players where respawn the player current
+local sendRestPlayersRestartClient = Event.new("SendRestPlayersRestartClient") -- Event to the client for indicate to the rest players where respawn the player current
+local restartGameLeaveSeekerPlayer = Event.new("RestartGameLeaveSeekerPlayer") -- Event to restart the game when the seeker player leave the game
+local eventRespawnAllPlayers = Event.new('EventRespawnAllPlayers') -- Event fired when the end game time has finished, respawn all players to the lobby
+local eventUpdateCountdownBeforeEndGame = Event.new('EventUpdateCountdownBeforeEndGame') -- Event to update end game countdown to the finish the game
 
 --Functions
 function SeekerSeeingHiddenPlayersAgain()
@@ -31,41 +28,19 @@ function SeekerSeeingHiddenPlayersAgain()
     end
 end
 
-function respawnStartPlayers(namePlayer, character : Character, pointRespawnPlayers)
-    if not character or not pointRespawnPlayers then return end
-    character:Teleport(pointRespawnPlayers.transform.position, function()end)
+function respawnStartPlayers(namePlayer, character : Character)
+    character.gameObject.transform.position = managerGame.pointRespawnLobbyGlobal.transform.position
+    character:MoveTo(managerGame.pointRespawnLobbyGlobal.transform.position, 6, function()end)
     
-    if namePlayer ~= managerGame.whoIsSeeker.value then
-        if not character.gameObject or tostring(character.gameObject) == 'null' then return end
-        if not scriptPlayersInScene.cameraManagerHiding then return end
-
-        local positionPlayerRespawn = character.gameObject.transform.position
-        scriptPlayersInScene.cameraManagerHiding.CenterOn(positionPlayerRespawn, 15)
-    end
-    
-    SeekerSeeingHiddenPlayersAgain() --Seeker seeing the hidden players again
-    resetNetworkValuesGame:FireServer(namePlayer)
+    scriptPlayersInScene.cameraManagerSeeker.enabled = true
+    scriptPlayersInScene.cameraManagerHiding.enabled = false
 end
 
 function RespawnAllPlayersInGame(character, namePlayer)
-    local objPlayer = managerGame.objsCustome[namePlayer]
-
-    if objPlayer then
-        pointRespawnHiddenPlayers = managerGame.pointsRespawnPlayerHiderGlobal[managerGame.numRespawnPlayerHiding.value]
-
-        if namePlayer == managerGame.whoIsSeeker.value then     
-            managerGame.lockedPlayerSeeker() --Locked player seeker for 10 seconds
-            respawnStartPlayers(namePlayer, character, managerGame.pointRespawnPlayerSeekerGlobal)
-            sendRestPlayersRestartServer:FireServer(namePlayer, character, "Seeker")
-        else
-            uiManager.DisabledInfoPlayerHiding()
-            updateRespawnPlayersHiding:FireServer()
-            scriptPlayersInScene.activateMenuSelectedCustomePlayerHiding(objPlayer, namePlayer)
-            
-            respawnStartPlayers(namePlayer, character, pointRespawnHiddenPlayers)
-            sendRestPlayersRestartServer:FireServer(namePlayer, character, "Hidden")
-        end
-    end
+    self.gameObject:GetComponent('PlayersToLobby').settingLobbyPlayer(true)
+    respawnStartPlayers(namePlayer, character)
+    SeekerSeeingHiddenPlayersAgain()
+    sendRestPlayersRestartServer:FireServer(namePlayer, character)
 end
 
 --Unity Functions
@@ -73,44 +48,33 @@ function self:ClientAwake()
     uiManager = managerGame.UIManagerGlobal:GetComponent("UI_Hide_Seek")
     scriptPlayersInScene = gameObjectParent:GetComponent('PlayersInScene')
     detectingCollisions = managerGame.playerPetGlobal:GetComponent("DetectingCollisions")
-    
+
     startCountdownAllClients:Connect(function()
-        detectingCollisions.ResetFireFlyPlayerSeeker() --Reset the firefly
-        detectingCollisions.ResetGhostPlayerSeeker() --Reset the ghost
+        managerGame.playerPetGlobal:SetActive(true)
+        if game.localPlayer.name == managerGame.whoIsSeeker.value then
+            detectingCollisions.ResetGhostPlayerSeeker() --Reset the ghost
+            detectingCollisions.ResetFireFlyPlayerSeeker() --Reset the firefly
+        else
+            detectingCollisions.enabled = true
+            Timer.After(0.15, function()
+                detectingCollisions.ResetGhostPlayerSeeker() --Reset the ghost
+                detectingCollisions.ResetFireFlyPlayerSeeker() --Reset the firefly
+                detectingCollisions.enabled = false
+            end)
+        end
+
         countdownGame.StartCountdownEndGame(uiManager, managerGame.whoIsSeeker.value)
+        audioManager.pauseAlertPlayerSeeker(audioManager.audioAlertPlayerSeeker, 0)
     end)
 
     eventRespawnAllPlayers:Connect(function()
-        countdownGame.resetAllParameters()
-        uiManager.DisabledInfoPlayerHiding()
-        Timer.After(1, function()
-            scriptPlayersInScene.countdownWaitReleasePlayer()
-        end)
         RespawnAllPlayersInGame(game.localPlayer.character, game.localPlayer.name)
     end)
 
-    --Esto es nuevo y estamos revisando que pasa cuando el seeker sale del juego sea durante el juego o cuando este el contador de fin de juego - Jhalexso
     restartGameLeaveSeekerPlayer:Connect(function(newSeeker)
-        eventUpdateCountdownBeforeEndGame:FireServer()
-        countdownGame.StopTimerEndGame()
-
-        local saveAllPlayerGame = {}
-        local indexPlayer = 1
-
-        for namePlayer : string, objPlayer : GameObject in pairs(managerGame.objsCustome) do
-            if objPlayer == nil or tostring(objPlayer) == 'null' then continue end
-            
-            saveAllPlayerGame[indexPlayer] = namePlayer
-            indexPlayer += 1
-        end
-
-        if saveAllPlayerGame[newSeeker] == game.localPlayer.name then
-            scriptPlayersInScene.selectNewSeeker(saveAllPlayerGame[newSeeker], "Seeker")
-        end
-
-        updateWhoIsNewSeeker:FireServer(saveAllPlayerGame[newSeeker])
-
-        RespawnAllPlayersInGame(game.localPlayer.character, game.localPlayer.name)
+        resetNetworkValuesGame:FireServer(game.localPlayer.name)
+        managerGame.playerPetGlobal:SetActive(false)
+        audioManager.pauseAlertPlayerSeeker(audioManager.audioAlertPlayerSeeker, 0)
     end)
 
     endCountdownAllClients:Connect(function()
@@ -124,15 +88,12 @@ function self:ClientAwake()
         eventUpdateCountdownBeforeEndGame:FireServer()
         countdownGame.StopTimerEndGame()
         countdownGame.StartCountdownGame(uiManager, managerGame.whoIsSeeker.value)
+        audioManager.pauseAlertPlayerSeeker(audioManager.audioAlertPlayerSeeker, 0)
     end)
 
-    sendRestPlayersRestartClient:Connect(function(namePlayer, character, typePlayer)
+    sendRestPlayersRestartClient:Connect(function(namePlayer, character)
         if namePlayer ~= game.localPlayer.name then
-            if typePlayer == "Seeker" then
-                respawnStartPlayers(namePlayer, character, managerGame.pointRespawnPlayerSeekerGlobal)
-            elseif typePlayer == "Hidden" then
-                respawnStartPlayers(namePlayer, character, pointRespawnHiddenPlayers)
-            end
+            respawnStartPlayers(namePlayer, character)
         end
     end)
 end
@@ -141,33 +102,25 @@ function self:ServerAwake()
     resetNetworkValuesGame:Connect(function(player : Player, namePlayer)
         managerGame.isFirstReleaseSeeker.value = true
         managerGame.tagPlayerFound = {}
+        managerGame.playersTag = {}
+        managerGame.playerObjTag = {}
         managerGame.numPlayersFound.value = 0
+        managerGame.numPlayerHidingCurrently.value = 0
+        managerGame.wasCalculatedRandomMap.value = false
+        managerGame.opcMap.value = 1
         managerGame.cleanCustomeWhenPlayerLeftGameClient:FireAllClients(namePlayer)
 
         countdownGame.endCountdownGame.value = false
-        countdownGame.startingCountdownEndGame.value = false
+        countdownGame.playersWentSentToGame.value = false
+        managerGame.hasBeginGame.value = false
+        managerGame.whoIsSeeker.value = ''
 
         isCreatedCoroutine = false
+        eventRespawnAllPlayers:FireAllClients()
     end)
 
-    updateRespawnPlayersHiding:Connect(function(player : Player)
-        managerGame.numRespawnPlayerHiding.value += 1
-
-        if managerGame.numRespawnPlayerHiding.value == 5 then
-            managerGame.numRespawnPlayerHiding.value = 1
-        end
-    end)
-
-    sendRestPlayersRestartServer:Connect(function(player : Player, namePlayer, character, typePlayer)
-        sendRestPlayersRestartClient:FireAllClients(namePlayer, character, typePlayer)
-    end)
-
-    --Esto es nuevo y estamos revisando que pasa cuando el seeker sale del juego sea durante el juego o cuando este el contador de fin de juego - Jhalexso
-    updateWhoIsNewSeeker:Connect(function(player : Player, seeker)
-        managerGame.whoIsSeeker.value = seeker
-        if managerGame.numPlayerHidingCurrently.value > 0 then 
-            managerGame.numPlayerHidingCurrently.value -= 1
-        end
+    sendRestPlayersRestartServer:Connect(function(player : Player, namePlayer, character)
+        sendRestPlayersRestartClient:FireAllClients(namePlayer, character)
     end)
 
     eventUpdateCountdownBeforeEndGame:Connect(function(player : Player)
@@ -177,30 +130,32 @@ end
 
 function self:ServerUpdate()
     if (managerGame.numPlayersFound.value >= managerGame.numPlayerHidingCurrently.value or countdownGame.endCountdownGame.value) and managerGame.hasBeginGame.value and not isCreatedCoroutine then
+        print(`Comienzo del fin de juego`)
         startCountdownAllClients:FireAllClients()
-        audioManager.pauseAlertPlayerSeeker(audioManager.audioAlertPlayerSeeker, 0)
         isCreatedCoroutine = true
         managerGame.hasBeginGame.value = false
     elseif managerGame.numPlayersFound.value < managerGame.numPlayerHidingCurrently.value and isCreatedCoroutine and not countdownGame.endCountdownGame.value and not managerGame.hasBeginGame.value then
+        print(`Nuevo jugador ingresando al juego`)
         endCountdownAllClients:FireAllClients()
-        audioManager.pauseAlertPlayerSeeker(audioManager.audioAlertPlayerSeeker, 0)
         isCreatedCoroutine = false
         managerGame.hasBeginGame.value = true
     end
 
-    --Esto es nuevo y estamos revisando que pasa cuando el seeker sale del juego sea durante el juego o cuando este el contador de fin de juego - Jhalexso
-    if managerGame.whoIsSeeker.value == "" and managerGame.hasBeginGame.value then
-        local numChooseNewSeeker = math.random(1, managerGame.numPlayerHidingCurrently.value)
-        restartGameLeaveSeekerPlayer:FireAllClients(numChooseNewSeeker)
-        audioManager.pauseAlertPlayerSeeker(audioManager.audioAlertPlayerSeeker, 0)
-        isCreatedCoroutine = false
-    end
-
-    if countdownGame.startingCountdownEndGame.value then
-        eventRespawnAllPlayers:FireAllClients()
+    if (managerGame.whoIsSeeker.value == "" or managerGame.numPlayerHidingCurrently.value <= 0)  and (managerGame.hasBeginGame.value or countdownGame.playersWentSentToGame.value) then
+        print(`Reiniciando el juego - todos al lobby`)
+        restartGameLeaveSeekerPlayer:FireAllClients()
+        managerGame.hasBeginGame.value = false
     end
 
     if managerGame.numPlayersFound.value < 0 then
         managerGame.numPlayersFound.value = 0
+    end
+end
+
+function self:ClientUpdate()
+    if countdownGame.startingCountdownEndGame.value then
+        print(`Comienzo del fin de juego - Enviado a todos al lobby`)
+        resetNetworkValuesGame:FireServer(game.localPlayer.name)
+        countdownGame.startingCountdownEndGame.value = false
     end
 end

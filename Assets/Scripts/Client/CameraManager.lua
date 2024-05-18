@@ -25,7 +25,7 @@ local rotation : Vector3 = Vector3.zero          -- the rotation of the camera (
 local target = Vector3.zero                      -- the point the camera is looking at
 local offset = Vector3.zero                      -- the offset from the Target
 
-local charPlayer : Character = nil
+charPlayer = nil
 local localCharacterInstantiatedEvent = nil
 local InertiaMinVelocity = 0.5; -- prevents the infinite slow drag at the end of inertia
 local InertiaStepDuration = 1 / 60; -- each "inertia step" is normalized to 60fps

@@ -5,7 +5,7 @@ local infoPlayers : UILabel = nil
 local countdownGame : UILabel = nil
 
 --Variables
-local timeCurrent = ''
+timeCurrent = ''
 
 function EnabledInfoPlayers()
     infoPlayers.visible = true

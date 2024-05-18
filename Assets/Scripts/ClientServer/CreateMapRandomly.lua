@@ -17,6 +17,7 @@ local opcMapRandomly = {
 local createMapServer = Event.new("CreateMapServer")
 local createMapClient = Event.new("CreateMapClient")
 
+
 --Functions
 local function enableDoorsZoneMap(statusDoor)
     doorsClosedZoneGreen:SetActive(statusDoor['doorClosedZG'])
@@ -71,13 +72,15 @@ function self:ClientAwake()
     end)
 end
 
+function createMap(namePlayer)
+    createMapServer:FireServer(namePlayer)
+end
+
 function self:ServerAwake()
-    server.PlayerConnected:Connect(function(player : Player)
-        player.CharacterChanged:Connect(function(player : Player, character : Character)
-            if player.name == managerGame.whoIsSeeker.value then
-                managerGame.opcMap.value = math.random(1, 3)
-            end
-            createMapClient:FireAllClients(player.name)        
-        end)
+    createMapServer:Connect(function(player : Player, namePlayer)
+        if namePlayer == managerGame.whoIsSeeker.value then
+            managerGame.opcMap.value = math.random(1, 3)
+        end
+        createMapClient:FireAllClients(player.name) 
     end)
 end

@@ -47,11 +47,6 @@ function ResetFireFlyPlayerSeeker()
     managerGame.playerPetGlobal:SetActive(false)
 end
 
-function ResetFireFlyCollision(status)
-    if not managerGame.playerPetGlobal then return end
-    managerGame.playerPetGlobal:GetComponent("DetectingCollisions")
-end
-
 function ResetGhostPlayerSeeker()
     if ghost then ghost:SetActive(false) end
     isAddedGhost = false
@@ -73,6 +68,15 @@ function self:OnCollisionEnter(collision : Collision)
     local seeker = game.localPlayer.character.gameObject
     if seekerPlayer == collidedObj then return end -- Return why the player is colliding whit the same
     if collidedObj == managerGame.objsCustome[managerGame.whoIsSeeker.value] then return end
+
+    for namePlayer, obj in pairs(managerGame.objsCustome) do
+        if obj == collidedObj then
+            print(`Player: {namePlayer}`)
+            managerGame.reviewIfClientInGame:FireServer(namePlayer)
+            print(`Value Has Collided: {managerGame.hasCollidedWithAClientInGame.value}`)
+            if not managerGame.hasCollidedWithAClientInGame.value then return end
+        end
+    end
 
     if seeker ~= collidedObj and collidedObj.name == seeker.name and game.localPlayer.name == managerGame.whoIsSeeker.value then
         --VFX and SFX when the seeker find a player

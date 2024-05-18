@@ -1,9 +1,11 @@
 --Modules
 local managerGame = require("ManagerGame")
 local countdownGame = require("CountdownGame")
+local audioManager = require("AudioManager")
 
 --Variables no publics
 local pointRespawnPlayerHider : GameObject = nil
+local pointRespawnPlayerSeeker : GameObject = nil
 local playerPet : GameObject = nil
 local charPlayer : GameObject = nil
 local uiManager = nil
@@ -24,10 +26,12 @@ local player_id = StringValue.new("PlayerId", "")
 --Events
 local sendInfoAddZoneSeeker = Event.new("SendInfoAddZoneSeeker")
 local sendActivateMenuHide = Event.new("SendActivateMenuHide")
+local sendInfoRoles = Event.new("SendInfoRoles")
 
 --Functions
-local function respawnStartPlayerHiding(character : Character)
-    character:Teleport(pointRespawnPlayerHider.transform.position, function()end)
+local function respawnStartPlayerHiding(character : Character, pointRespawn)
+    if not pointRespawn then return end
+    character:Teleport(pointRespawn.transform.position, function()end)
 end
 
 local function activateMenuSelectedModelHide(player, namePlayer, numStandCustome, numRoad)
@@ -53,23 +57,12 @@ function countdownWaitReleasePlayer()
     end
 end
 
-function activateGameWhenExistTwoMorePlayerHiding()
-    if managerGame.numPlayerHidingCurrently.value >= 2 and managerGame.isFirstReleaseSeeker.value then
-        countdownWaitReleasePlayer()
-    end
+function sendInfoAssignRoles(character, namePlayer)
+    sendInfoRoles:FireServer(character, namePlayer)
 end
 
-local function mustWaitForPlayers()
-    if managerGame.numPlayerHidingCurrently.value <= 2 then
-        uiManager.SetInfoPlayers("Waiting for players: " .. tostring(managerGame.numPlayerHidingCurrently.value))
-        if managerGame.numPlayerHidingCurrently.value == 2 then
-            activateGameWhenExistTwoMorePlayerHiding()
-        end
-    end
-end
-
-local function assignRolePlayers(character, namePlayer)
-    if managerGame.isFirstPlayer.value then
+function assignRolePlayers(character, namePlayer)
+    if managerGame.isFirstPlayer.value and managerGame.whoIsSeeker.value == '' then
         player_id.value = "Seeker"
         sendInfoAddZoneSeeker:FireAllClients(character, namePlayer)
         managerGame.isFirstPlayer.value = false
@@ -77,11 +70,12 @@ local function assignRolePlayers(character, namePlayer)
     else
         player_id.value = "Hiding"
         managerGame.numPlayerHidingCurrently.value += 1 
-        sendActivateMenuHide:FireAllClients(character, namePlayer)
         managerGame.numRespawnPlayerHiding.value += 1
+        sendActivateMenuHide:FireAllClients(character, namePlayer)
+        managerGame.playersTag[namePlayer] = player_id.value
         countdownGame.endCountdownGame.value = false
 
-        if managerGame.numRespawnPlayerHiding.value == 5 then
+        if managerGame.numRespawnPlayerHiding.value >= 4 then
             managerGame.numRespawnPlayerHiding.value = 1
         end
 
@@ -91,7 +85,6 @@ local function assignRolePlayers(character, namePlayer)
     end
 end
 
---Esto es nuevo y estamos revisando que pasa cuando el seeker sale del juego sea durante el juego o cuando este el contador de fin de juego - Jhalexso
 function selectNewSeeker(namePlayer, id)
     managerGame.playersTag[namePlayer] = id
     managerGame.activateMenuModelHide(false, 0, 0)
@@ -132,21 +125,25 @@ function self:ClientAwake()
     infoGameModule = managerGame.InfoGameModuleGlobal
 
     sendInfoAddZoneSeeker:Connect(function (char, namePlayer)
-        if game.localPlayer.name == namePlayer then --not managerGame.playersTag[namePlayer] and client.localPlayer.name == namePlayer
+        pointRespawnPlayerSeeker = managerGame.pointRespawnPlayerSeekerGlobal
+        respawnStartPlayerHiding(char, pointRespawnPlayerSeeker)
+        
+        if game.localPlayer.name == namePlayer then
             playerPet = managerGame.playerPetGlobal
-            pointRespawnPlayerHider = managerGame.pointsRespawnPlayerHiderGlobal[managerGame.numRespawnPlayerHiding.value]
             charPlayer = char.gameObject
             
             selectNewSeeker(namePlayer, player_id.value)
             managerGame.playerObjTag[namePlayer] = charPlayer
-        end
 
-        Timer.After(5, mustWaitForPlayers)
+            local position = char.gameObject.transform.position
+            cameraManagerSeeker.CenterOn(position)
+        end
     end)
 
     sendActivateMenuHide:Connect(function (char, namePlayer)
         pointRespawnPlayerHider = managerGame.pointsRespawnPlayerHiderGlobal[managerGame.numRespawnPlayerHiding.value]
-        
+        respawnStartPlayerHiding(char, pointRespawnPlayerHider)
+
         if game.localPlayer.name == namePlayer then
             charPlayer = char.gameobject
             managerGame.playersTag[namePlayer] = player_id.value
@@ -157,23 +154,18 @@ function self:ClientAwake()
             Timer.After(6, function() uiManager.DisabledInfoPlayerHiding() end)
             cameraManagerSeeker.enabled = false
             cameraManagerHiding.enabled = true
-        end
 
-        activateGameWhenExistTwoMorePlayerHiding()
-
-        if managerGame.whoIsSeeker.value == game.localPlayer.name then
-            mustWaitForPlayers()
+            local position = char.gameObject.transform.position
+            cameraManagerHiding.CenterOn(position)
         end
         
-        respawnStartPlayerHiding(char)
+        countdownWaitReleasePlayer()
     end)
 end
 
 function self:ServerAwake()
-    server.PlayerConnected:Connect(function(player : Player)
-        player.CharacterChanged:Connect(function(player : Player, character : Character)
-            assignRolePlayers(character, player.name)
-        end)
+    sendInfoRoles:Connect(function(player : Player, character, namePlayer)
+        assignRolePlayers(character, namePlayer)
     end)
 end
 
@@ -190,6 +182,7 @@ function self:Update()
         end
 
         countdownGame.StartCountdownGame(uiManager, managerGame.whoIsSeeker.value)
+        audioManager.pauseAlertPlayerSeeker(audioManager.audioAlertPlayerSeeker, 0)
         countdownGame.endCountdownHiddenPlayers = false
     end
 end

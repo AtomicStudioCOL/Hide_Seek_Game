@@ -2,6 +2,8 @@
 --!SerializeField
 local playerPet : GameObject = nil
 --!SerializeField
+local pointRespawnLobby : GameObject = nil
+--!SerializeField
 local pointRespawnPlayerSeeker : GameObject = nil
 --!SerializeField
 local pointRespawnPlayerHider01 : GameObject = nil
@@ -54,6 +56,12 @@ local navMeshAgentWithoutHiders : GameObject = nil
 --!SerializeField
 local navMeshAgentWithHiders : GameObject = nil
 --!SerializeField
+local navMeshLobby : GameObject = nil
+--!SerializeField
+local lobbyRoom : GameObject = nil
+--!SerializeField
+local worldRoom : GameObject = nil
+--!SerializeField
 local doorSeeker : GameObject = nil
 --!SerializeField
 local UIManager : GameObject = nil
@@ -84,6 +92,9 @@ doorsClosedZoneGreenGlobal = nil
 doorsOpenZoneGreenGlobal = nil
 doorsClosedZoneOrangeGlobal = nil
 doorsOpenZoneOrangeGlobal = nil
+pointRespawnLobbyGlobal = nil
+lobbyRoomGlobal = nil
+worldRoomGlobal = nil
 pointsRespawnPlayerHiderGlobal = {} -- Storage all points respawn. {[n] = point_respawn}
 objsHidesGlobal = {} -- Storage all stand custome. {[n] = stand_custome}
 roadPedestalsGlobal = {} -- Storage the road to the pedestals
@@ -105,6 +116,7 @@ isFirstReleaseSeeker = BoolValue.new("IsFirstReleaseSeeker", true)
 wasCalculatedRandomMap = BoolValue.new("WasCalculatedRandomMap", false)
 hasBeginGame = BoolValue.new("HasBeginGame", false)
 opcMap = IntValue.new("MapRandom", 1)
+hasCollidedWithAClientInGame = BoolValue.new("HasCollidedWithAClientInGame", false)
 
 --Variables locals
 local dressWear = nil
@@ -128,6 +140,8 @@ releasePlayerServer = Event.new("ReleasePlayerServer")
 releasePlayerClient = Event.new("ReleasePlayerClient")
 updateNumPlayersHiding = Event.new("UpdateNumPlayersHiding")
 updateNumPlayersFound = Event.new("UpdateNumPlayersFound")
+reviewIfClientInGame = Event.new('ReviewIfClientInGame')
+updateWhichClientHasCollided = Event.new("UpdateWhichClientHasCollided")
 
 --Local Functions
 function followingToTarget(current : GameObject, target, maxDistanceDelta, positionOffset)
@@ -187,20 +201,29 @@ function activateMenuModelHide(visible, standCustome, numRoad)
 end
 
 function cleanCustomeAndStopTrackingPlayer(namePlayer)
-    if customePlayers[namePlayer] then
+    if customePlayers[namePlayer] and namePlayer ~= whoIsSeeker.value then
+        if customePlayers[namePlayer]["Dress"].name == playerPet.name then return end
         if namePlayer == whoIsSeeker.value then return end
         if customePlayers[namePlayer] == nil or tostring(customePlayers[namePlayer]) == 'null' then return end
         if customePlayers[namePlayer]["Dress"] == nil or tostring(customePlayers[namePlayer]["Dress"]) == 'null' then return end
         
         Object.Destroy(customePlayers[namePlayer]["Dress"])
-        customePlayers[namePlayer] = nil
-        isFollowingAlways = false
     end
+    
+    isFollowingAlways = false
+end
+
+function activateNavMeshLobby()
+    navMeshAgentWithoutHiders:SetActive(false)
+    navMeshAgentWithHiders:SetActive(false)
+    navMeshLobby:SetActive(true)
+    doorSeeker:SetActive(false)
 end
 
 function lockedPlayerSeeker()
     navMeshAgentWithoutHiders:SetActive(true)
     navMeshAgentWithHiders:SetActive(false)
+    navMeshLobby:SetActive(false)
     doorSeeker:SetActive(true)
 end
 
@@ -218,6 +241,11 @@ function self:ClientAwake()
     uiManager = UIManagerGlobal:GetComponent("UI_Hide_Seek")
     infoGameModule = self.gameObject:GetComponent("InfoGameModule")
     InfoGameModuleGlobal = infoGameModule
+
+    --Lobby
+    pointRespawnLobbyGlobal = pointRespawnLobby
+    lobbyRoomGlobal = lobbyRoom
+    worldRoomGlobal = worldRoom
 
     --Point respawn Seeker
     pointRespawnPlayerSeekerGlobal = pointRespawnPlayerSeeker
@@ -266,6 +294,7 @@ function self:ClientAwake()
     releasePlayerClient:Connect(function(namePlayer, offset, rotationFireFly)
         navMeshAgentWithoutHiders:SetActive(false)
         navMeshAgentWithHiders:SetActive(true)
+        navMeshLobby:SetActive(false)
         doorSeeker:SetActive(false)
 
         addCostumePlayers(
@@ -337,6 +366,11 @@ function self:ClientAwake()
 
     cleanCustomeWhenPlayerLeftGameClient:Connect(function(namePlayer)
         cleanCustomeAndStopTrackingPlayer(namePlayer)
+        customePlayers[namePlayer] = nil
+    end)
+
+    updateWhichClientHasCollided:Connect(function(status)
+        hasCollidedWithAClientInGame.value = status
     end)
 end
 
@@ -364,20 +398,33 @@ function self:ServerAwake()
         updatePlayersFound:FireAllClients()
     end)
 
+    reviewIfClientInGame:Connect(function(player : Player, namePlayer)
+        print(`Jugador colisionado: {playersTag[namePlayer]}`)
+        if playersTag[player.name] then
+            hasCollidedWithAClientInGame.value = true
+            updateWhichClientHasCollided:FireClient(player, true)
+        else
+            hasCollidedWithAClientInGame.value = false
+            updateWhichClientHasCollided:FireClient(player, false)
+        end
+        print(`Server: {hasCollidedWithAClientInGame.value}`)
+    end)
+
     server.PlayerDisconnected:Connect(function(player : Player)
         if whoIsSeeker.value == player.name then
             isFirstPlayer.value = true
             playersTag[whoIsSeeker.value] = nil
             isFirstReleaseSeeker.value = true
             whoIsSeeker.value = ""
-        else
+        elseif playersTag[player.name] then
+            print(`Tag Player: {playersTag[player.name]}`)
             if numRespawnPlayerHiding.value > 0 then numRespawnPlayerHiding.value -= 1 end
             if numPlayerHidingCurrently.value > 0 then numPlayerHidingCurrently.value -= 1 end
             if numPlayersFound.value > 0 then numPlayersFound.value -= 1 end
             isFirstReleaseSeeker.value = true
             updateNumPlayersHiding:FireAllClients()
         end
-
+             
         objsCustome[player.name] = nil --Contain the players in scene
         cleanCustomeWhenPlayerLeftGameClient:FireAllClients(player.name)
     end)
@@ -395,7 +442,7 @@ function self:Update()
 
     for player, info in pairs (customePlayers) do
         if not customePlayers[player] then continue end
-
+        --print(`Seguimiento continuo 2 {customePlayers[player]}`)
         followingToTarget(
             info["Dress"],
             info["Player"],
