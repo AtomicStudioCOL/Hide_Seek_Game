@@ -2,6 +2,10 @@
 --!SerializeField
 local playerPet : GameObject = nil
 --!SerializeField
+local fireFlyLightColor01 : GameObject = nil
+--!SerializeField
+local fireFlyLightColor02 : GameObject = nil
+--!SerializeField
 local pointRespawnLobby : GameObject = nil
 --!SerializeField
 local pointRespawnPlayerSeeker : GameObject = nil
@@ -326,6 +330,9 @@ function self:ClientAwake()
                 uiManager.SetInfoPlayers("Players Found: " .. tostring(numPlayersFound.value) .. '/' .. tostring(numPlayerHidingCurrently.value))
             end)
         end
+
+        fireFlyLightColor01:GetComponent(FireflyLightColor).updateSeeker()
+        fireFlyLightColor02:GetComponent(FireflyLightColor).updateSeeker()
     end)
 
     updateNumPlayersHiding:Connect(function()

@@ -44,9 +44,9 @@ local function dataCountdownStart(txt, playerSelected)
 end
 
 local function chosenRolePlayer(totalPlayers)
-    for name, tag in pairs(managerGame.playersTag) do
+    --[[ for name, tag in pairs(managerGame.playersTag) do
         print(`Name: {name} - Tag: {tag}`)
-    end
+    end ]]
 
     if managerGame.isFirstPlayer.value then
         rolPlayer = math.random(1, 2)

@@ -22,7 +22,6 @@ local minNumPlayers : number = 3
 local amountPlayers = IntValue.new('AmountPlayersLobby', 0)
 local hasSentPlayersToGame = BoolValue.new('HasSentPlayersToGame', false)
 local chosenPlayer = StringValue.new('ChosenPlayer', '')
-local updateSelectNewMap = BoolValue.new('UpdateSelectNewMap', true)
 
 --Event
 local eventSendPlayerToLobbyServer = Event.new("EventSendPlayerToLobbyServer")
@@ -107,10 +106,7 @@ function self:ClientAwake()
     end)
 
     timeBeforeStartGameLobby:Connect(function()
-        if updateSelectNewMap.value then
-            scriptCreateMapRandomly.resetChosenMap:FireServer()
-            updateSelectNewMap.value = false
-        end
+        scriptCreateMapRandomly.resetChosenMap:FireServer()
         countdownGame.StartCountdownGoGameLobby(uiManager, chosenPlayer.value)
     end)
 

@@ -30,11 +30,17 @@ local function enableDoorsZoneMap(statusDoor)
 end
 
 local function enableZoneMapChosen()
+    if managerGame.opcMap.value == 1 then
+        zones[1]:SetActive(false)
+        zones[2]:SetActive(false)
+    end
+
     for _,zone in ipairs(opcMapRandomly[managerGame.opcMap.value]) do
         if not zones[zone] then continue end
         zones[zone]:SetActive(true)
         
         if managerGame.opcMap.value == 2 then
+            zones[2]:SetActive(false)
             enableDoorsZoneMap({
                 ['doorClosedZG'] = false,
                 ['doorOpenZG'] = true,
@@ -69,9 +75,7 @@ function self:ClientAwake()
     })
 
     createMapClient:Connect(function(namePlayer)
-        if namePlayer == game.localPlayer.name then
-            enableZoneMapChosen()
-        end
+        enableZoneMapChosen()
     end)
 end
 
@@ -84,7 +88,6 @@ function self:ServerAwake()
         if not chosenMap.value then
             managerGame.opcMap.value = math.random(1, 3)
             chosenMap.value = true
-            print(`Selected Map: {managerGame.opcMap.value}`)
         end
 
         createMapClient:FireAllClients(player.name) 

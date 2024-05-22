@@ -31,12 +31,16 @@ local function TableLenght(table)
     return length
 end
 
+function updateSeeker()
+    seeker = managerGame.objsCustome[managerGame.whoIsSeeker.value]
+end
+
 ---[[
 local function ClosestHider()
     for key, value in pairs(managerGame.objsCustome) do
         if tostring(value) == 'null' or not value then continue end
         
-        if key ~= managerGame.whoIsSeeker.value and managerGame.tagPlayerFound[key] ~= "Found" then
+        if key ~= managerGame.whoIsSeeker.value then --and managerGame.tagPlayerFound[key] ~= "Found"
             if not seeker then continue end
             if not seeker.transform or not value.transform then continue end
             

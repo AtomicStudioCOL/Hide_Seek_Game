@@ -101,7 +101,6 @@ function self:ClientAwake()
     end)
 
     restartGameLeaveSeekerPlayer:Connect(function()
-        print(`All Players Reset: {game.localPlayer.name}`)
         resetNetworkValuesGame:FireServer(game.localPlayer.name)
         managerGame.playerPetGlobal:SetActive(false)
         audioManager.pauseAlertPlayerSeeker(audioManager.audioAlertPlayerSeeker, 0)
