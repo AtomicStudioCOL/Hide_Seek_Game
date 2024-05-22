@@ -22,6 +22,7 @@ local minNumPlayers : number = 3
 local amountPlayers = IntValue.new('AmountPlayersLobby', 0)
 local hasSentPlayersToGame = BoolValue.new('HasSentPlayersToGame', false)
 local chosenPlayer = StringValue.new('ChosenPlayer', '')
+local updateSelectNewMap = BoolValue.new('UpdateSelectNewMap', true)
 
 --Event
 local eventSendPlayerToLobbyServer = Event.new("EventSendPlayerToLobbyServer")
@@ -31,8 +32,7 @@ local stopTimeBeforeStartGame = Event.new("StopTimeBeforeStartGame")
 local sendPlayersPointRespawnServer = Event.new("SendPlayersPointRespawnServer")
 local sendPlayersPointRespawnClient = Event.new("SendPlayersPointRespawnClient")
 local updateHasSentPlayerToGame = Event.new("UpdateHasSentPlayerToGame")
-local eventUpdateChoosenSeeker = Event.new("UpdateChoosenSeeker")
-eventFoundNumPlayersInLobby = Event.new("PlayersInLobby")
+local eventFoundNumPlayersInLobby = Event.new("PlayersInLobby")
 
 local function numPlayersInLobby()
     local numPlayers = 0
@@ -68,9 +68,7 @@ function settingLobbyPlayer(endGame : boolean)
 
     textInterface()
     eventFoundNumPlayersInLobby:FireServer()
-    print(`End Game: {endGame} - Has been Sent Player To Game: {hasSentPlayersToGame.value}`)
     if hasSentPlayersToGame.value and endGame then
-        print(`Volviendo a comenzar`)
         updateHasSentPlayerToGame:FireServer()
     end
 end
@@ -109,6 +107,10 @@ function self:ClientAwake()
     end)
 
     timeBeforeStartGameLobby:Connect(function()
+        if updateSelectNewMap.value then
+            scriptCreateMapRandomly.resetChosenMap:FireServer()
+            updateSelectNewMap.value = false
+        end
         countdownGame.StartCountdownGoGameLobby(uiManager, chosenPlayer.value)
     end)
 
@@ -135,10 +137,6 @@ function self:ServerAwake()
         hasSentPlayersToGame.value = false
     end)
 
-    eventUpdateChoosenSeeker:Connect(function(player : Player)
-        managerGame.isFirstPlayer.value = true
-    end)
-
     server.PlayerDisconnected:Connect(function(player : Player)
         amountPlayers.value = numPlayersInLobby()
     end)
@@ -151,7 +149,6 @@ function self:ServerUpdate()
     end
 
     if amountPlayers.value < minNumPlayers and hasSentPlayersToGame.value and not countdownGame.playersWentSentToGame.value then
-        print("Tiempo detenido para enviar al juego porque hay menos de 3 personas para iniciar")
         stopTimeBeforeStartGame:FireAllClients()
         countdownGame.resetCountdowns()
         hasSentPlayersToGame.value = false
@@ -160,12 +157,16 @@ end
 
 function self:ClientUpdate()
     if countdownGame.endCountdownGoGameLobby.value then
-        scriptPlayersInScene.sendInfoAssignRoles(game.localPlayer.character, game.localPlayer.name)
+        scriptPlayersInScene.sendInfoAssignRoles(
+            game.localPlayer.character, 
+            game.localPlayer.name, 
+            amountPlayers.value,
+            chosenPlayer.value
+        )
         scriptCreateMapRandomly.createMap(game.localPlayer.name)
         lobbyRoom:SetActive(true)
         worldRoom:SetActive(true)
         managerGame.lockedPlayerSeeker()
-        eventUpdateChoosenSeeker:FireServer()
         countdownGame.endCountdownGoGameLobby.value = false
     end
 end

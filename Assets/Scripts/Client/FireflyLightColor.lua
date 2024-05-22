@@ -38,6 +38,7 @@ local function ClosestHider()
         
         if key ~= managerGame.whoIsSeeker.value and managerGame.tagPlayerFound[key] ~= "Found" then
             if not seeker then continue end
+            if not seeker.transform or not value.transform then continue end
             
             if math.abs(value.transform.position.x - seeker.transform.position.x) < distanceToRed
             and

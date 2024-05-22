@@ -85,9 +85,11 @@ function UpdatePosition()
     cameraPos = rotation * cameraPos
     cameraPos = cameraPos + target
     local cameraOffset = cameraRig.rotation * offset
-
+    
     cameraRig.position = cameraPos
     cameraRig:LookAt(target)
+
+    if not charPlayer.gameObject or not charPlayer then return end
     cameraRig.position = cameraRig.position + (charPlayer.gameObject.transform.position + cameraOffset)
 end
 

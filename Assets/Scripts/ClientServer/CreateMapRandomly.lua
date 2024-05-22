@@ -13,10 +13,13 @@ local opcMapRandomly = {
     [3] = {1, 2},
 }
 
+--Network Values
+chosenMap = BoolValue.new("ChosenMap", false)
+
 --Events
 local createMapServer = Event.new("CreateMapServer")
 local createMapClient = Event.new("CreateMapClient")
-
+resetChosenMap = Event.new("ResetSelectedMap")
 
 --Functions
 local function enableDoorsZoneMap(statusDoor)
@@ -78,9 +81,16 @@ end
 
 function self:ServerAwake()
     createMapServer:Connect(function(player : Player, namePlayer)
-        if namePlayer == managerGame.whoIsSeeker.value then
+        if not chosenMap.value then
             managerGame.opcMap.value = math.random(1, 3)
+            chosenMap.value = true
+            print(`Selected Map: {managerGame.opcMap.value}`)
         end
+
         createMapClient:FireAllClients(player.name) 
+    end)
+
+    resetChosenMap:Connect(function(player : Player)
+        chosenMap.value = false
     end)
 end

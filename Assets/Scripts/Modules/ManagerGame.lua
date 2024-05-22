@@ -99,7 +99,6 @@ pointsRespawnPlayerHiderGlobal = {} -- Storage all points respawn. {[n] = point_
 objsHidesGlobal = {} -- Storage all stand custome. {[n] = stand_custome}
 roadPedestalsGlobal = {} -- Storage the road to the pedestals
 btnsObjHides = {} -- Storage all buttons of the hides objects. {["Point Respawn"] = {[n] = btn}}
-playerObjTag = {} -- Storage the gameobject joined to the player [NamePlayer - GameObject]
 playersTag = {} -- Storage all player in the scene [NamePlayer - TypePlayer]
 customeStorage = {} -- Storage all costumes
 objsCustome = {} -- Storage the gameobject joined to the player globally [NamePlayer - GameObject]
@@ -107,25 +106,24 @@ customePlayers = {} -- Players whit its custome [NamePlayer -> {["Dress"] = Cust
 standCustomePlayers = {} -- Players whit its stand custome {[NamePlayer] = num_stand_custome}
 roadToPedestalCustom = {} -- Players whit its road to custome pedestal {[NamePlayer] = num_road}
 tagPlayerFound = {} -- Player what was found - {[NamePlayer] = "Found" or nil}
-isFirstPlayer = BoolValue.new("IsFirstPlayer", true) -- Verified if is the first client and assign the seeker's role
 whoIsSeeker = StringValue.new("WhoIsSeeker", "") -- Storage the seeker's name
 numRespawnPlayerHiding = IntValue.new("NumRespawnPlayerHiding", 1) -- Point current of respawn of the new player
 numPlayerHidingCurrently = IntValue.new("NumPlayerHidingCurrently", 0) -- Number of players hiding currently
 numPlayersFound = IntValue.new("NumPlayersFound", 0) -- Amount of players Found
-isFirstReleaseSeeker = BoolValue.new("IsFirstReleaseSeeker", true)
 wasCalculatedRandomMap = BoolValue.new("WasCalculatedRandomMap", false)
 hasBeginGame = BoolValue.new("HasBeginGame", false)
 opcMap = IntValue.new("MapRandom", 1)
 hasCollidedWithAClientInGame = BoolValue.new("HasCollidedWithAClientInGame", false)
+isFirstPlayer = BoolValue.new("IsFirstPlayer", true) -- Verified if is the first client and assign the seeker's role
 
 --Variables locals
 local dressWear = nil
 local playerCurrent = nil
 local posDress = Vector3.new(0, 0, 0)
 local posOffset = Vector3.new(0, 0, 0)
-local isFollowingAlways = false
 local uiManager = nil
 local infoGameModule = nil
+isFollowingAlways = false
 
 --Events
 local updatePlayersFound = Event.new("UpdatePlayersFound")
@@ -146,6 +144,7 @@ updateWhichClientHasCollided = Event.new("UpdateWhichClientHasCollided")
 --Local Functions
 function followingToTarget(current : GameObject, target, maxDistanceDelta, positionOffset)
     if not current or not target then return end
+    if not current.transform or not target.transform then return end
 
     current.transform.position = Vector3.MoveTowards(
         current.transform.position, 
@@ -200,16 +199,32 @@ function activateMenuModelHide(visible, standCustome, numRoad)
     roadPedestalsGlobal[numRoad]:SetActive(visible)
 end
 
-function cleanCustomeAndStopTrackingPlayer(namePlayer)
-    if customePlayers[namePlayer] and namePlayer ~= whoIsSeeker.value then
-        if customePlayers[namePlayer]["Dress"].name == playerPet.name then return end
-        if namePlayer == whoIsSeeker.value then return end
-        if customePlayers[namePlayer] == nil or tostring(customePlayers[namePlayer]) == 'null' then return end
-        if customePlayers[namePlayer]["Dress"] == nil or tostring(customePlayers[namePlayer]["Dress"]) == 'null' then return end
-        
-        Object.Destroy(customePlayers[namePlayer]["Dress"])
+local function reviewingScenePlayersCustome(nameCustome, namePlayer)
+    if GameObject.Find(nameCustome .. '(Clone)') then
+        print(`Destroy Scene: {GameObject.Find(nameCustome .. '(Clone)')}`)
+        Object.Destroy(GameObject.Find(nameCustome .. '(Clone)'))
+        customePlayers[namePlayer] = {}
     end
+end
+
+function cleanTrashGame(namePlayer)
+    reviewingScenePlayersCustome(custome01.name, namePlayer)
+    reviewingScenePlayersCustome(custome02.name, namePlayer)
+    reviewingScenePlayersCustome(custome03.name, namePlayer)
+end
+
+function cleanCustomeAndStopTrackingPlayer(namePlayer)
+    print(`Player: {game.localPlayer.name}`)
+    if customePlayers[namePlayer] == nil or tostring(customePlayers[namePlayer]) == 'null' then return end
+    if customePlayers[namePlayer]["Dress"] == nil or tostring(customePlayers[namePlayer]["Dress"]) == 'null' then return end
     
+    if namePlayer ~= whoIsSeeker.value then
+        if customePlayers[namePlayer]["Dress"].name == playerPet.name then return end
+        print(`Custome Destroy: {customePlayers[namePlayer]["Dress"]}`)
+        Object.Destroy(customePlayers[namePlayer]["Dress"])
+        customePlayers[namePlayer] = {}
+    end
+
     isFollowingAlways = false
 end
 
@@ -229,7 +244,7 @@ end
 
 --Unity Functions
 function self:ClientAwake()
-    playerPetGlobal = playerPet -- Player pet
+    playerPetGlobal = playerPet
     UIManagerGlobal = UIManager
     CameraManagerGlobal = CameraManager
     zoneGreenGlobal = zoneGreen
@@ -238,8 +253,8 @@ function self:ClientAwake()
     doorsOpenZoneGreenGlobal = doorsOpenZoneGreen
     doorsClosedZoneOrangeGlobal = doorsClosedZoneOrange
     doorsOpenZoneOrangeGlobal = doorsOpenZoneOrange
-    uiManager = UIManagerGlobal:GetComponent("UI_Hide_Seek")
-    infoGameModule = self.gameObject:GetComponent("InfoGameModule")
+    uiManager = UIManagerGlobal:GetComponent(UI_Hide_Seek)
+    infoGameModule = self.gameObject:GetComponent(InfoGameModule)
     InfoGameModuleGlobal = infoGameModule
 
     --Lobby
@@ -308,8 +323,9 @@ function self:ClientAwake()
 
         if playersTag[game.localPlayer.name] == "Seeker" then
             uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["GoSeeker"])
-            Timer.After(2, function() 
-                playerPet:GetComponent("DetectingCollisions").enabled = true
+            Timer.After(2, function()
+                local detectingcol = playerPet:GetComponent(DetectingCollisions)
+                detectingcol.enabled = true
                 uiManager.SetInfoPlayers("Players Found: " .. tostring(numPlayersFound.value) .. '/' .. tostring(numPlayerHidingCurrently.value))
             end)
         end
@@ -328,17 +344,15 @@ function self:ClientAwake()
     end)
 
     disabledDetectingCollisionsAllPlayersClient:Connect(function()
-        playerPet:GetComponent("DetectingCollisions").enabled = false
+        local detectingcol = playerPet:GetComponent(DetectingCollisions)
+        detectingcol.enabled = false
     end)
 
     showCustomeAllPlayersClient:Connect(function(numDress, namePlayer, offset, rotationCustome)
         --Replied to all clients except sender
         if namePlayer ~= game.localPlayer.name then
-            if customePlayers[namePlayer] then
-                Object.Destroy(customePlayers[namePlayer]["Dress"])
-                customePlayers[namePlayer] = nil
-            end
-
+            cleanCustomeAndStopTrackingPlayer(namePlayer)
+            
             addCostumePlayers(
                 customeStorage[numDress], 
                 objsCustome[namePlayer], 
@@ -366,7 +380,6 @@ function self:ClientAwake()
 
     cleanCustomeWhenPlayerLeftGameClient:Connect(function(namePlayer)
         cleanCustomeAndStopTrackingPlayer(namePlayer)
-        customePlayers[namePlayer] = nil
     end)
 
     updateWhichClientHasCollided:Connect(function(status)
@@ -389,7 +402,6 @@ function self:ServerAwake()
 
     releasePlayerServer:Connect(function(player : Player, namePlayer, offset, rotationFireFly)
         releasePlayerClient:FireAllClients(namePlayer, offset, rotationFireFly)
-        isFirstReleaseSeeker.value = false
         hasBeginGame.value = true
     end)
 
@@ -412,19 +424,16 @@ function self:ServerAwake()
 
     server.PlayerDisconnected:Connect(function(player : Player)
         if whoIsSeeker.value == player.name then
+            whoIsSeeker.value = ''
             isFirstPlayer.value = true
-            playersTag[whoIsSeeker.value] = nil
-            isFirstReleaseSeeker.value = true
-            whoIsSeeker.value = ""
+            isFollowingAlways = false
         elseif playersTag[player.name] then
-            print(`Tag Player: {playersTag[player.name]}`)
             if numRespawnPlayerHiding.value > 0 then numRespawnPlayerHiding.value -= 1 end
             if numPlayerHidingCurrently.value > 0 then numPlayerHidingCurrently.value -= 1 end
             if numPlayersFound.value > 0 then numPlayersFound.value -= 1 end
-            isFirstReleaseSeeker.value = true
             updateNumPlayersHiding:FireAllClients()
         end
-             
+        
         objsCustome[player.name] = nil --Contain the players in scene
         cleanCustomeWhenPlayerLeftGameClient:FireAllClients(player.name)
     end)
@@ -441,8 +450,11 @@ function self:Update()
     end
 
     for player, info in pairs (customePlayers) do
-        if not customePlayers[player] then continue end
-        --print(`Seguimiento continuo 2 {customePlayers[player]}`)
+        if not customePlayers[player] or customePlayers[player] == {} then continue end
+        if not info["Dress"] or tostring(info["Dress"]) == 'null' then continue end
+        if not info["Player"] or tostring(info["Player"]) == 'null' then continue end
+        if not info["Offset"] or tostring(info["Offset"]) == 'null' then continue end
+        
         followingToTarget(
             info["Dress"],
             info["Player"],

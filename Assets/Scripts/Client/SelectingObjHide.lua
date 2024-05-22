@@ -3,10 +3,7 @@ local managerGame = require("ManagerGame")
 
 --Functions
 local function addCostumePlayerHiding(numDress : number, localPlayerObj : GameObject, offset : Vector3, rotationCustome, tagPlayer : string)
-    if managerGame.customePlayers[game.localPlayer.name] then
-        Object.Destroy(managerGame.customePlayers[game.localPlayer.name]["Dress"])
-        managerGame.customePlayers[game.localPlayer.name] = nil
-    end
+    managerGame.cleanCustomeAndStopTrackingPlayer(game.localPlayer.name)
     
     managerGame.addCostumePlayers(
         managerGame.customeStorage[numDress],

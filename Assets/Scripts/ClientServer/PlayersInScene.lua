@@ -6,8 +6,6 @@ local audioManager = require("AudioManager")
 --Variables no publics
 local pointRespawnPlayerHider : GameObject = nil
 local pointRespawnPlayerSeeker : GameObject = nil
-local playerPet : GameObject = nil
-local charPlayer : GameObject = nil
 local uiManager = nil
 local infoGameModule = nil
 local rolPlayer : number = 0
@@ -22,6 +20,8 @@ cameraManagerHiding = nil
 
 --Network Values
 local player_id = StringValue.new("PlayerId", "")
+local chosenSeekerPlayer = BoolValue.new("ChosenSeekerPlayer", false)
+local roleRandomly = BoolValue.new("SelectRoleRandomly", true)
 
 --Events
 local sendInfoAddZoneSeeker = Event.new("SendInfoAddZoneSeeker")
@@ -34,87 +34,94 @@ local function respawnStartPlayerHiding(character : Character, pointRespawn)
     character:Teleport(pointRespawn.transform.position, function()end)
 end
 
-local function activateMenuSelectedModelHide(player, namePlayer, numStandCustome, numRoad)
-    if managerGame.playersTag[namePlayer] == "Hiding" then
-        managerGame.playerObjTag[namePlayer] = player
-        managerGame.activateMenuModelHide(true, numStandCustome, numRoad)
-    end
-end
-
-local function dataCountdownStart(txt)
+local function dataCountdownStart(txt, playerSelected)
     countdownGame.StartCountdownHiddenPlayers(
         uiManager,
         txt,
-        managerGame.whoIsSeeker.value
+        playerSelected
     )
 end
 
-function countdownWaitReleasePlayer()
-    if game.localPlayer.name == managerGame.whoIsSeeker.value then
-        dataCountdownStart('The wait time for the game to start')
+local function chosenRolePlayer(totalPlayers)
+    if managerGame.isFirstPlayer.value then
+        rolPlayer = math.random(1, 2)
     else
-        dataCountdownStart('Hurry up and choose a disguise, then hide in the environment')
+        rolPlayer = 2
+    end
+
+    return rolesPlayerGame[rolPlayer]
+end
+
+function countdownWaitReleasePlayer(playerSelected)
+    if player_id.value == rolesPlayerGame[1] then
+        dataCountdownStart('The wait time for the game to start', playerSelected)
+    elseif player_id.value == rolesPlayerGame[2] then
+        dataCountdownStart('Hurry up and choose a disguise, then hide in the environment', playerSelected)
     end
 end
 
-function sendInfoAssignRoles(character, namePlayer)
-    sendInfoRoles:FireServer(character, namePlayer)
+function sendInfoAssignRoles(character, namePlayer, totalPlayers, playerSelected)
+    sendInfoRoles:FireServer(character, namePlayer, totalPlayers, playerSelected)
 end
 
-function assignRolePlayers(character, namePlayer)
-    if managerGame.isFirstPlayer.value and managerGame.whoIsSeeker.value == '' then
-        player_id.value = "Seeker"
-        sendInfoAddZoneSeeker:FireAllClients(character, namePlayer)
+function assignRolePlayers(character, namePlayer, totalPlayers, playerSelected)
+    if roleRandomly.value then
+        player_id.value = chosenRolePlayer(totalPlayers)
+    else
+        player_id.value = rolesPlayerGame[1]
+        roleRandomly.value = true
+        managerGame.isFirstPlayer.value = false
+    end
+    
+    managerGame.playersTag[namePlayer] = player_id.value
+
+    if player_id.value == rolesPlayerGame[1] then
+        sendInfoAddZoneSeeker:FireAllClients(character, namePlayer, playerSelected)
         managerGame.isFirstPlayer.value = false
         managerGame.whoIsSeeker.value = namePlayer
-    else
-        player_id.value = "Hiding"
+    elseif player_id.value == rolesPlayerGame[2] then
         managerGame.numPlayerHidingCurrently.value += 1 
         managerGame.numRespawnPlayerHiding.value += 1
-        sendActivateMenuHide:FireAllClients(character, namePlayer)
-        managerGame.playersTag[namePlayer] = player_id.value
+
+        sendActivateMenuHide:FireAllClients(character, namePlayer, playerSelected)
         countdownGame.endCountdownGame.value = false
 
         if managerGame.numRespawnPlayerHiding.value >= 4 then
             managerGame.numRespawnPlayerHiding.value = 1
         end
 
-        if not managerGame.isFirstReleaseSeeker.value then
-            managerGame.updateNumPlayersHiding:FireAllClients()
+        if ((managerGame.numPlayerHidingCurrently.value + 1) == totalPlayers) and managerGame.whoIsSeeker.value == '' then
+            roleRandomly.value = false
         end
     end
 end
 
-function selectNewSeeker(namePlayer, id)
-    managerGame.playersTag[namePlayer] = id
-    managerGame.activateMenuModelHide(false, 0, 0)
-    managerGame.disabledDetectingCollisionsAllPlayersServer:FireServer()
-
-    uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["Intro"])
-    cameraManagerSeeker.enabled = true
-    cameraManagerHiding.enabled = false
-end
-
-function activateMenuSelectedCustomePlayerHiding(charPlayer, namePlayer)
+function activateMenuSelectedCustomePlayerHiding(namePlayer)
     if managerGame.numRespawnPlayerHiding.value == 3 or managerGame.numRespawnPlayerHiding.value == 4 then
-        activateMenuSelectedModelHide(
-            charPlayer, 
-            namePlayer, 
-            3, 
-            managerGame.numRespawnPlayerHiding.value
-        )
+        managerGame.activateMenuModelHide(true, 3, managerGame.numRespawnPlayerHiding.value)
         managerGame.standCustomePlayers[namePlayer] = 3
     else
-        activateMenuSelectedModelHide(
-            charPlayer, 
-            namePlayer, 
-            managerGame.numRespawnPlayerHiding.value, 
-            managerGame.numRespawnPlayerHiding.value
-        )
+        managerGame.activateMenuModelHide(true, managerGame.numRespawnPlayerHiding.value, managerGame.numRespawnPlayerHiding.value)
         managerGame.standCustomePlayers[namePlayer] = managerGame.numRespawnPlayerHiding.value
     end
 
     managerGame.roadToPedestalCustom[namePlayer] = managerGame.numRespawnPlayerHiding.value
+end
+
+function newPlayerGame(char, namePlayer, id, txt, cameraEnabled)
+    managerGame.playersTag[namePlayer] = id
+    uiManager.SetInfoPlayers(txt)
+
+    if id == rolesPlayerGame[1] then
+        managerGame.activateMenuModelHide(false, 0, 0)
+        managerGame.disabledDetectingCollisionsAllPlayersServer:FireServer()
+    elseif id == rolesPlayerGame[2] then
+        Timer.After(6, function() uiManager.DisabledInfoPlayerHiding() end)
+        activateMenuSelectedCustomePlayerHiding(namePlayer)
+    end
+
+    cameraManagerSeeker.enabled = cameraEnabled[rolesPlayerGame[1]]
+    cameraManagerHiding.enabled = cameraEnabled[rolesPlayerGame[2]]
 end
 
 --Unity Functions
@@ -124,48 +131,48 @@ function self:ClientAwake()
     cameraManagerHiding = managerGame.CameraManagerGlobal:GetComponent("MyRTSCam")
     infoGameModule = managerGame.InfoGameModuleGlobal
 
-    sendInfoAddZoneSeeker:Connect(function (char, namePlayer)
+    sendInfoAddZoneSeeker:Connect(function (char, namePlayer, playerSelected)
         pointRespawnPlayerSeeker = managerGame.pointRespawnPlayerSeekerGlobal
         respawnStartPlayerHiding(char, pointRespawnPlayerSeeker)
         
         if game.localPlayer.name == namePlayer then
-            playerPet = managerGame.playerPetGlobal
-            charPlayer = char.gameObject
-            
-            selectNewSeeker(namePlayer, player_id.value)
-            managerGame.playerObjTag[namePlayer] = charPlayer
+            newPlayerGame(
+                char, 
+                namePlayer, 
+                player_id.value, 
+                infoGameModule.SeekerTexts["Intro"], 
+                {[rolesPlayerGame[1]] = true, [rolesPlayerGame[2]] = false}
+            )
 
             local position = char.gameObject.transform.position
             cameraManagerSeeker.CenterOn(position)
+            countdownWaitReleasePlayer(playerSelected)
         end
     end)
 
-    sendActivateMenuHide:Connect(function (char, namePlayer)
+    sendActivateMenuHide:Connect(function (char, namePlayer, playerSelected)
         pointRespawnPlayerHider = managerGame.pointsRespawnPlayerHiderGlobal[managerGame.numRespawnPlayerHiding.value]
         respawnStartPlayerHiding(char, pointRespawnPlayerHider)
 
         if game.localPlayer.name == namePlayer then
-            charPlayer = char.gameobject
-            managerGame.playersTag[namePlayer] = player_id.value
+            newPlayerGame(
+                char, 
+                namePlayer, 
+                player_id.value, 
+                infoGameModule.HiderTexts["Intro"], 
+                {[rolesPlayerGame[1]] = false, [rolesPlayerGame[2]] = true}
+            )
             
-            activateMenuSelectedCustomePlayerHiding(charPlayer, namePlayer)
-            uiManager.SetInfoPlayers(infoGameModule.HiderTexts["Intro"])
-
-            Timer.After(6, function() uiManager.DisabledInfoPlayerHiding() end)
-            cameraManagerSeeker.enabled = false
-            cameraManagerHiding.enabled = true
-
             local position = char.gameObject.transform.position
             cameraManagerHiding.CenterOn(position)
+            countdownWaitReleasePlayer(playerSelected)
         end
-        
-        countdownWaitReleasePlayer()
     end)
 end
 
 function self:ServerAwake()
-    sendInfoRoles:Connect(function(player : Player, character, namePlayer)
-        assignRolePlayers(character, namePlayer)
+    sendInfoRoles:Connect(function(player : Player, character, namePlayer, totalPlayers, playerSelected)
+        assignRolePlayers(character, namePlayer, totalPlayers, playerSelected)
     end)
 end
 
