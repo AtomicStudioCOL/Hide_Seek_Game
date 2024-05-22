@@ -13,6 +13,7 @@ local rolesPlayerGame = {
     [1] = 'Seeker',
     [2] = 'Hiding'
 }
+local newSeeker = {}
 
 --Global variables
 cameraManagerSeeker = nil
@@ -43,6 +44,10 @@ local function dataCountdownStart(txt, playerSelected)
 end
 
 local function chosenRolePlayer(totalPlayers)
+    for name, tag in pairs(managerGame.playersTag) do
+        print(`Name: {name} - Tag: {tag}`)
+    end
+
     if managerGame.isFirstPlayer.value then
         rolPlayer = math.random(1, 2)
     else

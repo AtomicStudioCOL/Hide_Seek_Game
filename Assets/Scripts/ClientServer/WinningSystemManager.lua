@@ -46,7 +46,7 @@ end
 
 function cleanAllDataGame()
     managerGame.tagPlayerFound = {}
-    managerGame.playersTag = {}
+    --managerGame.playersTag = {}
     managerGame.customePlayers = {}
     managerGame.numPlayersFound.value = 0
     managerGame.numPlayerHidingCurrently.value = 0

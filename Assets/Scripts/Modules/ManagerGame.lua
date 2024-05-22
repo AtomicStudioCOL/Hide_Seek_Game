@@ -201,7 +201,6 @@ end
 
 local function reviewingScenePlayersCustome(nameCustome, namePlayer)
     if GameObject.Find(nameCustome .. '(Clone)') then
-        print(`Destroy Scene: {GameObject.Find(nameCustome .. '(Clone)')}`)
         Object.Destroy(GameObject.Find(nameCustome .. '(Clone)'))
         customePlayers[namePlayer] = {}
     end
@@ -214,13 +213,11 @@ function cleanTrashGame(namePlayer)
 end
 
 function cleanCustomeAndStopTrackingPlayer(namePlayer)
-    print(`Player: {game.localPlayer.name}`)
     if customePlayers[namePlayer] == nil or tostring(customePlayers[namePlayer]) == 'null' then return end
     if customePlayers[namePlayer]["Dress"] == nil or tostring(customePlayers[namePlayer]["Dress"]) == 'null' then return end
     
     if namePlayer ~= whoIsSeeker.value then
         if customePlayers[namePlayer]["Dress"].name == playerPet.name then return end
-        print(`Custome Destroy: {customePlayers[namePlayer]["Dress"]}`)
         Object.Destroy(customePlayers[namePlayer]["Dress"])
         customePlayers[namePlayer] = {}
     end
