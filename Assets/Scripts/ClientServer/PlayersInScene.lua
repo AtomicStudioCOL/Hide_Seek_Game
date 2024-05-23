@@ -13,7 +13,9 @@ local rolesPlayerGame = {
     [1] = 'Seeker',
     [2] = 'Hiding'
 }
-local newSeeker = {}
+local newRoles = {}
+local indexPlayer = 1
+local numPlayersToGoScene = 0
 
 --Global variables
 cameraManagerSeeker = nil
@@ -28,6 +30,7 @@ local roleRandomly = BoolValue.new("SelectRoleRandomly", true)
 local sendInfoAddZoneSeeker = Event.new("SendInfoAddZoneSeeker")
 local sendActivateMenuHide = Event.new("SendActivateMenuHide")
 local sendInfoRoles = Event.new("SendInfoRoles")
+local eventUpdatePreviousSeeker = Event.new("UpdatePreviousSeeker")
 
 --Functions
 local function respawnStartPlayerHiding(character : Character, pointRespawn)
@@ -43,18 +46,54 @@ local function dataCountdownStart(txt, playerSelected)
     )
 end
 
-local function chosenRolePlayer(totalPlayers)
-    --[[ for name, tag in pairs(managerGame.playersTag) do
-        print(`Name: {name} - Tag: {tag}`)
-    end ]]
-
+local function selectRoleRandomly()
     if managerGame.isFirstPlayer.value then
         rolPlayer = math.random(1, 2)
     else
         rolPlayer = 2
     end
+end
 
-    return rolesPlayerGame[rolPlayer]
+local function selectRolePoint(character, namePlayer, totalPlayers, playerSelected)
+    if managerGame.previousSeeker.value ~= namePlayer then
+        newRoles[indexPlayer] = {
+            [1] = character,
+            [2] = namePlayer,
+            [3] = playerSelected
+        }
+        indexPlayer += 1
+    else
+        player_id.value = rolesPlayerGame[2]
+        logicSendPlayersGame(character, namePlayer, totalPlayers, playerSelected)
+    end
+end
+
+local function chosenRolePlayer(character, namePlayer, totalPlayers, playerSelected)
+    if managerGame.previousSeeker.value == '' then
+        selectRoleRandomly()
+
+        return rolesPlayerGame[rolPlayer]
+    else
+        local randomSelectNewSeeker = math.random(1, totalPlayers-1)
+        selectRolePoint(character, namePlayer, totalPlayers, playerSelected)
+        numPlayersToGoScene += 1
+
+        if totalPlayers == numPlayersToGoScene then
+            for id, info in pairs(newRoles) do
+                if id == randomSelectNewSeeker then
+                    player_id.value = rolesPlayerGame[1]
+                    logicSendPlayersGame(info[1], info[2], totalPlayers, info[3])
+                else
+                    player_id.value = rolesPlayerGame[2]
+                    logicSendPlayersGame(info[1], info[2], totalPlayers, info[3])
+                end
+            end
+
+            newRoles = {}
+            indexPlayer = 1
+            numPlayersToGoScene = 0
+        end
+    end
 end
 
 function countdownWaitReleasePlayer(playerSelected)
@@ -69,15 +108,7 @@ function sendInfoAssignRoles(character, namePlayer, totalPlayers, playerSelected
     sendInfoRoles:FireServer(character, namePlayer, totalPlayers, playerSelected)
 end
 
-function assignRolePlayers(character, namePlayer, totalPlayers, playerSelected)
-    if roleRandomly.value then
-        player_id.value = chosenRolePlayer(totalPlayers)
-    else
-        player_id.value = rolesPlayerGame[1]
-        roleRandomly.value = true
-        managerGame.isFirstPlayer.value = false
-    end
-    
+function logicSendPlayersGame(character, namePlayer, totalPlayers, playerSelected)
     managerGame.playersTag[namePlayer] = player_id.value
 
     if player_id.value == rolesPlayerGame[1] then
@@ -99,6 +130,23 @@ function assignRolePlayers(character, namePlayer, totalPlayers, playerSelected)
             roleRandomly.value = false
         end
     end
+end
+
+function assignRolePlayers(character, namePlayer, totalPlayers, playerSelected)
+    if managerGame.previousSeeker.value ~= '' then 
+        chosenRolePlayer(character, namePlayer, totalPlayers, playerSelected)
+        return 
+    end
+
+    if roleRandomly.value then
+        player_id.value = chosenRolePlayer(character, namePlayer, totalPlayers, playerSelected)
+    else
+        player_id.value = rolesPlayerGame[1]
+        roleRandomly.value = true
+        managerGame.isFirstPlayer.value = false
+    end
+    
+    logicSendPlayersGame(character, namePlayer, totalPlayers, playerSelected)
 end
 
 function activateMenuSelectedCustomePlayerHiding(namePlayer)
@@ -179,10 +227,15 @@ function self:ServerAwake()
     sendInfoRoles:Connect(function(player : Player, character, namePlayer, totalPlayers, playerSelected)
         assignRolePlayers(character, namePlayer, totalPlayers, playerSelected)
     end)
+    eventUpdatePreviousSeeker:Connect(function(player : Player)
+        managerGame.previousSeeker.value = managerGame.whoIsSeeker.value
+    end)
 end
 
 function self:Update()
     if countdownGame.endCountdownHiddenPlayers then
+        managerGame.previousSeeker.value = managerGame.whoIsSeeker.value
+        eventUpdatePreviousSeeker:FireServer()
         managerGame.releasePlayerServer:FireServer(
             managerGame.whoIsSeeker.value, 
             Vector3.new(0.1, 1.5, -0.6), 

@@ -33,6 +33,13 @@ local function enableZoneMapChosen()
     if managerGame.opcMap.value == 1 then
         zones[1]:SetActive(false)
         zones[2]:SetActive(false)
+
+        enableDoorsZoneMap({
+            ['doorClosedZG'] = true,
+            ['doorOpenZG'] = false,
+            ['doorClosedZO'] = false,
+            ['doorOpenZO'] = false
+        })
     end
 
     for _,zone in ipairs(opcMapRandomly[managerGame.opcMap.value]) do

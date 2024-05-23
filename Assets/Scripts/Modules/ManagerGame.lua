@@ -110,6 +110,7 @@ customePlayers = {} -- Players whit its custome [NamePlayer -> {["Dress"] = Cust
 standCustomePlayers = {} -- Players whit its stand custome {[NamePlayer] = num_stand_custome}
 roadToPedestalCustom = {} -- Players whit its road to custome pedestal {[NamePlayer] = num_road}
 tagPlayerFound = {} -- Player what was found - {[NamePlayer] = "Found" or nil}
+previousSeeker = StringValue.new('PreviousSeeker', "") -- Storage the previous seeker's name
 whoIsSeeker = StringValue.new("WhoIsSeeker", "") -- Storage the seeker's name
 numRespawnPlayerHiding = IntValue.new("NumRespawnPlayerHiding", 1) -- Point current of respawn of the new player
 numPlayerHidingCurrently = IntValue.new("NumPlayerHidingCurrently", 0) -- Number of players hiding currently
@@ -429,6 +430,7 @@ function self:ServerAwake()
     server.PlayerDisconnected:Connect(function(player : Player)
         if whoIsSeeker.value == player.name then
             whoIsSeeker.value = ''
+            previousSeeker.value = ''
             isFirstPlayer.value = true
             isFollowingAlways = false
         elseif playersTag[player.name] then
