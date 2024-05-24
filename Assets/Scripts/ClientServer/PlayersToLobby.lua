@@ -50,8 +50,8 @@ local function textInterface()
     uiManager.SetInfoPlayers('Waiting for 3 players to start the game')
 end
 
-function sendPlayersToLobby(character : Character, namePlayer : string)
-    character.gameObject.transform.position = respawnLobby.transform.position
+function sendPlayersToLobby(character : Character, namePlayer : string, objCharacter : GameObject)
+    objCharacter.transform.position = respawnLobby.transform.position
     character:MoveTo(respawnLobby.transform.position, 6, function()end)
 end
 
@@ -73,11 +73,11 @@ function settingLobbyPlayer(endGame : boolean)
 end
 
 function self:ClientAwake()
-    scriptPlayersInScene = parentObj:GetComponent("PlayersInScene")
-    scriptCreateMapRandomly = parentObj:GetComponent("CreateMapRandomly")
-    uiManager = managerGame.UIManagerGlobal:GetComponent("UI_Hide_Seek")
-    cameraManagerSeeker = managerGame.CameraManagerGlobal:GetComponent("CameraManager")
-    cameraManagerHiding = managerGame.CameraManagerGlobal:GetComponent("MyRTSCam")
+    scriptPlayersInScene = parentObj:GetComponent(PlayersInScene)
+    scriptCreateMapRandomly = parentObj:GetComponent(CreateMapRandomly)
+    uiManager = managerGame.UIManagerGlobal:GetComponent(UI_Hide_Seek)
+    cameraManagerSeeker = managerGame.CameraManagerGlobal:GetComponent(CameraManager)
+    cameraManagerHiding = managerGame.CameraManagerGlobal:GetComponent(MyRTSCam)
     respawnLobby = managerGame.pointRespawnLobbyGlobal
     lobbyRoom = managerGame.lobbyRoomGlobal
     worldRoom = managerGame.worldRoomGlobal
@@ -95,13 +95,13 @@ function self:ClientAwake()
     end)
 
     eventSendPlayerToLobbyClient:Connect(function(character, namePlayer)
-        sendPlayersToLobby(character, namePlayer)
-        sendPlayersPointRespawnServer:FireServer(character, game.localPlayer.name)
+        sendPlayersToLobby(character, namePlayer, managerGame.objsCustome[namePlayer])
+        sendPlayersPointRespawnServer:FireServer(game.localPlayer.name)
     end)
 
-    sendPlayersPointRespawnClient:Connect(function(character, namePlayer)
+    sendPlayersPointRespawnClient:Connect(function(namePlayer)
         if game.localPlayer.name ~= namePlayer then
-            sendPlayersToLobby(character, namePlayer)
+            sendPlayersToLobby(managerGame.previousPlayers[namePlayer], namePlayer, managerGame.objsCustome[namePlayer])
         end
     end)
 
@@ -125,8 +125,10 @@ function self:ServerAwake()
         amountPlayers.value = numPlayersInLobby()
     end)
 
-    sendPlayersPointRespawnServer:Connect(function(player : Player, character, namePlayer)
-        sendPlayersPointRespawnClient:FireAllClients(character, namePlayer)
+    sendPlayersPointRespawnServer:Connect(function(player : Player, namePlayer)
+        if managerGame.playersTag[namePlayer] == nil then
+            sendPlayersPointRespawnClient:FireAllClients(namePlayer)
+        end
     end)
 
     updateHasSentPlayerToGame:Connect(function(player : Player)

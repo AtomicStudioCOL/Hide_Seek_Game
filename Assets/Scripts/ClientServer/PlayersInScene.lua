@@ -36,6 +36,8 @@ local eventUpdatePreviousSeeker = Event.new("UpdatePreviousSeeker")
 local function respawnStartPlayerHiding(character : Character, pointRespawn)
     if not pointRespawn then return end
     character:Teleport(pointRespawn.transform.position, function()end)
+    --character.gameObject.transform.position = pointRespawn.transform.position
+    --character:MoveTo(pointRespawn.transform.position, 6, function()end)
 end
 
 local function dataCountdownStart(txt, playerSelected)
@@ -179,9 +181,9 @@ end
 
 --Unity Functions
 function self:ClientAwake()
-    uiManager = managerGame.UIManagerGlobal:GetComponent("UI_Hide_Seek")
-    cameraManagerSeeker = managerGame.CameraManagerGlobal:GetComponent("CameraManager")
-    cameraManagerHiding = managerGame.CameraManagerGlobal:GetComponent("MyRTSCam")
+    uiManager = managerGame.UIManagerGlobal:GetComponent(UI_Hide_Seek)
+    cameraManagerSeeker = managerGame.CameraManagerGlobal:GetComponent(CameraManager)
+    cameraManagerHiding = managerGame.CameraManagerGlobal:GetComponent(MyRTSCam)
     infoGameModule = managerGame.InfoGameModuleGlobal
 
     sendInfoAddZoneSeeker:Connect(function (char, namePlayer, playerSelected)

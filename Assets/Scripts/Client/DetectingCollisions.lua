@@ -14,6 +14,7 @@ local uiManager = nil
 local infoGameModule = nil
 
 --Global Variables
+ghostHiddenPlayer = nil
 ghost = nil
 isAddedGhost = false
 ghostFollowingSeeker = false
@@ -40,21 +41,40 @@ local function AddGhostFollowingSeeker(seeker, ghostFollow)
     ghostFollowingSeeker = true
 end
 
+function AddVFXFoundHiddenPlayer(seeker)
+    local vfx = Object.Instantiate(vfxFoundPlayer)
+    local posVfx = vfx.transform.position
+    
+    vfx.transform.parent = seeker.transform
+    vfx.transform.position = seeker.transform.position + Vector3.new(0, 1.5, 0)
+    audioManager.playSound(audioManager.soundFoundPlayerGlobal)
+
+    return vfx
+end
+
+function DeleteVFXFoundHiddenPlayer(vfx)
+    Timer.After(2, function()
+        if not vfx then return end
+        Object.Destroy(vfx)
+    end)
+end
+
 function ResetFireFlyPlayerSeeker()
     if not managerGame.playerPetGlobal then return end
     managerGame.playerPetGlobal:SetActive(false)
 end
 
 function ResetGhostPlayerSeeker()
-    if ghost then ghost:SetActive(false) end
+    if ghost then Object.Destroy(ghost) end
     isAddedGhost = false
     ghostFollowingSeeker = false
 end
 
 --Unity Functions
 function self:Awake()
-    uiManager = managerGame.UIManagerGlobal:GetComponent("UI_Hide_Seek")
+    uiManager = managerGame.UIManagerGlobal:GetComponent(UI_Hide_Seek)
     infoGameModule = managerGame.InfoGameModuleGlobal
+    ghostHiddenPlayer = ghostFoundFirstPlayer
 end
 
 function self:OnCollisionEnter(collision : Collision)
@@ -64,17 +84,12 @@ function self:OnCollisionEnter(collision : Collision)
     if seeker == collidedObj then return end
 
     if collidedObj.name == seeker.name and game.localPlayer.name == managerGame.whoIsSeeker.value then
-        --VFX and SFX when the seeker find a player
-        local vfx = Object.Instantiate(vfxFoundPlayer)
-        local posVfx = vfx.transform.position
-        vfx.transform.parent = seeker.transform
-        vfx.transform.position = seeker.transform.position + Vector3.new(0, 1.5, 0)
-        audioManager.playSound(audioManager.soundFoundPlayerGlobal)
+        local vfx = AddVFXFoundHiddenPlayer(seeker) -- VFX and SFX when the seeker find a player
 
         collidedObj:SetActive(false)
         for namePlayer, objPlayer in pairs(managerGame.objsCustome) do
             if objPlayer == collidedObj then
-                managerGame.deleteCustomePlayerFoundServer:FireServer(namePlayer)
+                managerGame.deleteCustomePlayerFoundServer:FireServer(namePlayer, game.localPlayer.name)
                 managerGame.tagPlayerFound[namePlayer] = "Found"
             end
         end
@@ -87,12 +102,8 @@ function self:OnCollisionEnter(collision : Collision)
             managerGame.updateNumPlayersFound:FireServer()
         end
         
-        --Delete VFX add
-        Timer.After(2, function()
-            if not vfx then return end
-            Object.Destroy(vfx)
-        end)
-
+        DeleteVFXFoundHiddenPlayer(vfx) -- Delete VFX add
+        
         audioManager.pauseAlertPlayerSeeker(audioManager.audioAlertPlayerSeeker, 0)
     end
 end

@@ -106,6 +106,7 @@ btnsObjHides = {} -- Storage all buttons of the hides objects. {["Point Respawn"
 playersTag = {} -- Storage all player in the scene [NamePlayer - TypePlayer]
 customeStorage = {} -- Storage all costumes
 objsCustome = {} -- Storage the gameobject joined to the player globally [NamePlayer - GameObject]
+previousPlayers = {} -- Storage the character joined to the player globally [NamePlayer - Character]
 customePlayers = {} -- Players whit its custome [NamePlayer -> {["Dress"] = Custome, ["Offset"] = Vector3.new()}]
 standCustomePlayers = {} -- Players whit its stand custome {[NamePlayer] = num_stand_custome}
 roadToPedestalCustom = {} -- Players whit its road to custome pedestal {[NamePlayer] = num_road}
@@ -128,6 +129,7 @@ local posDress = Vector3.new(0, 0, 0)
 local posOffset = Vector3.new(0, 0, 0)
 local uiManager = nil
 local infoGameModule = nil
+local detectingcol = nil
 isFollowingAlways = false
 
 --Events
@@ -176,7 +178,7 @@ function addCostumePlayers(dress : GameObject, player : GameObject,  positionOff
             ["Offset"] = positionOffset,
             ["Rotation"] = rotationCustome
         }
-    elseif typeCharacter == "Seeker" then
+    elseif typeCharacter == "Seeker" or typeCharacter == "Found" then
         dressWear = dress
 
         customePlayers[namePlayer] = {
@@ -215,6 +217,7 @@ function cleanTrashGame(namePlayer)
     reviewingScenePlayersCustome(custome01.name, namePlayer)
     reviewingScenePlayersCustome(custome02.name, namePlayer)
     reviewingScenePlayersCustome(custome03.name, namePlayer)
+    reviewingScenePlayersCustome(detectingcol.ghostHiddenPlayer.name, namePlayer)
 end
 
 function cleanCustomeAndStopTrackingPlayer(namePlayer)
@@ -257,6 +260,7 @@ function self:ClientAwake()
     doorsOpenZoneOrangeGlobal = doorsOpenZoneOrange
     uiManager = UIManagerGlobal:GetComponent(UI_Hide_Seek)
     infoGameModule = self.gameObject:GetComponent(InfoGameModule)
+    detectingcol = playerPet:GetComponent(DetectingCollisions)
     InfoGameModuleGlobal = infoGameModule
 
     --Lobby
@@ -326,7 +330,6 @@ function self:ClientAwake()
         if playersTag[game.localPlayer.name] == "Seeker" then
             uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["GoSeeker"])
             Timer.After(2, function()
-                local detectingcol = playerPet:GetComponent(DetectingCollisions)
                 detectingcol.enabled = true
                 uiManager.SetInfoPlayers("Players Found: " .. tostring(numPlayersFound.value) .. '/' .. tostring(numPlayerHidingCurrently.value))
             end)
@@ -349,7 +352,6 @@ function self:ClientAwake()
     end)
 
     disabledDetectingCollisionsAllPlayersClient:Connect(function()
-        local detectingcol = playerPet:GetComponent(DetectingCollisions)
         detectingcol.enabled = false
     end)
 
@@ -369,18 +371,31 @@ function self:ClientAwake()
         end
     end)
 
-    deleteCustomePlayerFoundClient:Connect(function(namePlayer)
-        if game.localPlayer.name == namePlayer then
-            activateMenuModelHide(false, standCustomePlayers[namePlayer], roadToPedestalCustom[namePlayer])
-            uiManager.SetInfoPlayers(infoGameModule.HiderTexts["PlayerFound"])
-            
-            Timer.After(5, function()
-                uiManager.SetInfoPlayers(infoGameModule.HiderTexts["TryAgain"])
-                Timer.After(3, function() uiManager.DisabledInfoPlayerHiding() end)
-            end)
-        end
-
+    deleteCustomePlayerFoundClient:Connect(function(namePlayer, seeker)
         cleanCustomeAndStopTrackingPlayer(namePlayer)
+
+        if game.localPlayer.name == namePlayer then 
+            if detectingcol then
+                detectingcol.enabled = true
+                
+                local ghostDress = Object.Instantiate(detectingcol.ghostHiddenPlayer)
+                ghostDress.transform.localScale = Vector3.new(5, 5, 5)
+
+                local vfx = detectingcol.AddVFXFoundHiddenPlayer(seeker)
+                detectingcol.DeleteVFXFoundHiddenPlayer(vfx)
+
+                addCostumePlayers(
+                    ghostDress, 
+                    objsCustome[namePlayer], 
+                    Vector3.new(0, 0, 0), 
+                    Vector3.new(0, -130, 0), 
+                    'Found',
+                    namePlayer
+                )
+            end
+
+            activateMenuModelHide(false, standCustomePlayers[namePlayer], roadToPedestalCustom[namePlayer])
+        end
     end)
 
     cleanCustomeWhenPlayerLeftGameClient:Connect(function(namePlayer)
@@ -397,8 +412,9 @@ function self:ServerAwake()
         showCustomeAllPlayersClient:FireAllClients(numDress, namePlayer, offset, rotationCustome)
     end)
 
-    deleteCustomePlayerFoundServer:Connect(function(player : Player, namePlayer)
-        deleteCustomePlayerFoundClient:FireAllClients(namePlayer)
+    deleteCustomePlayerFoundServer:Connect(function(player : Player, namePlayer, seeker)
+        deleteCustomePlayerFoundClient:FireAllClients(namePlayer, objsCustome[seeker])
+        tagPlayerFound[namePlayer] = "Found"
     end)
 
     disabledDetectingCollisionsAllPlayersServer:Connect(function(player : Player)
@@ -436,11 +452,14 @@ function self:ServerAwake()
         elseif playersTag[player.name] then
             if numRespawnPlayerHiding.value > 0 then numRespawnPlayerHiding.value -= 1 end
             if numPlayerHidingCurrently.value > 0 then numPlayerHidingCurrently.value -= 1 end
-            if numPlayersFound.value > 0 then numPlayersFound.value -= 1 end
+            if tagPlayerFound[player.name] == "Found" then
+                if numPlayersFound.value > 0 then numPlayersFound.value -= 1 end
+            end
             updateNumPlayersHiding:FireAllClients()
         end
         
         objsCustome[player.name] = nil --Contain the players in scene
+        previousPlayers[player.name] = nil
         cleanCustomeWhenPlayerLeftGameClient:FireAllClients(player.name)
     end)
 end
@@ -473,5 +492,6 @@ end
 scene.PlayerJoined:Connect(function(scene, player : Player)
     player.CharacterChanged:Connect(function (player : Player, character : Character)
         objsCustome[player.name] = character.gameObject
+        previousPlayers[player.name] = character
     end)
 end)

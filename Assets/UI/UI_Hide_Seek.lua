@@ -3,9 +3,13 @@
 local infoPlayers : UILabel = nil
 --!Bind
 local countdownGame : UILabel = nil
+--!Bind
+local alertSeekerPlayer : UILabel = nil
 
 --Variables
 timeCurrent = ''
+
+alertSeekerPlayer:SetPrelocalizedText('', false)
 
 function EnabledInfoPlayers()
     infoPlayers.visible = true
@@ -35,7 +39,13 @@ function SetTextGame(text)
     infoPlayers:SetPrelocalizedText(text, false)
 end
 
+function alertHiddenPlayerNearby(text, isVisible)
+    alertSeekerPlayer.visible = isVisible
+    alertSeekerPlayer:SetPrelocalizedText(text, false)
+end
+
 function DisabledInfoPlayerHiding()
     infoPlayers.visible = false
     countdownGame.visible = false
+    alertSeekerPlayer.visible = false
 end

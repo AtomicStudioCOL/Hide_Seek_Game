@@ -13,6 +13,9 @@
 
     <hr:UILabel name="countdownGame" picking-mode="Ignore">
     </hr:UILabel>
+
+    <hr:UILabel name='alertSeekerPlayer' picking-mode="Ignore">
+    </hr:UILabel>
   </hr:UILuaView>
 
 </UXML>
