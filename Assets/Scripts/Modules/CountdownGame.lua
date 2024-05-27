@@ -5,9 +5,9 @@ local minutes : string = ''
 local seconds : string = ''
 
 --Global Variables
-countdownStartHiddenPlayers = IntValue.new('CountdownStartHiddenPlayers', 30) 
-countdownStartGame = IntValue.new('CountdownStartGame', 180) 
-countdown = IntValue.new('Countdown', 3) 
+countdownStartHiddenPlayers = IntValue.new('CountdownStartHiddenPlayers', 30)
+countdownStartGame = IntValue.new('CountdownStartGame', 180)
+countdown = IntValue.new('Countdown', 3)
 countdownGoGame = IntValue.new('CountdownGoGame', 60)
 endCountdownHiddenPlayers = false
 endCountdownGame = BoolValue.new("CountdownGameHideAndSeek", false)
@@ -15,8 +15,17 @@ startingCountdownEndGame = BoolValue.new("StartingCountdownEndGame", false)
 endCountdownGoGameLobby = BoolValue.new("CountdownGoGameLobby", false)
 playersWentSentToGame = BoolValue.new("PlayersWentSentToGame", false)
 
+--Countdown Before Start Game
 playerSeeker = StringValue.new('SeekerPlayer', '')
 mustUpdateCountdownHiddenPlayers = BoolValue.new("MustUpdateCountdownHiddenPlayers", true)
+
+--Countdown Send the player to the game
+playerMain = StringValue.new('PlayerMain', '')
+mustUpdateCountdownGoGameLobby = BoolValue.new("MustUpdateCountdownGoGameLobby", true)
+
+--Countdown End Game
+playerEndGame = StringValue.new('PlayerEndGame', '')
+mustUpdateCountdownEndGame = BoolValue.new("MustUpdateCountdownEndGame", true)
 
 --Event
 local updateEndGameCountdown = Event.new("UpdateEndGame")
@@ -30,10 +39,27 @@ local updateTimerEndGame = Event.new("UpdateTimerEndGame")
 local resetAllParametersGame = Event.new('ResetAllParametersGame')
 
 function resetCountdowns()
+    playerSeeker.value = ''
+    mustUpdateCountdownHiddenPlayers.value = true
+    playerMain.value = ''
+    mustUpdateCountdownGoGameLobby.value = true
+    playerEndGame.value = ''
+    mustUpdateCountdownEndGame.value = true
     countdownStartGame.value = 180
     countdownStartHiddenPlayers.value = 30
     countdown.value = 3
     countdownGoGame.value = 60
+end
+
+function selectMainPlayer(mainClient, namePlayer, countdownCurrent, canUpdate)
+    if mainClient.value ~= '' and namePlayer == mainClient.value then
+        countdownCurrent.value -= 1
+    end
+
+    if mainClient.value == '' and canUpdate.value then
+        mainClient.value = namePlayer
+        canUpdate.value = false
+    end
 end
 
 function StartCountdownHiddenPlayers(uiManager, textWaitStartGame, seekerPlayer)
@@ -45,14 +71,8 @@ function StartCountdownHiddenPlayers(uiManager, textWaitStartGame, seekerPlayer)
         uiManager.SetTextGame(textWaitStartGame)
         uiManager.SetCountdownGame(tostring(countdownStartHiddenPlayers.value))
         
-        if playerSeeker.value == '' then
-            updateTimerStart:FireServer()
-        else
-            if game.localPlayer.name == playerSeeker.value then
-                updateTimerStart:FireServer()
-            end
-        end
-
+        updateTimerStart:FireServer()
+        
         if countdownStartHiddenPlayers.value <= 0 then
             endCountdownHiddenPlayers = true
             countdownGame:Stop()
@@ -104,9 +124,7 @@ function StartCountdownGoGameLobby(uiManager, seekerPlayer)
         end
 
         uiManager.SetCountdownGame(minutes .. ':' .. seconds)
-        if game.localPlayer.name == seekerPlayer then
-            updateTimerGoGameLobby:FireServer()
-        end
+        updateTimerGoGameLobby:FireServer()
 
         if countdownGoGame.value <= 0 then
             updateGoGameCountdown:FireServer(true)
@@ -120,10 +138,7 @@ function StartCountdownEndGame(uiManager, seekerPlayer)
 
     countdownEndGame = Timer.new(1, function()
         uiManager.SetTextEndGame('END GAME', tostring(countdown.value))
-
-        if game.localPlayer.name == seekerPlayer then
-            updateTimerEndGame:FireServer()
-        end
+        updateTimerEndGame:FireServer()
 
         if countdown.value <= 0 then
             resetAllParametersGame:FireServer()
@@ -170,15 +185,12 @@ function self:ServerAwake()
     end)
 
     updateTimerStart:Connect(function(player : Player)
-        if playerSeeker.value ~= '' then
-            countdownStartHiddenPlayers.value -= 1
-        end
-
-        if playerSeeker.value == '' and mustUpdateCountdownHiddenPlayers.value then
-            playerSeeker.value = player.name
-            countdownStartHiddenPlayers.value -= 1
-            mustUpdateCountdownHiddenPlayers.value = false
-        end
+        selectMainPlayer(
+            playerSeeker, 
+            player.name, 
+            countdownStartHiddenPlayers, 
+            mustUpdateCountdownHiddenPlayers
+        )
     end)
 
     updateTimerGame:Connect(function(player : Player)
@@ -186,11 +198,11 @@ function self:ServerAwake()
     end)
 
     updateTimerEndGame:Connect(function(player : Player)
-        countdown.value -= 1
+        selectMainPlayer(playerEndGame, player.name, countdown, mustUpdateCountdownEndGame)
     end)
 
     updateTimerGoGameLobby:Connect(function(player : Player)
-        countdownGoGame.value -= 1
+        selectMainPlayer(playerMain, player.name, countdownGoGame, mustUpdateCountdownGoGameLobby)
     end)
 
     resetAllParametersGame:Connect(function(player : Player)

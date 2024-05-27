@@ -134,6 +134,8 @@ isFollowingAlways = false
 
 --Events
 local updatePlayersFound = Event.new("UpdatePlayersFound")
+local showAllHiddenPlayersYouAreGhostServer = Event.new("ShowAllHiddenPlayersYouAreGhostServer")
+local showAllHiddenPlayersYouAreGhostClient = Event.new("ShowAllHiddenPlayersYouAreGhostClient")
 cleanCustomeWhenPlayerLeftGameClient = Event.new("CleanCustomeWhenPlayerLeftGameClient")
 showCustomeAllPlayersServer = Event.new("ShowCustomeAllPlayersServer")
 showCustomeAllPlayersClient = Event.new("ShowCustomeAllPlayersClient")
@@ -214,6 +216,8 @@ local function reviewingScenePlayersCustome(nameCustome, namePlayer)
 end
 
 function cleanTrashGame(namePlayer)
+    detectingcol.enabled = true
+    
     reviewingScenePlayersCustome(custome01.name, namePlayer)
     reviewingScenePlayersCustome(custome02.name, namePlayer)
     reviewingScenePlayersCustome(custome03.name, namePlayer)
@@ -373,28 +377,33 @@ function self:ClientAwake()
 
     deleteCustomePlayerFoundClient:Connect(function(namePlayer, seeker)
         cleanCustomeAndStopTrackingPlayer(namePlayer)
+        detectingcol.enabled = true
 
         if game.localPlayer.name == namePlayer then 
             if detectingcol then
-                detectingcol.enabled = true
-                
-                local ghostDress = Object.Instantiate(detectingcol.ghostHiddenPlayer)
-                ghostDress.transform.localScale = Vector3.new(5, 5, 5)
-
                 local vfx = detectingcol.AddVFXFoundHiddenPlayer(seeker)
                 detectingcol.DeleteVFXFoundHiddenPlayer(vfx)
 
-                addCostumePlayers(
-                    ghostDress, 
-                    objsCustome[namePlayer], 
-                    Vector3.new(0, 0, 0), 
-                    Vector3.new(0, -130, 0), 
-                    'Found',
-                    namePlayer
-                )
+                showAllHiddenPlayersYouAreGhostServer:FireServer(namePlayer)
             end
 
             activateMenuModelHide(false, standCustomePlayers[namePlayer], roadToPedestalCustom[namePlayer])
+        end
+    end)
+
+    showAllHiddenPlayersYouAreGhostClient:Connect(function(namePlayer)
+        if game.localPlayer.name ~= whoIsSeeker.value and playersTag[game.localPlayer.name] then
+            local ghostDress = Object.Instantiate(detectingcol.ghostHiddenPlayer)
+            ghostDress.transform.localScale = Vector3.new(5, 5, 5)
+            
+            addCostumePlayers(
+                ghostDress, 
+                objsCustome[namePlayer], 
+                Vector3.new(0, 0, 0), 
+                Vector3.new(0, -130, 0), 
+                'Found',
+                namePlayer
+            )
         end
     end)
 
@@ -429,6 +438,10 @@ function self:ServerAwake()
     updateNumPlayersFound:Connect(function(player: Player)
         numPlayersFound.value += 1
         updatePlayersFound:FireAllClients()
+    end)
+
+    showAllHiddenPlayersYouAreGhostServer:Connect(function(player : Player, namePlayer)
+        showAllHiddenPlayersYouAreGhostClient:FireAllClients(namePlayer)
     end)
 
     reviewIfClientInGame:Connect(function(player : Player, namePlayer)

@@ -29,12 +29,14 @@ function SeekerSeeingHiddenPlayersAgain()
 end
 
 function respawnStartPlayers(namePlayer, character : Character)
+    scriptPlayersInScene.cameraManagerSeeker.enabled = true
+    scriptPlayersInScene.cameraManagerHiding.enabled = false
+
     character.gameObject.transform.position = managerGame.pointRespawnLobbyGlobal.transform.position
     character:MoveTo(managerGame.pointRespawnLobbyGlobal.transform.position, 6, function()end)
     
+    --scriptPlayersInScene.cameraManagerSeeker.CenterOn(character.gameObject.transform.position)
     managerGame.cleanTrashGame(game.localPlayer.name)
-    scriptPlayersInScene.cameraManagerSeeker.enabled = true
-    scriptPlayersInScene.cameraManagerHiding.enabled = false
 end
 
 function RespawnAllPlayersInGame(character, namePlayer)
