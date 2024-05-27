@@ -23,7 +23,6 @@ local audio = thisObject:GetComponent(AudioSource)
 local uiManager = nil
 
 -- functions --
-
 local function TableLenght(table)
     local length : number = 0
     for i, _ in ipairs(table) do
@@ -32,65 +31,63 @@ local function TableLenght(table)
     return length
 end
 
-function updateSeeker()
-    seeker = managerGame.objsCustome[managerGame.whoIsSeeker.value]
-end
+local function closestHider()
+    for name, obj in pairs(managerGame.objsCustome) do
+        if name ~= managerGame.whoIsSeeker.value then
+            if tostring(obj) == 'null' or not obj then continue end
+            if not seeker or not seeker.transform then continue end
 
----[[
-local function ClosestHider()
-    for key, value in pairs(managerGame.objsCustome) do
-        if tostring(value) == 'null' or not value then continue end
-        
-        if key ~= managerGame.whoIsSeeker.value then
-            if not seeker then continue end
-            if not seeker.transform or not value.transform then continue end
-            
-            if math.abs(value.transform.position.x - seeker.transform.position.x) < distanceToRed
+            if math.abs(obj.transform.position.x - seeker.transform.position.x) < distanceToRed
             and
-            math.abs(value.transform.position.z - seeker.transform.position.z) < distanceToRed
+            math.abs(obj.transform.position.z - seeker.transform.position.z) < distanceToRed
             and
-            managerGame.tagPlayerFound[key] ~= 'Found'
+            managerGame.tagPlayerFound[name] ~= 'Found'
             then
                 colorIndex = 2
                 break
-            elseif math.abs(value.transform.position.x - seeker.transform.position.x) < distanceToYellow
+            elseif math.abs(obj.transform.position.x - seeker.transform.position.x) < distanceToYellow
             and
-            math.abs(value.transform.position.z - seeker.transform.position.z) < distanceToYellow
+            math.abs(obj.transform.position.z - seeker.transform.position.z) < distanceToYellow
             and
-            managerGame.tagPlayerFound[key] ~= 'Found'
+            managerGame.tagPlayerFound[name] ~= 'Found'
             then
                 colorIndex = 1
                 break
             else
                 colorIndex = 0
-                break
             end
         end
     end
 end
---]]
 
-function self:Awake()
+function updateSeeker()
     uiManager = managerGame.UIManagerGlobal:GetComponent(UI_Hide_Seek)
+    seeker = managerGame.objsCustome[managerGame.whoIsSeeker.value]
 end
 
+--Unity Functions
 function self:Update()
-    ClosestHider()
-
+    if game.localPlayer.name == managerGame.whoIsSeeker.value then
+        closestHider()
+    end
+    
     if colorIndex == 0 then
         thisObject:GetComponent(Renderer).material = blue
-        uiManager.alertHiddenPlayerNearby('', false)
-        audioManager.pauseAlertPlayerSeeker(audio, 0)
+        if game.localPlayer.name == managerGame.whoIsSeeker.value then
+            uiManager.alertHiddenPlayerNearby('', false)
+            audioManager.pauseAlertPlayerSeeker(audio, 0)
+        end
     elseif colorIndex == 1 then
         thisObject:GetComponent(Renderer).material = yellow
-        uiManager.alertHiddenPlayerNearby('Alert! A hidden player is nearby', true)
-        audioManager.playAlertPlayerSeeker(audio, 0.5)
+        if game.localPlayer.name == managerGame.whoIsSeeker.value then
+            uiManager.alertHiddenPlayerNearby('Alert! A hidden player is nearby', true)
+            audioManager.playAlertPlayerSeeker(audio, 0.5)
+        end
     elseif colorIndex == 2 then
         thisObject:GetComponent(Renderer).material = red
-        uiManager.alertHiddenPlayerNearby('Alert! A hidden player is nearby', true)
-        audioManager.playAlertPlayerSeeker(audio, 1)
+        if game.localPlayer.name == managerGame.whoIsSeeker.value then
+            uiManager.alertHiddenPlayerNearby('Alert! A hidden player is nearby', true)
+            audioManager.playAlertPlayerSeeker(audio, 1)
+        end
     end
 end
-
-
--- event calls --
