@@ -227,6 +227,7 @@ end
 
 function self:ServerAwake()
     sendInfoRoles:Connect(function(player : Player, character, namePlayer, totalPlayers, playerSelected)
+        managerGame.cleanCustomeWhenPlayerLeftGameClient:FireAllClients(player.name)
         assignRolePlayers(character, namePlayer, totalPlayers, playerSelected)
     end)
     eventUpdatePreviousSeeker:Connect(function(player : Player)

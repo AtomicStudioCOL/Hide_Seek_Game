@@ -251,6 +251,21 @@ function lockedPlayerSeeker()
     doorSeeker:SetActive(true)
 end
 
+local function addCostumePlayerInAnotherPlayers(dress, offset, rotationCustome, namePlayer)
+    if namePlayer ~= game.localPlayer.name then
+        cleanCustomeAndStopTrackingPlayer(namePlayer)
+        
+        addCostumePlayers(
+            dress, 
+            objsCustome[namePlayer], 
+            offset, 
+            rotationCustome,
+            "Hiding",
+            namePlayer
+        )
+    end
+end
+
 --Unity Functions
 function self:ClientAwake()
     playerPetGlobal = playerPet
@@ -360,19 +375,7 @@ function self:ClientAwake()
     end)
 
     showCustomeAllPlayersClient:Connect(function(numDress, namePlayer, offset, rotationCustome)
-        --Replied to all clients except sender
-        if namePlayer ~= game.localPlayer.name then
-            cleanCustomeAndStopTrackingPlayer(namePlayer)
-            
-            addCostumePlayers(
-                customeStorage[numDress], 
-                objsCustome[namePlayer], 
-                offset, 
-                rotationCustome,
-                "Hiding",
-                namePlayer
-            )
-        end
+        addCostumePlayerInAnotherPlayers(customeStorage[numDress], offset, rotationCustome, namePlayer) --Replied to all clients except sender
     end)
 
     deleteCustomePlayerFoundClient:Connect(function(namePlayer, seeker)
