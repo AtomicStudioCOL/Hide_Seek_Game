@@ -62,13 +62,13 @@ function selectMainPlayer(mainClient, namePlayer, countdownCurrent, canUpdate)
     end
 end
 
-function StartCountdownHiddenPlayers(uiManager, textWaitStartGame, seekerPlayer)
+function StartCountdownHiddenPlayers(uiManager, textInfoRolePlayer, seekerPlayer)
     if countdownGame then countdownGame:Stop() end
     updateGoGameCountdown:FireServer(false)
     eventFlagPlayersSentGame:FireServer()
 
     countdownGame = Timer.new(1, function()
-        uiManager.SetTextGame(textWaitStartGame)
+        --uiManager.SetTextGame(textWaitStartGame)
         uiManager.SetCountdownGame(tostring(countdownStartHiddenPlayers.value))
         
         updateTimerStart:FireServer()
@@ -133,7 +133,7 @@ function StartCountdownGoGameLobby(uiManager, seekerPlayer)
     end, true)
 end
 
-function StartCountdownEndGame(uiManager, seekerPlayer)
+function StartCountdownEndGame(uiManager, seekerPlayer, txt)
     if countdownGame then countdownGame:Stop() end
 
     countdownEndGame = Timer.new(1, function()
@@ -142,10 +142,14 @@ function StartCountdownEndGame(uiManager, seekerPlayer)
 
         if countdown.value <= 0 then
             resetAllParametersGame:FireServer()
-            uiManager.SetTextEndGame('The game has ended, restarting.', '')
+            --uiManager.SetTextEndGame('The game has ended, restarting.', '')
+            uiManager.showTxtGreetingPLayer(false)
+            uiManager.UIShowInfoRolePlayer(true)
+            uiManager.SetTextRolePlayer(txt)
             
             Timer.After(5, function()
                 updateStartingCountdownEndGame:FireServer(true)
+                uiManager.UIShowInfoRolePlayer(false)
             end)
 
             endCountdownHiddenPlayers = false

@@ -46,6 +46,11 @@ local function dataCountdownStart(txt, playerSelected)
         txt,
         playerSelected
     )
+
+    uiManager.DisabledInfoPlayerHiding()
+    uiManager.showTxtGreetingPLayer(true)
+    uiManager.UIShowInfoRolePlayer(true)
+    uiManager.SetTextRolePlayer(txt)
 end
 
 local function selectRoleRandomly()
@@ -100,9 +105,11 @@ end
 
 function countdownWaitReleasePlayer(playerSelected)
     if player_id.value == rolesPlayerGame[1] then
-        dataCountdownStart('The wait time for the game to start', playerSelected)
+        uiManager.ChangeImgRolePlayer('imgRoleSeeker')
+        dataCountdownStart('You gotta to search for the other players hidden around the map', playerSelected)
     elseif player_id.value == rolesPlayerGame[2] then
-        dataCountdownStart('Hurry up and choose a disguise, then hide in the environment', playerSelected)
+        uiManager.ChangeImgRolePlayer('imgRoleHider')
+        dataCountdownStart('Choose a costume from the pedestals then run and hide around the map', playerSelected)
     end
 end
 
@@ -249,6 +256,8 @@ function self:Update()
             uiManager.DisabledInfoPlayerHiding()
         end
 
+        uiManager.UIShowInfoRolePlayer(false)
+        uiManager.showTxtGreetingPLayer(false)
         countdownGame.StartCountdownGame(uiManager, managerGame.whoIsSeeker.value)
         audioManager.pauseAlertPlayerSeeker(audioManager.audioAlertPlayerSeeker, 0)
         countdownGame.endCountdownHiddenPlayers = false

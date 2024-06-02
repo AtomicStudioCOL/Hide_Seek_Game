@@ -7,7 +7,14 @@
     xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
 >
 
-  <hr:UILuaView class="hide_seek" picking-mode="Ignore">
+  <hr:UILuaView class="hide_seek" name="HideSeek" picking-mode="Ignore">
+    <hr:UILabel name="UIInfoPlayers" picking-mode="Ignore">
+      <hr:UILabel name="TxtGreetingPLayer"></hr:UILabel>
+      <hr:UIImage name="RolePlayer" picking-mode="Ignore" />
+      <hr:UILabel name="DescriptionRolePlayer"></hr:UILabel>
+      <hr:UIImage name="ClosePopup" />
+    </hr:UILabel>
+
     <hr:UILabel name="infoPlayers" picking-mode="Ignore">
     </hr:UILabel>
 

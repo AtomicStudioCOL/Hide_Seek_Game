@@ -77,7 +77,7 @@ function self:ClientAwake()
     scriptPlayersInScene = gameObjectParent:GetComponent(PlayersInScene)
     detectingCollisions = managerGame.playerPetGlobal:GetComponent(DetectingCollisions)
 
-    startCountdownAllClients:Connect(function()
+    startCountdownAllClients:Connect(function(finishedTimerGame)
         managerGame.playerPetGlobal:SetActive(true)
         if game.localPlayer.name == managerGame.whoIsSeeker.value then
             detectingCollisions.ResetGhostPlayerSeeker() --Reset the ghost
@@ -91,7 +91,19 @@ function self:ClientAwake()
             end)
         end
 
-        countdownGame.StartCountdownEndGame(uiManager, managerGame.whoIsSeeker.value)
+        if finishedTimerGame then
+            if game.localPlayer.name == managerGame.whoIsSeeker.value then
+                countdownGame.StartCountdownEndGame(uiManager, managerGame.whoIsSeeker.value, 'YOU LOST')
+            else
+                countdownGame.StartCountdownEndGame(uiManager, managerGame.whoIsSeeker.value, 'YOU WON')
+            end
+        else
+            if game.localPlayer.name == managerGame.whoIsSeeker.value then
+                countdownGame.StartCountdownEndGame(uiManager, managerGame.whoIsSeeker.value, 'YOU WON')
+            else
+                countdownGame.StartCountdownEndGame(uiManager, managerGame.whoIsSeeker.value, 'YOU LOST')
+            end
+        end
         audioManager.pauseAlertPlayerSeeker(audioManager.audioAlertPlayerSeeker, 0)
     end)
 
@@ -147,7 +159,7 @@ end
 
 function self:ServerUpdate()
     if (managerGame.numPlayersFound.value >= managerGame.numPlayerHidingCurrently.value or countdownGame.endCountdownGame.value) and managerGame.hasBeginGame.value and not isCreatedCoroutine then
-        startCountdownAllClients:FireAllClients()
+        startCountdownAllClients:FireAllClients(countdownGame.endCountdownGame.value)
         isCreatedCoroutine = true
         managerGame.hasBeginGame.value = false
     elseif managerGame.numPlayersFound.value < managerGame.numPlayerHidingCurrently.value and isCreatedCoroutine and not countdownGame.endCountdownGame.value and not managerGame.hasBeginGame.value then

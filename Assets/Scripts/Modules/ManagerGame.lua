@@ -347,11 +347,13 @@ function self:ClientAwake()
         )
 
         if playersTag[game.localPlayer.name] == "Seeker" then
-            uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["GoSeeker"])
-            Timer.After(2, function()
+            --uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["GoSeeker"])
+            --[[ Timer.After(2, function()
                 detectingcol.enabled = true
                 uiManager.SetInfoPlayers("Players Found: " .. tostring(numPlayersFound.value) .. '/' .. tostring(numPlayerHidingCurrently.value))
-            end)
+            end) ]]
+            detectingcol.enabled = true
+                uiManager.SetInfoPlayers("Players Found: " .. tostring(numPlayersFound.value) .. '/' .. tostring(numPlayerHidingCurrently.value))
         end
 
         fireFlyLightColor01:GetComponent(FireflyLightColor).updateSeeker()
