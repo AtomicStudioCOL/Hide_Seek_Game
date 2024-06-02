@@ -80,9 +80,39 @@ local function putCustomePlayerHalloweenTree()
     )
 end
 
-local function putCustomePlayerGhostBlueHat()
+local function putCustomePlayerBookMagic()
     addCustomePlayerLobby(
         4, 
+        game.localPlayer.character.gameObject, 
+        Vector3.new(0, 1.8, 0),
+        Vector3.new(90, 230, 0),
+        "Hiding"
+    )
+end
+
+local function putCustomePlayerWitchHat()
+    addCustomePlayerLobby(
+        5, 
+        game.localPlayer.character.gameObject, 
+        Vector3.new(0, 0.45, 0),
+        Vector3.new(0, 230, 0),
+        "Hiding"
+    )
+end
+
+local function putCustomePlayerStumpPossesed()
+    addCustomePlayerLobby(
+        6, 
+        game.localPlayer.character.gameObject, 
+        Vector3.new(0, 0.4, 0),
+        Vector3.new(0, 230, 0),
+        "Hiding"
+    )
+end
+
+local function putCustomePlayerGhostBlueHat()
+    addCustomePlayerLobby(
+        7, 
         game.localPlayer.character.gameObject, 
         Vector3.new(0, 0, 0),
         Vector3.new(0, 230, 0),
@@ -92,7 +122,7 @@ end
 
 local function putCustomePlayerGhostRedHat()
     addCustomePlayerLobby(
-        5, 
+        8, 
         game.localPlayer.character.gameObject, 
         Vector3.new(0, 0, 0),
         Vector3.new(0, 230, 0),
@@ -102,7 +132,7 @@ end
 
 local function putCustomePlayerGhostAxe()
     addCustomePlayerLobby(
-        6, 
+        9, 
         game.localPlayer.character.gameObject, 
         Vector3.new(0, 0, 0),
         Vector3.new(0, 230, 0),
@@ -111,9 +141,9 @@ local function putCustomePlayerGhostAxe()
 end
 
 local function addCustomePlayerGhostStorage()
-    managerGame.customeStorage[4] = ghostCustome01
-    managerGame.customeStorage[5] = ghostCustome02
-    managerGame.customeStorage[6] = ghostCustome03
+    managerGame.customeStorage[7] = ghostCustome01
+    managerGame.customeStorage[8] = ghostCustome02
+    managerGame.customeStorage[9] = ghostCustome03
 end
 
 --Unity Functions
@@ -133,13 +163,13 @@ function self:Awake()
 
     --> Zone 02 of selecting a disguise
     pedestalCustome02Lobby_btn01.Tapped:Connect(function()
-        putCustomePlayerDeathBox()
+        putCustomePlayerBookMagic()
     end)
     pedestalCustome02Lobby_btn02.Tapped:Connect(function()
-        putCustomePlayerPumpkin()
+        putCustomePlayerWitchHat()
     end)
     pedestalCustome02Lobby_btn03.Tapped:Connect(function()
-        putCustomePlayerHalloweenTree()
+        putCustomePlayerStumpPossesed()
     end)
 
     --> Zone 03 of selecting a disguise

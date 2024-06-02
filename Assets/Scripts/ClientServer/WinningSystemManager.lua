@@ -35,7 +35,6 @@ function respawnStartPlayers(namePlayer, character : Character)
     character.gameObject.transform.position = managerGame.pointRespawnLobbyGlobal.transform.position
     character:MoveTo(managerGame.pointRespawnLobbyGlobal.transform.position, 6, function()end)
     
-    --scriptPlayersInScene.cameraManagerSeeker.CenterOn(character.gameObject.transform.position)
     managerGame.cleanTrashGame(game.localPlayer.name)
 end
 

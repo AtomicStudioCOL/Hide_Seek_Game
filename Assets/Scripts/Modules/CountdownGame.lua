@@ -68,7 +68,6 @@ function StartCountdownHiddenPlayers(uiManager, textInfoRolePlayer, seekerPlayer
     eventFlagPlayersSentGame:FireServer()
 
     countdownGame = Timer.new(1, function()
-        --uiManager.SetTextGame(textWaitStartGame)
         uiManager.SetCountdownGame(tostring(countdownStartHiddenPlayers.value))
         
         updateTimerStart:FireServer()
@@ -142,7 +141,6 @@ function StartCountdownEndGame(uiManager, seekerPlayer, txt)
 
         if countdown.value <= 0 then
             resetAllParametersGame:FireServer()
-            --uiManager.SetTextEndGame('The game has ended, restarting.', '')
             uiManager.showTxtGreetingPLayer(false)
             uiManager.UIShowInfoRolePlayer(true)
             uiManager.SetTextRolePlayer(txt)

@@ -32,11 +32,17 @@ local roadPedestal03 : GameObject = nil
 --!SerializeField
 local roadPedestal04 : GameObject = nil
 --!SerializeField
-local custome01 : GameObject = nil
+local custome01 : GameObject = nil -- Custome Player  Wooden Coffin A
 --!SerializeField
-local custome02 : GameObject = nil
+local custome02 : GameObject = nil -- Custome Player  Pumpkin_C
 --!SerializeField
-local custome03 : GameObject = nil
+local custome03 : GameObject = nil -- Custome Player  Spooky Tree_A
+--!SerializeField
+local custome04 : GameObject = nil -- Custome Player  book-magical-eye
+--!SerializeField
+local custome05 : GameObject = nil -- Custome Player  stump-possesed
+--!SerializeField
+local custome06 : GameObject = nil -- Custome Player  witch-hat
 --!SerializeField
 local btnObjHide01Point01 : TapHandler = nil
 --!SerializeField
@@ -130,6 +136,7 @@ local posOffset = Vector3.new(0, 0, 0)
 local uiManager = nil
 local infoGameModule = nil
 local detectingcol = nil
+local choosingDisguisesPedestal = nil
 isFollowingAlways = false
 
 --Events
@@ -221,6 +228,9 @@ function cleanTrashGame(namePlayer)
     reviewingScenePlayersCustome(custome01.name, namePlayer)
     reviewingScenePlayersCustome(custome02.name, namePlayer)
     reviewingScenePlayersCustome(custome03.name, namePlayer)
+    reviewingScenePlayersCustome(custome04.name, namePlayer)
+    reviewingScenePlayersCustome(custome05.name, namePlayer)
+    reviewingScenePlayersCustome(custome06.name, namePlayer)
     reviewingScenePlayersCustome(detectingcol.ghostHiddenPlayer.name, namePlayer)
 end
 
@@ -267,7 +277,7 @@ local function addCostumePlayerInAnotherPlayers(dress, offset, rotationCustome, 
 end
 
 --Unity Functions
-function self:ClientAwake()
+function self:ClientAwake()    
     playerPetGlobal = playerPet
     UIManagerGlobal = UIManager
     CameraManagerGlobal = CameraManager
@@ -280,6 +290,7 @@ function self:ClientAwake()
     uiManager = UIManagerGlobal:GetComponent(UI_Hide_Seek)
     infoGameModule = self.gameObject:GetComponent(InfoGameModule)
     detectingcol = playerPet:GetComponent(DetectingCollisions)
+    choosingDisguisesPedestal = self.gameObject:GetComponent(ChoosingCostumesPedestal)
     InfoGameModuleGlobal = infoGameModule
 
     --Lobby
@@ -328,6 +339,9 @@ function self:ClientAwake()
     customeStorage[1] = custome01
     customeStorage[2] = custome02
     customeStorage[3] = custome03
+    customeStorage[4] = custome04
+    customeStorage[5] = custome05
+    customeStorage[6] = custome06
     
     lockedPlayerSeeker()
 
@@ -347,13 +361,8 @@ function self:ClientAwake()
         )
 
         if playersTag[game.localPlayer.name] == "Seeker" then
-            --uiManager.SetInfoPlayers(infoGameModule.SeekerTexts["GoSeeker"])
-            --[[ Timer.After(2, function()
-                detectingcol.enabled = true
-                uiManager.SetInfoPlayers("Players Found: " .. tostring(numPlayersFound.value) .. '/' .. tostring(numPlayerHidingCurrently.value))
-            end) ]]
             detectingcol.enabled = true
-                uiManager.SetInfoPlayers("Players Found: " .. tostring(numPlayersFound.value) .. '/' .. tostring(numPlayerHidingCurrently.value))
+            uiManager.SetInfoPlayers("Players Found: " .. tostring(numPlayersFound.value) .. '/' .. tostring(numPlayerHidingCurrently.value))
         end
 
         fireFlyLightColor01:GetComponent(FireflyLightColor).updateSeeker()

@@ -26,7 +26,7 @@ local function addCostumePlayer01()
     addCostumePlayerHiding(
         1, 
         game.localPlayer.character.gameObject, 
-        Vector3.new(0, 1.954, 0), -- 0.073, 1.579, 0.062 -- -0.25, 1.954, 0.15
+        Vector3.new(0, 1.954, 0),
         Vector3.new(90, 230, 0),
         managerGame.playersTag[game.localPlayer.name]
     )
@@ -46,7 +46,7 @@ local function addCostumePlayer03()
     addCostumePlayerHiding(
         3, 
         game.localPlayer.character.gameObject, 
-        Vector3.new(-0.247, 0, -0.357), ---0.255, 0, -0.028
+        Vector3.new(-0.247, 0, -0.357),
         Vector3.new(0, 230, 0),
         managerGame.playersTag[game.localPlayer.name]
     )
