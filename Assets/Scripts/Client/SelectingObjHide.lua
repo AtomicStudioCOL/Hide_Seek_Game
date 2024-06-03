@@ -1,6 +1,16 @@
 --Modules
 local managerGame = require("ManagerGame")
 
+--Variables
+local offsetPedestal = {
+    [1] = Vector3.new(0, 1.954, 0),
+    [2] = Vector3.new(0, 0, 0),
+    [3] = Vector3.new(-0.247, 0, -0.357),
+    [4] = Vector3.new(0, 1.8, 0),
+    [5] = Vector3.new(0, 0.45, 0),
+    [6] = Vector3.new(0, 0.4, 0),
+}
+
 --Functions
 local function addCostumePlayerHiding(numDress : number, localPlayerObj : GameObject, offset : Vector3, rotationCustome, tagPlayer : string)
     managerGame.cleanCustomeAndStopTrackingPlayer(game.localPlayer.name)
@@ -24,9 +34,9 @@ end
 
 local function addCostumePlayer01()
     addCostumePlayerHiding(
-        1, 
+        managerGame.customePlayersSelected[1], 
         game.localPlayer.character.gameObject, 
-        Vector3.new(0, 1.954, 0),
+        offsetPedestal[managerGame.customePlayersSelected[1]],
         Vector3.new(90, 230, 0),
         managerGame.playersTag[game.localPlayer.name]
     )
@@ -34,9 +44,9 @@ end
 
 local function addCostumePlayer02()
     addCostumePlayerHiding(
-        2,
+        managerGame.customePlayersSelected[2],
         game.localPlayer.character.gameObject,
-        Vector3.new(0, 0, 0),
+        offsetPedestal[managerGame.customePlayersSelected[2]],
         Vector3.new(0, 230, 0),
         managerGame.playersTag[game.localPlayer.name]
     )
@@ -44,9 +54,9 @@ end
 
 local function addCostumePlayer03()
     addCostumePlayerHiding(
-        3, 
+        managerGame.customePlayersSelected[3], 
         game.localPlayer.character.gameObject, 
-        Vector3.new(-0.247, 0, -0.357),
+        offsetPedestal[managerGame.customePlayersSelected[3]],
         Vector3.new(0, 230, 0),
         managerGame.playersTag[game.localPlayer.name]
     )

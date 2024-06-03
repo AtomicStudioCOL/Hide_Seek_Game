@@ -117,6 +117,7 @@ customePlayers = {} -- Players whit its custome [NamePlayer -> {["Dress"] = Cust
 standCustomePlayers = {} -- Players whit its stand custome {[NamePlayer] = num_stand_custome}
 roadToPedestalCustom = {} -- Players whit its road to custome pedestal {[NamePlayer] = num_road}
 tagPlayerFound = {} -- Player what was found - {[NamePlayer] = "Found" or nil}
+customePlayersSelected = {} -- What was the customes player selected 
 previousSeeker = StringValue.new('PreviousSeeker', "") -- Storage the previous seeker's name
 whoIsSeeker = StringValue.new("WhoIsSeeker", "") -- Storage the seeker's name
 numRespawnPlayerHiding = IntValue.new("NumRespawnPlayerHiding", 1) -- Point current of respawn of the new player
@@ -213,6 +214,7 @@ function activateMenuModelHide(visible, standCustome, numRoad)
 
     objsHidesGlobal[standCustome]:SetActive(visible)
     roadPedestalsGlobal[numRoad]:SetActive(visible)
+    choosingDisguisesPedestal.selectWhatCustomePlayerShow(standCustome)
 end
 
 local function reviewingScenePlayersCustome(nameCustome, namePlayer)
