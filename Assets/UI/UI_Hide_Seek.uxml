@@ -21,8 +21,24 @@
     <hr:UILabel name="countdownGame" picking-mode="Ignore">
     </hr:UILabel>
 
-    <hr:UILabel name='alertSeekerPlayer' picking-mode="Ignore">
+    <hr:UILabel name="alertSeekerPlayer" picking-mode="Ignore">
     </hr:UILabel>
+
+    <hr:UILabel class="instructions" name="Instructions" picking-mode="Ignore">
+      <hr:UIButton class="btn_backward btn_imgs" name="BTN_Backward" />
+      <hr:UILabel class="txt_btn_backward txt_buttons" name="Txt_Btn_Backward"></hr:UILabel>
+      
+      <hr:UIImage class="img_instruction" name="Img_Instruction" />
+      
+      <hr:UIButton class="btn_forward btn_imgs" name="BTN_Forward" />
+      <hr:UILabel class="txt_btn_forward txt_buttons" name="Txt_Btn_Forward"></hr:UILabel>
+      
+      <hr:UILabel class="info_instruction" name="Info_Instruction"></hr:UILabel>
+      <hr:UIImage class="close_instruction" name="Close_Instructions" />
+    </hr:UILabel>
+
+    <hr:UIButton class="btn_instructions" name="Btn_Instructions" />
+    <hr:UILabel class="txt_btn_instructions txt_buttons" name="Txt_Btn_Instructions"></hr:UILabel>
   </hr:UILuaView>
 
 </UXML>

@@ -126,7 +126,7 @@ numPlayersFound = IntValue.new("NumPlayersFound", 0) -- Amount of players Found
 wasCalculatedRandomMap = BoolValue.new("WasCalculatedRandomMap", false)
 hasBeginGame = BoolValue.new("HasBeginGame", false)
 opcMap = IntValue.new("MapRandom", 1)
-hasCollidedWithAClientInGame = BoolValue.new("HasCollidedWithAClientInGame", false)
+hasCollidedWithPlayerInGame = BoolValue.new("HasCollidedWithPlayerInGame", false)
 isFirstPlayer = BoolValue.new("IsFirstPlayer", true) -- Verified if is the first client and assign the seeker's role
 
 --Variables locals
@@ -156,7 +156,6 @@ releasePlayerClient = Event.new("ReleasePlayerClient")
 updateNumPlayersHiding = Event.new("UpdateNumPlayersHiding")
 updateNumPlayersFound = Event.new("UpdateNumPlayersFound")
 reviewIfClientInGame = Event.new('ReviewIfClientInGame')
-updateWhichClientHasCollided = Event.new("UpdateWhichClientHasCollided")
 
 --Local Functions
 function followingToTarget(current : GameObject, target, maxDistanceDelta, positionOffset)
@@ -225,15 +224,10 @@ local function reviewingScenePlayersCustome(nameCustome, namePlayer)
 end
 
 function cleanTrashGame(namePlayer)
-    detectingcol.enabled = true
-    
-    reviewingScenePlayersCustome(custome01.name, namePlayer)
-    reviewingScenePlayersCustome(custome02.name, namePlayer)
-    reviewingScenePlayersCustome(custome03.name, namePlayer)
-    reviewingScenePlayersCustome(custome04.name, namePlayer)
-    reviewingScenePlayersCustome(custome05.name, namePlayer)
-    reviewingScenePlayersCustome(custome06.name, namePlayer)
-    reviewingScenePlayersCustome(detectingcol.ghostHiddenPlayer.name, namePlayer)
+    for index, costumes in pairs(customeStorage) do
+        if not costumes then continue end
+        reviewingScenePlayersCustome(costumes.name, namePlayer)
+    end
 end
 
 function cleanCustomeAndStopTrackingPlayer(namePlayer)
@@ -348,6 +342,8 @@ function self:ClientAwake()
     lockedPlayerSeeker()
 
     releasePlayerClient:Connect(function(namePlayer, offset, rotationFireFly)
+        if not playersTag[game.localPlayer.name] then return end
+        
         navMeshAgentWithoutHiders:SetActive(false)
         navMeshAgentWithHiders:SetActive(true)
         navMeshLobby:SetActive(false)
@@ -426,10 +422,6 @@ function self:ClientAwake()
     cleanCustomeWhenPlayerLeftGameClient:Connect(function(namePlayer)
         cleanCustomeAndStopTrackingPlayer(namePlayer)
     end)
-
-    updateWhichClientHasCollided:Connect(function(status)
-        hasCollidedWithAClientInGame.value = status
-    end)
 end
 
 function self:ServerAwake()
@@ -461,15 +453,11 @@ function self:ServerAwake()
     end)
 
     reviewIfClientInGame:Connect(function(player : Player, namePlayer)
-        print(`Jugador colisionado: {playersTag[namePlayer]}`)
-        if playersTag[player.name] then
-            hasCollidedWithAClientInGame.value = true
-            updateWhichClientHasCollided:FireClient(player, true)
+        if playersTag[namePlayer] then
+            hasCollidedWithPlayerInGame.value = true
         else
-            hasCollidedWithAClientInGame.value = false
-            updateWhichClientHasCollided:FireClient(player, false)
+            hasCollidedWithPlayerInGame.value = false
         end
-        print(`Server: {hasCollidedWithAClientInGame.value}`)
     end)
 
     server.PlayerDisconnected:Connect(function(player : Player)

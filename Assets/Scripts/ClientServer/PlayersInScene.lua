@@ -106,10 +106,12 @@ end
 function countdownWaitReleasePlayer(playerSelected)
     if player_id.value == rolesPlayerGame[1] then
         uiManager.ChangeImgRolePlayer('imgRoleSeeker')
-        dataCountdownStart('You gotta to search for the other players hidden around the map', playerSelected)
+        dataCountdownStart('You are a Seeker. Search for players hidden around the map after the timer is up!', playerSelected)
+        uiManager.IsShowBtnInstructionsGame(true)
     elseif player_id.value == rolesPlayerGame[2] then
         uiManager.ChangeImgRolePlayer('imgRoleHider')
-        dataCountdownStart('Choose a costume from the pedestals then run and hide around the map', playerSelected)
+        dataCountdownStart('You are a Hider. Choose a costume from the pedestals, blend in with your surroundings!', playerSelected)
+        uiManager.IsShowBtnInstructionsGame(true)
     end
 end
 

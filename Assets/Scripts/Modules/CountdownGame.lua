@@ -8,7 +8,7 @@ local seconds : string = ''
 countdownStartHiddenPlayers = IntValue.new('CountdownStartHiddenPlayers', 30)
 countdownStartGame = IntValue.new('CountdownStartGame', 180)
 countdown = IntValue.new('Countdown', 3)
-countdownGoGame = IntValue.new('CountdownGoGame', 60)
+countdownGoGame = IntValue.new('CountdownGoGame', 30)
 endCountdownHiddenPlayers = false
 endCountdownGame = BoolValue.new("CountdownGameHideAndSeek", false)
 startingCountdownEndGame = BoolValue.new("StartingCountdownEndGame", false)
@@ -48,7 +48,7 @@ function resetCountdowns()
     countdownStartGame.value = 180
     countdownStartHiddenPlayers.value = 30
     countdown.value = 3
-    countdownGoGame.value = 60
+    countdownGoGame.value = 30
 end
 
 function selectMainPlayer(mainClient, namePlayer, countdownCurrent, canUpdate)

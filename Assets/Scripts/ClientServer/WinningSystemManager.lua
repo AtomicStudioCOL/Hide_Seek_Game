@@ -34,12 +34,11 @@ function respawnStartPlayers(namePlayer, character : Character)
 
     character.gameObject.transform.position = managerGame.pointRespawnLobbyGlobal.transform.position
     character:MoveTo(managerGame.pointRespawnLobbyGlobal.transform.position, 6, function()end)
-    
-    managerGame.cleanTrashGame(game.localPlayer.name)
 end
 
 function RespawnAllPlayersInGame(character, namePlayer)
     self.gameObject:GetComponent(PlayersToLobby).settingLobbyPlayer(true)
+    managerGame.cleanTrashGame(game.localPlayer.name)
     respawnStartPlayers(namePlayer, character)
     SeekerSeeingHiddenPlayersAgain()
     sendRestPlayersRestartServer:FireServer(namePlayer, character)
@@ -90,17 +89,17 @@ function self:ClientAwake()
             end)
         end
 
-        if finishedTimerGame then
+        if finishedTimerGame and managerGame.playersTag[game.localPlayer.name] then
             if game.localPlayer.name == managerGame.whoIsSeeker.value then
-                countdownGame.StartCountdownEndGame(uiManager, managerGame.whoIsSeeker.value, 'YOU LOST')
+                countdownGame.StartCountdownEndGame(uiManager, managerGame.whoIsSeeker.value, 'YOU LOSE')
             else
                 countdownGame.StartCountdownEndGame(uiManager, managerGame.whoIsSeeker.value, 'YOU WON')
             end
-        else
+        elseif not finishedTimerGame and managerGame.playersTag[game.localPlayer.name] then
             if game.localPlayer.name == managerGame.whoIsSeeker.value then
                 countdownGame.StartCountdownEndGame(uiManager, managerGame.whoIsSeeker.value, 'YOU WON')
             else
-                countdownGame.StartCountdownEndGame(uiManager, managerGame.whoIsSeeker.value, 'YOU LOST')
+                countdownGame.StartCountdownEndGame(uiManager, managerGame.whoIsSeeker.value, 'YOU LOSE')
             end
         end
         audioManager.pauseAlertPlayerSeeker(audioManager.audioAlertPlayerSeeker, 0)
@@ -144,6 +143,7 @@ function self:ServerAwake()
     resetNetworkValuesGame:Connect(function(player : Player, namePlayer)
         managerGame.cleanCustomeWhenPlayerLeftGameClient:FireAllClients(namePlayer)
         cleanAllDataGame()
+        managerGame.cleanTrashGame(namePlayer)
         eventRespawnAllPlayers:FireAllClients()
     end)
 

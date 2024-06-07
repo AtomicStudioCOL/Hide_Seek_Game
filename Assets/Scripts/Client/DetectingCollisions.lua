@@ -82,30 +82,38 @@ function self:OnCollisionEnter(collision : Collision)
     local seeker = game.localPlayer.character.gameObject
     if collidedObj == managerGame.objsCustome[managerGame.whoIsSeeker.value] then return end
     if seeker == collidedObj then return end
-
-    if collidedObj.name == seeker.name and game.localPlayer.name == managerGame.whoIsSeeker.value then
-        local vfx = AddVFXFoundHiddenPlayer(seeker) -- VFX and SFX when the seeker find a player
-
-        collidedObj:SetActive(false)
-        for namePlayer, objPlayer in pairs(managerGame.objsCustome) do
-            if objPlayer == collidedObj then
-                managerGame.deleteCustomePlayerFoundServer:FireServer(namePlayer, game.localPlayer.name)
-                managerGame.tagPlayerFound[namePlayer] = "Found"
-            end
-        end
-
-        if not isAddedGhost then
-            AddGhostFollowingSeeker(seeker, ghostFoundFirstPlayer)
-            isAddedGhost = true
-            managerGame.updateNumPlayersFound:FireServer()
-        else
-            managerGame.updateNumPlayersFound:FireServer()
-        end
-        
-        DeleteVFXFoundHiddenPlayer(vfx) -- Delete VFX add
-        
-        audioManager.pauseAlertPlayerSeeker(audioManager.audioAlertPlayerSeeker, 0)
+    
+    for namePlayer, objPlayer in pairs(managerGame.objsCustome) do
+        if objPlayer ~= collidedObj then continue end
+        managerGame.reviewIfClientInGame:FireServer(namePlayer)
+        break
     end
+    
+    Timer.After(0.2, function()
+        if game.localPlayer.name == managerGame.whoIsSeeker.value and managerGame.hasCollidedWithPlayerInGame.value then
+            local vfx = AddVFXFoundHiddenPlayer(seeker) -- VFX and SFX when the seeker find a player
+            
+            collidedObj:SetActive(false)
+            for namePlayer, objPlayer in pairs(managerGame.objsCustome) do
+                if objPlayer == collidedObj then
+                    managerGame.deleteCustomePlayerFoundServer:FireServer(namePlayer, game.localPlayer.name)
+                    managerGame.tagPlayerFound[namePlayer] = "Found"
+                end
+            end
+
+            if not isAddedGhost then
+                AddGhostFollowingSeeker(seeker, ghostFoundFirstPlayer)
+                isAddedGhost = true
+                managerGame.updateNumPlayersFound:FireServer()
+            else
+                managerGame.updateNumPlayersFound:FireServer()
+            end
+            
+            DeleteVFXFoundHiddenPlayer(vfx) -- Delete VFX add
+            
+            audioManager.pauseAlertPlayerSeeker(audioManager.audioAlertPlayerSeeker, 0)
+        end
+    end)
 end
 
 function self:Update()

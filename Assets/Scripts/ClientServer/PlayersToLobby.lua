@@ -13,6 +13,7 @@ local cameraManagerHiding = nil
 local cameraManagerSeeker = nil
 local uiManager = nil
 local localCharacterInstantiatedEvent = nil
+local costumePlayerCurrent = {}
 
 --Public Variables
 --!SerializeField
@@ -96,13 +97,30 @@ function self:ClientAwake()
 
     eventSendPlayerToLobbyClient:Connect(function(character, namePlayer)
         sendPlayersToLobby(character, namePlayer, managerGame.objsCustome[namePlayer])
-        sendPlayersPointRespawnServer:FireServer(game.localPlayer.name)
+        sendPlayersPointRespawnServer:FireServer(game.localPlayer.name, namePlayer)
     end)
 
-    sendPlayersPointRespawnClient:Connect(function(namePlayer)
+    sendPlayersPointRespawnClient:Connect(function(namePlayer, namePlayerNew)
+        --print(`Name: {namePlayer} - Local: {game.localPlayer.name} - New: {namePlayerNew}`)
         if game.localPlayer.name ~= namePlayer then
             sendPlayersToLobby(managerGame.previousPlayers[namePlayer], namePlayer, managerGame.objsCustome[namePlayer])
         end
+        --[[ if namePlayer ~= namePlayerNew and game.localPlayer.name == namePlayerNew then
+            print(`Player: {game.localPlayer.name}`)
+            print(`Custome: {managerGame.customePlayers[game.localPlayer.name]}`)
+            print(`Costume Server: {costumePlayerCurrent[game.localPlayer.name]}`)
+            if managerGame.customePlayers[game.localPlayer.name] then 
+                print(`Dress: {managerGame.customePlayers[game.localPlayer.name]['Dress']}`)
+                managerGame.addCostumePlayers(
+                    managerGame.customePlayers[game.localPlayer.name]['Dress'], 
+                    game.localPlayer.character.gameObject, 
+                    managerGame.customePlayers[game.localPlayer.name]['Offset'], 
+                    managerGame.customePlayers[game.localPlayer.name]['Rotation'], 
+                    "Hiding",
+                    game.localPlayer.name
+                )
+            end
+        end ]]
     end)
 
     timeBeforeStartGameLobby:Connect(function()
@@ -125,9 +143,9 @@ function self:ServerAwake()
         amountPlayers.value = numPlayersInLobby()
     end)
 
-    sendPlayersPointRespawnServer:Connect(function(player : Player, namePlayer)
+    sendPlayersPointRespawnServer:Connect(function(player : Player, namePlayer, namePlayerNew)
         if managerGame.playersTag[namePlayer] == nil then
-            sendPlayersPointRespawnClient:FireAllClients(namePlayer)
+            sendPlayersPointRespawnClient:FireAllClients(namePlayer, namePlayerNew)
         end
     end)
 

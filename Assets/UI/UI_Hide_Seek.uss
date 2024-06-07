@@ -15,23 +15,23 @@
 
 .xsmall-screen {
     --txt-fontSize-Greeting: 26px;
-    --txt-fontSize-Description: 16px;
+    --txt-fontSize-Description: 15px;
     --txt-bottomGreeting: 6%;
-    --txt-topDescription: 18%;
+    --txt-topDescription: 20%;
 } /* -> 801 - 1023 */
 
 .small-screen {
     --txt-fontSize-Greeting: 28px;
-    --txt-fontSize-Description: 18px;
+    --txt-fontSize-Description: 15px;
     --txt-bottomGreeting: 9%;
     --txt-topDescription: 21%;
 } /* -> 1024 - 1280 */
 
 .medium-screen {
     --txt-fontSize-Greeting: 30px;
-    --txt-fontSize-Description: 18px;
+    --txt-fontSize-Description: 16px;
     --txt-bottomGreeting: 10%;
-    --txt-topDescription: 22%;
+    --txt-topDescription: 23%;
 } /* -> 1024 - 1500 */
 
 .xmedium-screen {
@@ -180,4 +180,121 @@
     top: 0;
     right: 0;
     bottom: 40%;
+}
+
+.instructions {
+    background-image: url('project://database/Assets/Textures/Atlas_Hide_and_Seek.png#Atlas_Hide_and_Seek_0');/* rgba(41, 0, 111, 1); */
+    background-size: 100% 75%;
+    background-repeat: no-repeat;
+    background-position: center center;
+
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.btn_imgs {
+    position: absolute;
+    top: 42%;
+}
+
+.btn_backward {
+    background-color: rgba(185, 112, 255, 0.5);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+
+    width: 8%;
+    height: 8%;
+    left: 5%;
+}
+
+.img_instruction {
+    background-image: url('project://database/Assets/Textures/HighRise_Logo_01.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    position: absolute;
+    top: 0;
+    left: 16%;
+    right: 16%;
+    bottom: 8%;
+
+}
+
+.btn_forward {
+    background-color: rgba(185, 112, 255, 0.5);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+
+    width: 8%;
+    height: 8%;
+    right: 5%;
+}
+
+.info_instruction {
+    font-size: 26px;
+    white-space: normal;
+    color: rgba(255, 255, 255, 1);
+
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    -unity-text-overflow-position: middle;
+
+    position: absolute;
+    left: 14%;
+    right: 14%;
+    bottom: 20%;
+}
+
+.close_instruction {
+    background-image: url('project://database/Assets/Textures/Atlas_Hide_and_Seek.png#Atlas_Hide_and_Seek_4');
+    background-size: 12%;
+    background-repeat: no-repeat;
+    background-position: right center;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 5%;
+    bottom: 63%;
+}
+
+.btn_instructions {
+    background-color: rgba(41, 0, 111, 1);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    position: absolute;
+    bottom: 2%;
+    width: 75%;
+}
+
+.txt_buttons {
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    -unity-text-overflow-position: middle;
+}
+
+.txt_btn_backward {
+    font-size: 38px;
+    white-space: normal;
+    color: rgba(255, 255, 255, 1);
+}
+
+.txt_btn_forward {
+    font-size: 38px;
+    white-space: normal;
+    color: rgba(255, 255, 255, 1);
+}
+
+.txt_btn_instructions {
+    font-size: 24px;
+    white-space: normal;
+    color: rgba(255, 255, 255, 1);
 }
