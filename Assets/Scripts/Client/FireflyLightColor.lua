@@ -21,6 +21,7 @@ local thisObject = self.gameObject
 local seeker = managerGame.objsCustome[managerGame.whoIsSeeker.value]
 local audio = thisObject:GetComponent(AudioSource)
 local uiManager = nil
+local isEnabledBtnFlashlight = false
 
 -- functions --
 local function TableLenght(table)
@@ -76,18 +77,33 @@ function self:Update()
         if game.localPlayer.name == managerGame.whoIsSeeker.value then
             uiManager.alertHiddenPlayerNearby('', false)
             audioManager.pauseAlertPlayerSeeker(audio, 0)
+            
+            if isEnabledBtnFlashlight then
+                isEnabledBtnFlashlight = false
+                uiManager.StatusBtnFlashlightSeeker(isEnabledBtnFlashlight)
+            end
         end
     elseif colorIndex == 1 then
         thisObject:GetComponent(Renderer).material = yellow
         if game.localPlayer.name == managerGame.whoIsSeeker.value then
             uiManager.alertHiddenPlayerNearby('Alert! A hidden player is nearby', true)
             audioManager.playAlertPlayerSeeker(audio, 0.5)
+            
+            if isEnabledBtnFlashlight then
+                isEnabledBtnFlashlight = false
+                uiManager.StatusBtnFlashlightSeeker(isEnabledBtnFlashlight)
+            end
         end
     elseif colorIndex == 2 then
         thisObject:GetComponent(Renderer).material = red
         if game.localPlayer.name == managerGame.whoIsSeeker.value then
             uiManager.alertHiddenPlayerNearby('Alert! A hidden player is nearby', true)
             audioManager.playAlertPlayerSeeker(audio, 1)
+
+            if not isEnabledBtnFlashlight then
+                isEnabledBtnFlashlight = true
+                uiManager.StatusBtnFlashlightSeeker(isEnabledBtnFlashlight)
+            end
         end
     end
 end

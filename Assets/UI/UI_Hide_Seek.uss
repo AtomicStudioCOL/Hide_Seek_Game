@@ -63,6 +63,62 @@
     --img-rolePlayer: url('project://database/Assets/Textures/Atlas_Hide_and_Seek.png#Atlas_Hide_and_Seek_3');
 }
 
+/*Class instruction Seeker*/
+.seekerInstruction1 {
+    --img-instruction: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_01.png#Instruction_01');
+}
+
+.seekerInstruction2 {
+    --img-instruction: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_02.png#Instruction_02');
+}
+
+.seekerInstruction3 {
+    --img-instruction: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_03.png#Instruction_03');
+}
+
+.seekerInstruction4 {
+    --img-instruction: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_04.png#Instruction_04');
+}
+
+.seekerInstruction5 {
+    --img-instruction: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_05.png#Instruction_05');
+}
+
+.seekerInstruction6 {
+    --img-instruction: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_06.png#Instruction_06');
+}
+
+.seekerInstruction7 {
+    --img-instruction: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_07.png#Instruction_07');
+}
+
+.seekerInstruction8 {
+    --img-instruction: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_08.png#Instruction_08');
+}
+/*Class instruction Seeker*/
+
+/*Class instruction Hiders*/
+.hidersInstruction1 {
+    --img-instruction: url('project://database/Assets/Textures/Instructions/Hidden_Player/Instruction_01.png#Instruction_01');
+}
+
+.hidersInstruction2 {
+    --img-instruction: url('project://database/Assets/Textures/Instructions/Hidden_Player/Instruction_02.png#Instruction_02');
+}
+
+.hidersInstruction3 {
+    --img-instruction: url('project://database/Assets/Textures/Instructions/Hidden_Player/Instruction_03.png#Instruction_03');
+}
+
+.hidersInstruction4 {
+    --img-instruction: url('project://database/Assets/Textures/Instructions/Hidden_Player/Instruction_04.png#Instruction_04');
+}
+
+.hidersInstruction5 {
+    --img-instruction: url('project://database/Assets/Textures/Instructions/Hidden_Player/Instruction_05.png#Instruction_05');
+}
+/*Class instruction Hiders*/
+
 .hide_seek {
     display: flex;
     align-self: center;
@@ -212,7 +268,7 @@
 }
 
 .img_instruction {
-    background-image: url('project://database/Assets/Textures/HighRise_Logo_01.png');
+    background-image: var(--img-instruction);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -237,7 +293,7 @@
 }
 
 .info_instruction {
-    font-size: 26px;
+    font-size: 14px;
     white-space: normal;
     color: rgba(255, 255, 255, 1);
 
@@ -297,4 +353,16 @@
     font-size: 24px;
     white-space: normal;
     color: rgba(255, 255, 255, 1);
+}
+
+.img_flashlight {
+    background-image: url('project://database/Assets/Textures/flashlight.png#flashlight');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    position: absolute;
+    top: 70%;
+    bottom: 0;
+    width: 12%;
 }

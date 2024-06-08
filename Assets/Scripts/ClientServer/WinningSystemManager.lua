@@ -38,9 +38,11 @@ end
 
 function RespawnAllPlayersInGame(character, namePlayer)
     self.gameObject:GetComponent(PlayersToLobby).settingLobbyPlayer(true)
-    managerGame.cleanTrashGame(game.localPlayer.name)
     respawnStartPlayers(namePlayer, character)
     SeekerSeeingHiddenPlayersAgain()
+    
+    managerGame.cleanTrashGame(game.localPlayer.name)
+    uiManager.IsShowBtnInstructionsGame(false)
     sendRestPlayersRestartServer:FireServer(namePlayer, character)
 end
 

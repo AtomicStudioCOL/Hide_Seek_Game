@@ -143,6 +143,8 @@ function StartCountdownEndGame(uiManager, seekerPlayer, txt)
             resetAllParametersGame:FireServer()
             uiManager.showTxtGreetingPLayer(false)
             uiManager.UIShowInfoRolePlayer(true)
+            uiManager.IsShowBtnInstructionsGame(true)
+            uiManager.IsShowingInfoInstruction(false)
             uiManager.SetTextRolePlayer(txt)
             
             Timer.After(5, function()

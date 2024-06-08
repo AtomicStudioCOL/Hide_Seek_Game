@@ -105,6 +105,7 @@ doorsOpenZoneOrangeGlobal = nil
 pointRespawnLobbyGlobal = nil
 lobbyRoomGlobal = nil
 worldRoomGlobal = nil
+fireFlyLightColor02Global = nil
 pointsRespawnPlayerHiderGlobal = {} -- Storage all points respawn. {[n] = point_respawn}
 objsHidesGlobal = {} -- Storage all stand custome. {[n] = stand_custome}
 roadPedestalsGlobal = {} -- Storage the road to the pedestals
@@ -288,6 +289,7 @@ function self:ClientAwake()
     detectingcol = playerPet:GetComponent(DetectingCollisions)
     choosingDisguisesPedestal = self.gameObject:GetComponent(ChoosingCostumesPedestal)
     InfoGameModuleGlobal = infoGameModule
+    fireFlyLightColor02Global = fireFlyLightColor02
 
     --Lobby
     pointRespawnLobbyGlobal = pointRespawnLobby
