@@ -143,18 +143,25 @@ function self:ClientAwake()
     end)
     
     if screenWidth <= 800 then
+        print('xxsmall-screen')
         addClassScreenCurrent('xxsmall-screen')
     elseif screenWidth >= 801 and screenWidth <= 1023 then
+        print('xsmall-screen')
         addClassScreenCurrent('xsmall-screen')
     elseif screenWidth >= 1024 and screenWidth <= 1280 then
+        print('small-screen')
         addClassScreenCurrent('small-screen')
     elseif screenWidth >= 1281 and screenWidth <= 1600 then
+        print('medium-screen')
         addClassScreenCurrent('medium-screen')
     elseif screenWidth >= 1601 and screenWidth <= 2047 then
+        print('xmedium-screen')
         addClassScreenCurrent('xmedium-screen')
     elseif screenWidth >= 2048 and screenWidth <= 2880 then
+        print('large-screen')
         addClassScreenCurrent('large-screen')
     elseif screenWidth >= 2881 and screenWidth <= 7680 then
+        print('xlarge-screen')
         addClassScreenCurrent('xlarge-screen')
     end
 
@@ -203,23 +210,43 @@ function self:ClientAwake()
         local colliderCapsule : CapsuleCollider = petSeeker:GetComponent(CapsuleCollider)
         local areaBigPet : GameObject = managerGame.fireFlyLightColor02Global
         
-        Timer.After(0.4, function()
+        Timer.After(0.2, function()
             areaBigPet.transform.localScale = Vector3.new(35, 0.01, 35)
             colliderCapsule.radius = 10
             Img_Flashlight:SetEnabled(false)
         end)
+
+        Timer.After(0.4, function()
+            areaBigPet.transform.localScale = Vector3.new(53, 0.01, 53)
+            colliderCapsule.radius = 10
+        end)
         
+        Timer.After(0.6, function()
+            areaBigPet.transform.localScale = Vector3.new(70, 0.01, 70)
+            colliderCapsule.radius = 10
+        end)
+
         Timer.After(0.8, function()
+            areaBigPet.transform.localScale = Vector3.new(53, 0.01, 53)
+            colliderCapsule.radius = 10
+        end)
+
+        Timer.After(1, function()
+            areaBigPet.transform.localScale = Vector3.new(35, 0.01, 35)
+            colliderCapsule.radius = 10
+        end)
+        
+        Timer.After(1.25, function()
             areaBigPet.transform.localScale = Vector3.new(44, 0.01, 44)
             colliderCapsule.radius = 18
         end)
-        
-        Timer.After(1.2, function()
+
+        Timer.After(1.5, function()
             areaBigPet.transform.localScale = Vector3.new(53, 0.01, 53)
             colliderCapsule.radius = 25
         end)
         
-        Timer.After(1.6, function()
+        Timer.After(1.75, function()
             areaBigPet.transform.localScale = Vector3.new(62, 0.01, 62)
             colliderCapsule.radius = 34
         end)
@@ -229,7 +256,7 @@ function self:ClientAwake()
             colliderCapsule.radius = 40
         end)
 
-        Timer.After(2.4, function()
+        Timer.After(2.2, function()
             Img_Flashlight:SetEnabled(true)
             colliderCapsule.radius = 10
             areaBigPet.transform.localScale = Vector3.new(35, 0.01, 35)
