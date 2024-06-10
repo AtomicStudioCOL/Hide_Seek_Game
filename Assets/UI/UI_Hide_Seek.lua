@@ -2,14 +2,17 @@
 --Managers
 local managerGame = require('ManagerGame')
 
+--Information of each player in the game
+--!Bind
+local HideSeek : UILuaView = nil
 --!Bind
 local infoPlayers : UILabel = nil
 --!Bind
 local countdownGame : UILabel = nil
 --!Bind
 local alertSeekerPlayer : UILabel = nil
---!Bind
-local HideSeek : UILuaView = nil
+
+--UI show information about of the role and winner and lose system
 --!Bind
 local UIInfoPlayers : UILabel = nil
 --!Bind
@@ -20,12 +23,10 @@ local TxtGreetingPLayer : UILabel = nil
 local DescriptionRolePlayer : UILabel = nil
 --!Bind
 local ClosePopup : UIImage = nil
+
+--UI show instructions about the game
 --!Bind
 local Instructions : UILabel = nil
---!Bind
-local Img_Instruction_Backward : UIImage = nil
---!Bind
-local Img_Instruction_Forward : UIImage = nil
 --!Bind
 local Info_Instruction : UILabel = nil
 --!Bind
@@ -42,10 +43,43 @@ local BTN_Forward : UIButton = nil
 local Btn_Instructions : UIButton = nil
 --!Bind
 local Close_Instructions : UIImage = nil
+
+--Instructions Seeker--
+--!Bind
+local Instruction_Seeker_01 : UIImage = nil
+--!Bind
+local Instruction_Seeker_02 : UIImage = nil
+--!Bind
+local Instruction_Seeker_03 : UIImage = nil
+--!Bind
+local Instruction_Seeker_04 : UIImage = nil
+--!Bind
+local Instruction_Seeker_05 : UIImage = nil
+--!Bind
+local Instruction_Seeker_06 : UIImage = nil
+--!Bind
+local Instruction_Seeker_07 : UIImage = nil
+--!Bind
+local Instruction_Seeker_08 : UIImage = nil
+
+--Instructions Hiding--
+--!Bind
+local Instruction_Hiding_01 : UIImage = nil
+--!Bind
+local Instruction_Hiding_02 : UIImage = nil
+--!Bind
+local Instruction_Hiding_03 : UIImage = nil
+--!Bind
+local Instruction_Hiding_04 : UIImage = nil
+--!Bind
+local Instruction_Hiding_05 : UIImage = nil
+
+--Button to shot the flashlight to find the hidden players
 --!Bind
 local Img_Flashlight : UIImage = nil
 
 --Variables
+local img_instruction_game = {}
 local infoGameModule = nil
 local instructionCurrent = 0
 timeCurrent = ''
@@ -65,41 +99,33 @@ function IsShowBtnInstructionsGame(status)
     Btn_Instructions.visible = status
 end
 
-function activateZoneCurrentImgInstruction(isForwards)
-    Img_Instruction_Backward.visible = not isForwards
-    Img_Instruction_Forward.visible = isForwards
+function DisableAllImgInstructions()
+    for role, info in pairs(img_instruction_game) do
+        for num, img in pairs(info) do
+            img.visible = false
+        end
+    end
 end
 
-function ChangeInfoInstruction(className, role, numInstruction, isForwards)
-    if isForwards then
-        activateZoneCurrentImgInstruction(isForwards)
-        Img_Instruction_Forward:AddToClassList(className)
-    else
-        activateZoneCurrentImgInstruction(isForwards)
-        Img_Instruction_Backward:AddToClassList(className)
-    end
-
+function ChangeInfoInstruction(role, numInstruction)
+    DisableAllImgInstructions()
+    img_instruction_game[role][numInstruction].visible = true
     Info_Instruction:SetPrelocalizedText(infoGameModule.info_instructions[role][numInstruction])
 end
 
 function resetInfoInstruction()
     instructionCurrent = 1
-
+    
     if managerGame.playersTag[game.localPlayer.name] == 'Seeker' then
-        ChangeInfoInstruction(`seekerInstruction1`, 'Seeker', instructionCurrent, true)
+        ChangeInfoInstruction('Seeker', instructionCurrent)
     elseif managerGame.playersTag[game.localPlayer.name] == 'Hiding' then
-        ChangeInfoInstruction(`hidersInstruction1`, 'Hiding', instructionCurrent, true)
+        ChangeInfoInstruction('Hiding', instructionCurrent)
     end
 end
 
 function IsShowingInfoInstruction(status)
     Instructions.visible = status
-    
-    if not status then 
-        Img_Instruction_Backward.visible = false
-        Img_Instruction_Forward.visible = false
-        return
-    end
+    if not status then return end
 
     resetInfoInstruction()
 end
@@ -132,6 +158,26 @@ function self:ClientAwake()
     local screenWidth = Screen.width
     infoGameModule = managerGame.InfoGameModuleGlobal
 
+    img_instruction_game['Seeker'] = {
+        [1] = Instruction_Seeker_01,
+        [2] = Instruction_Seeker_02,
+        [3] = Instruction_Seeker_03,
+        [4] = Instruction_Seeker_04,
+        [5] = Instruction_Seeker_05,
+        [6] = Instruction_Seeker_06,
+        [7] = Instruction_Seeker_07,
+        [8] = Instruction_Seeker_08,
+    }
+
+    img_instruction_game['Hiding'] = {
+        [1] = Instruction_Hiding_01,
+        [2] = Instruction_Hiding_02,
+        [3] = Instruction_Hiding_03,
+        [4] = Instruction_Hiding_04,
+        [5] = Instruction_Hiding_05,
+    }
+
+    DisableAllImgInstructions()
     StatusBtnFlashlightSeeker(false)
     IsShowBtnInstructionsGame(false)
     IsShowingInfoInstruction(false)
@@ -175,6 +221,7 @@ function self:ClientAwake()
     Close_Instructions:RegisterPressCallback(function()
         IsShowBtnInstructionsGame(true)
         IsShowingInfoInstruction(false)
+        DisableAllImgInstructions()
     end)
 
     BTN_Backward:RegisterPressCallback(function()
@@ -183,9 +230,9 @@ function self:ClientAwake()
         end
 
         if managerGame.playersTag[game.localPlayer.name] == 'Seeker' then
-            ChangeInfoInstruction(`seekerInstruction{instructionCurrent}`, 'Seeker', instructionCurrent, false)
+            ChangeInfoInstruction('Seeker', instructionCurrent)
         elseif managerGame.playersTag[game.localPlayer.name] == 'Hiding' then
-            ChangeInfoInstruction(`hidersInstruction{instructionCurrent}`, 'Hiding', instructionCurrent, false)
+            ChangeInfoInstruction('Hiding', instructionCurrent)
         end
     end)
 
@@ -195,13 +242,13 @@ function self:ClientAwake()
                 instructionCurrent += 1
             end
 
-            ChangeInfoInstruction(`seekerInstruction{instructionCurrent}`, 'Seeker', instructionCurrent, true)
+            ChangeInfoInstruction('Seeker', instructionCurrent)
         elseif managerGame.playersTag[game.localPlayer.name] == 'Hiding' then
             if instructionCurrent < 5 then
                 instructionCurrent += 1
             end
-            
-            ChangeInfoInstruction(`hidersInstruction{instructionCurrent}`, 'Hiding', instructionCurrent, true)
+
+            ChangeInfoInstruction('Hiding', instructionCurrent)
         end
     end)
 
@@ -212,6 +259,7 @@ function self:ClientAwake()
         
         Timer.After(0.2, function()
             areaBigPet.transform.localScale = Vector3.new(35, 0.01, 35)
+            colliderCapsule.enabled = true
             colliderCapsule.radius = 10
             Img_Flashlight:SetEnabled(false)
         end)
@@ -260,6 +308,7 @@ function self:ClientAwake()
             Img_Flashlight:SetEnabled(true)
             colliderCapsule.radius = 10
             areaBigPet.transform.localScale = Vector3.new(35, 0.01, 35)
+            colliderCapsule.enabled = false
         end)
     end)
 end

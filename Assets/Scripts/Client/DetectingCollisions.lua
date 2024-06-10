@@ -9,6 +9,7 @@ local vfxFoundPlayer : GameObject = nil
 local ghostFoundFirstPlayer : GameObject = nil
 
 --Local Variables
+local colliderCapsule : CapsuleCollider = nil
 local playerSeeker : GameObject = nil
 local uiManager = nil
 local infoGameModule = nil
@@ -72,15 +73,17 @@ end
 
 --Unity Functions
 function self:Awake()
+    colliderCapsule = self.gameObject:GetComponent(CapsuleCollider)
     uiManager = managerGame.UIManagerGlobal:GetComponent(UI_Hide_Seek)
     infoGameModule = managerGame.InfoGameModuleGlobal
     ghostHiddenPlayer = ghostFoundFirstPlayer
+
+    colliderCapsule.enabled = false
 end
 
 function self:OnCollisionEnter(collision : Collision)
     local collidedObj = collision.collider.gameObject -- Obj with the what the player collided
     local seeker = game.localPlayer.character.gameObject
-    local colliderCapsule = self.gameObject:GetComponent(CapsuleCollider)
 
     if collidedObj == managerGame.objsCustome[managerGame.whoIsSeeker.value] then return end
     if seeker == collidedObj then return end
@@ -116,6 +119,7 @@ function self:OnCollisionEnter(collision : Collision)
             audioManager.pauseAlertPlayerSeeker(audioManager.audioAlertPlayerSeeker, 0)
             colliderCapsule.radius = 10
             managerGame.fireFlyLightColor02Global.transform.localScale = Vector3.new(35, 0.01, 35)
+            colliderCapsule.enabled = false
         end
     end)
 end

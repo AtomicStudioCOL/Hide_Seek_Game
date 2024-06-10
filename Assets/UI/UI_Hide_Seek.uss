@@ -8,6 +8,7 @@
     --pos-down-txt-instruction: 17%;
     --pos-up-btn_forward_backward: 42%;
     --pos-down-img-instruction: 8%;
+    --info-game-fontSize: 32px;
 }
 
 .xxsmall-screen {
@@ -15,9 +16,9 @@
     --txt-fontSize-Description: 14px;
     --txt-bottomGreeting: 12%;
     --txt-topDescription: 24%;
-    --txt-info-instruction: 12px;
-    --pos-up-btn_forward_backward: 38%;
-    --pos-down-img-instruction: 16%;
+    --txt-info-instruction: 14px;
+    --pos-down-txt-instruction: 20%;
+    --info-game-fontSize: 24px;
 } /* -> 320 - 800 */
 
 .xsmall-screen {
@@ -25,8 +26,9 @@
     --txt-fontSize-Description: 15px;
     --txt-bottomGreeting: 6%;
     --txt-topDescription: 20%;
-    --txt-info-instruction: 15px;
-    --pos-down-txt-instruction: 18%;
+    --txt-info-instruction: 16px;
+    --pos-down-txt-instruction: 20%;
+    --info-game-fontSize: 24px;
 } /* -> 801 - 1023 */
 
 .small-screen {
@@ -34,10 +36,10 @@
     --txt-fontSize-Description: 15px;
     --txt-bottomGreeting: 9%;
     --txt-topDescription: 21%;
-    --txt-info-instruction: 16px;
-    --pos-down-txt-instruction: 16%;
-    --pos-up-btn_forward_backward: 34%;
-    --pos-down-img-instruction: 24%;
+    --txt-info-instruction: 19px;
+    --pos-down-txt-instruction: 19%;
+    --pos-down-img-instruction: 10%;
+    --info-game-fontSize: 24px;
 } /* -> 1024 - 1280 */
 
 .medium-screen {
@@ -45,10 +47,10 @@
     --txt-fontSize-Description: 16px;
     --txt-bottomGreeting: 10%;
     --txt-topDescription: 23%;
-    --txt-info-instruction: 20px;
-    --pos-down-txt-instruction: 16%;
-    --pos-up-btn_forward_backward: 36%;
-    --pos-down-img-instruction: 20%;
+    --txt-info-instruction: 21px;
+    --pos-down-txt-instruction: 19%;
+    --pos-up-btn_forward_backward: 40%;
+    --pos-down-img-instruction: 14%;
 } /* -> 1024 - 1500 */
 
 .xmedium-screen {
@@ -57,7 +59,7 @@
     --txt-bottomGreeting: 14%;
     --txt-topDescription: 28%;
     --txt-info-instruction: 28px;
-    --pos-down-txt-instruction: 18%;
+    --pos-down-txt-instruction: 20%;
 } /* -> 1501 - 2047 */
 
 .large-screen {
@@ -66,7 +68,7 @@
     --txt-bottomGreeting: 12%;
     --txt-topDescription: 24%;
     --txt-info-instruction: 32px;
-    --pos-down-txt-instruction: 18%;
+    --pos-down-txt-instruction: 20%;
 } /* -> 2048 - 2880 */
 
 .xlarge-screen {
@@ -75,6 +77,8 @@
     --txt-fontSize-Description: 64px;
     --txt-bottomGreeting: 12%;
     --txt-topDescription: 24%;
+    --txt-info-instruction: 34px;
+    --pos-down-txt-instruction: 20%;
 } /* -> 2881 - 7680 */
 
 .imgRoleSeeker {
@@ -85,58 +89,58 @@
 }
 
 /*Class instruction Seeker*/
-.seekerInstruction1 {
-    --img-instruction: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_01.png#Instruction_01');
+.instruction_seeker_01 {
+    background-image: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_01.png#Instruction_01');
 }
 
-.seekerInstruction2 {
-    --img-instruction: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_02.png#Instruction_02');
+.instruction_seeker_02 {
+    background-image: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_02.png#Instruction_02');
 }
 
-.seekerInstruction3 {
-    --img-instruction: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_03.png#Instruction_03');
+.instruction_seeker_03 {
+    background-image: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_03.png#Instruction_03');
 }
 
-.seekerInstruction4 {
-    --img-instruction: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_04.png#Instruction_04');
+.instruction_seeker_04 {
+    background-image: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_04.png#Instruction_04');
 }
 
-.seekerInstruction5 {
-    --img-instruction: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_05.png#Instruction_05');
+.instruction_seeker_05 {
+    background-image: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_05.png#Instruction_05');
 }
 
-.seekerInstruction6 {
-    --img-instruction: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_06.png#Instruction_06');
+.instruction_seeker_06 {
+    background-image: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_06.png#Instruction_06');
 }
 
-.seekerInstruction7 {
-    --img-instruction: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_07.png#Instruction_07');
+.instruction_seeker_07 {
+    background-image: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_07.png#Instruction_07');
 }
 
-.seekerInstruction8 {
-    --img-instruction: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_08.png#Instruction_08');
+.instruction_seeker_08 {
+    background-image: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_08.png#Instruction_08');
 }
 /*Class instruction Seeker*/
 
 /*Class instruction Hiders*/
-.hidersInstruction1 {
-    --img-instruction: url('project://database/Assets/Textures/Instructions/Hidden_Player/Instruction_01.png#Instruction_01');
+.instruction_hiding_01 {
+    background-image: url('project://database/Assets/Textures/Instructions/Hidden_Player/Instruction_01.png#Instruction_01');
 }
 
-.hidersInstruction2 {
-    --img-instruction: url('project://database/Assets/Textures/Instructions/Hidden_Player/Instruction_02.png#Instruction_02');
+.instruction_hiding_02 {
+    background-image: url('project://database/Assets/Textures/Instructions/Hidden_Player/Instruction_02.png#Instruction_02');
 }
 
-.hidersInstruction3 {
-    --img-instruction: url('project://database/Assets/Textures/Instructions/Hidden_Player/Instruction_03.png#Instruction_03');
+.instruction_hiding_03 {
+    background-image: url('project://database/Assets/Textures/Instructions/Hidden_Player/Instruction_03.png#Instruction_03');
 }
 
-.hidersInstruction4 {
-    --img-instruction: url('project://database/Assets/Textures/Instructions/Hidden_Player/Instruction_04.png#Instruction_04');
+.instruction_hiding_04 {
+    background-image: url('project://database/Assets/Textures/Instructions/Hidden_Player/Instruction_04.png#Instruction_04');
 }
 
-.hidersInstruction5 {
-    --img-instruction: url('project://database/Assets/Textures/Instructions/Hidden_Player/Instruction_05.png#Instruction_05');
+.instruction_hiding_05 {
+    background-image: url('project://database/Assets/Textures/Instructions/Hidden_Player/Instruction_05.png#Instruction_05');
 }
 /*Class instruction Hiders*/
 
@@ -221,7 +225,7 @@
 }
 
 .hide_seek #infoPlayers{
-    font-size: 32px;
+    font-size: var(--info-game-fontSize);
     white-space: normal;
     color: rgba(255, 50, 200, 1);
     -unity-font-style: bold;
@@ -234,7 +238,7 @@
 }
 
 .hide_seek #countdownGame{
-    font-size: 32px;
+    font-size: var(--info-game-fontSize);
     white-space: normal;
     color: rgba(255, 50, 200, 1);
     -unity-font-style: bold;
@@ -247,7 +251,7 @@
 }
 
 .hide_seek #alertSeekerPlayer{
-    font-size: 32px;
+    font-size: var(--info-game-fontSize);
     white-space: normal;
     color: rgba(255, 50, 200, 1);
     -unity-font-style: bold;
@@ -260,7 +264,7 @@
 }
 
 .instructions {
-    background-image: url('project://database/Assets/Textures/Atlas_Hide_and_Seek.png#Atlas_Hide_and_Seek_0');/* rgba(41, 0, 111, 1); */
+    background-image: url('project://database/Assets/Textures/Atlas_Hide_and_Seek.png#Atlas_Hide_and_Seek_0');
     background-size: 100% 75%;
     background-repeat: no-repeat;
     background-position: center center;
@@ -274,7 +278,7 @@
 
 .btn_imgs {
     position: absolute;
-    top: var(--pos-up-btn_forward_backward) /* 42% */;
+    top: var(--pos-up-btn_forward_backward);
 }
 
 .btn_backward {
@@ -289,7 +293,6 @@
 }
 
 .img_instruction {
-    background-image: url('project://database/Assets/Textures/Instructions/Seeker_Player/Instruction_01.png#Instruction_01'); /* var(--img-instruction); */
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -298,7 +301,7 @@
     top: 0;
     left: 16%;
     right: 16%;
-    bottom: var(--pos-down-img-instruction) /* 8% */;
+    bottom: var(--pos-down-img-instruction);
 
 }
 
@@ -325,7 +328,7 @@
     position: absolute;
     left: 14%;
     right: 14%;
-    bottom: var(--pos-down-txt-instruction)/*  17% */;
+    bottom: var(--pos-down-txt-instruction);
 }
 
 .close_instruction {

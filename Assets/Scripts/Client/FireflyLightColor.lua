@@ -89,8 +89,8 @@ function self:Update()
             uiManager.alertHiddenPlayerNearby('Alert! A hidden player is nearby', true)
             audioManager.playAlertPlayerSeeker(audio, 0.5)
             
-            if isEnabledBtnFlashlight then
-                isEnabledBtnFlashlight = false
+            if not isEnabledBtnFlashlight then
+                isEnabledBtnFlashlight = true
                 uiManager.StatusBtnFlashlightSeeker(isEnabledBtnFlashlight)
             end
         end
