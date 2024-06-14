@@ -36,6 +36,7 @@
       <hr:UIImage class="instruction_seeker_06 img_instruction" name="Instruction_Seeker_06" />
       <hr:UIImage class="instruction_seeker_07 img_instruction" name="Instruction_Seeker_07" />
       <hr:UIImage class="instruction_seeker_08 img_instruction" name="Instruction_Seeker_08" />
+      <hr:UIImage class="instruction_seeker_09 img_instruction" name="Instruction_Seeker_09" />
 
       <hr:UIImage class="instruction_hiding_01 img_instruction" name="Instruction_Hiding_01" />
       <hr:UIImage class="instruction_hiding_02 img_instruction" name="Instruction_Hiding_02" />
@@ -49,6 +50,14 @@
       <hr:UILabel class="info_instruction" name="Info_Instruction"></hr:UILabel>
       <hr:UIImage class="close_instruction" name="Close_Instructions" />
     </hr:UILabel>
+
+    <hr:UIButton class="btn_select_seeker" name="Btn_Select_Seeker" />
+    <hr:UILabel class="txt_btn_select_seeker txt_buttons" name="Txt_Btn_Select_Seeker"></hr:UILabel>
+    
+    <hr:UIButton class="btn_select_hider" name="Btn_Select_Hider" />
+    <hr:UILabel class="txt_btn_select_hider txt_buttons" name="Txt_Btn_Select_Hider"></hr:UILabel>
+
+    <hr:UIImage class="close_select_instruction" name="Close_Select_Instruction" />
 
     <hr:UIButton class="btn_instructions" name="Btn_Instructions" />
     <hr:UILabel class="txt_btn_instructions txt_buttons" name="Txt_Btn_Instructions"></hr:UILabel>

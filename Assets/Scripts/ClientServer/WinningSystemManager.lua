@@ -42,7 +42,6 @@ function RespawnAllPlayersInGame(character, namePlayer)
     SeekerSeeingHiddenPlayersAgain()
     
     managerGame.cleanTrashGame(game.localPlayer.name)
-    uiManager.IsShowBtnInstructionsGame(false)
     sendRestPlayersRestartServer:FireServer(namePlayer, character)
 end
 
@@ -183,6 +182,7 @@ end
 function self:ClientUpdate()
     if countdownGame.startingCountdownEndGame.value then
         resetNetworkValuesGame:FireServer(game.localPlayer.name)
+        uiManager.SetInfoPlayers('Waiting for 3 players to start the game')
         countdownGame.startingCountdownEndGame.value = false
     end
 end

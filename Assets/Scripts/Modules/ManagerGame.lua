@@ -157,6 +157,8 @@ releasePlayerClient = Event.new("ReleasePlayerClient")
 updateNumPlayersHiding = Event.new("UpdateNumPlayersHiding")
 updateNumPlayersFound = Event.new("UpdateNumPlayersFound")
 reviewIfClientInGame = Event.new('ReviewIfClientInGame')
+triggerAreaDetectionSeekerServer = Event.new('TriggerAreaDetectionSeekerServer')
+triggerAreaDetectionSeekerClient = Event.new('TriggerAreaDetectionSeekerClient')
 
 --Local Functions
 function followingToTarget(current : GameObject, target, maxDistanceDelta, positionOffset)
@@ -271,6 +273,40 @@ local function addCostumePlayerInAnotherPlayers(dress, offset, rotationCustome, 
             namePlayer
         )
     end
+end
+
+local function generateVFXExplosion(waitTime, sizeShader, collider, radiusZone)
+    Timer.After(waitTime, function()
+        fireFlyLightColor02.transform.localScale = sizeShader
+        collider.radius = radiusZone
+    end)
+end
+
+local function generateAreaDetectionSeeker()
+    local colliderCapsule : CapsuleCollider = playerPetGlobal:GetComponent(CapsuleCollider)
+
+    Timer.After(0.2, function()
+        fireFlyLightColor02.transform.localScale = Vector3.new(35, 0.01, 35)
+        colliderCapsule.enabled = true
+        colliderCapsule.radius = 10
+        uiManager.Img_Flashlight_Global:SetEnabled(false)
+    end)
+
+    generateVFXExplosion(0.4, Vector3.new(53, 0.01, 53), colliderCapsule, 10)
+    generateVFXExplosion(0.6, Vector3.new(70, 0.01, 70), colliderCapsule, 10)
+    generateVFXExplosion(0.8, Vector3.new(53, 0.01, 53), colliderCapsule, 10)
+    generateVFXExplosion(1, Vector3.new(35, 0.01, 35), colliderCapsule, 10)
+    generateVFXExplosion(1.25, Vector3.new(44, 0.01, 44), colliderCapsule, 18)
+    generateVFXExplosion(1.5, Vector3.new(53, 0.01, 53), colliderCapsule, 25)
+    generateVFXExplosion(1.75, Vector3.new(62, 0.01, 62), colliderCapsule, 34)
+    generateVFXExplosion(2, Vector3.new(70, 0.01, 70), colliderCapsule, 40)
+    
+    Timer.After(2.2, function()
+        uiManager.Img_Flashlight_Global:SetEnabled(true)
+        colliderCapsule.radius = 10
+        fireFlyLightColor02.transform.localScale = Vector3.new(35, 0.01, 35)
+        colliderCapsule.enabled = false
+    end)
 end
 
 --Unity Functions
@@ -424,6 +460,10 @@ function self:ClientAwake()
     cleanCustomeWhenPlayerLeftGameClient:Connect(function(namePlayer)
         cleanCustomeAndStopTrackingPlayer(namePlayer)
     end)
+
+    triggerAreaDetectionSeekerClient:Connect(function()
+        generateAreaDetectionSeeker()
+    end)
 end
 
 function self:ServerAwake()
@@ -460,6 +500,10 @@ function self:ServerAwake()
         else
             hasCollidedWithPlayerInGame.value = false
         end
+    end)
+
+    triggerAreaDetectionSeekerServer:Connect(function(player : Player)
+        triggerAreaDetectionSeekerClient:FireAllClients()
     end)
 
     server.PlayerDisconnected:Connect(function(player : Player)

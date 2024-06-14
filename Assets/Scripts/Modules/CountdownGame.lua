@@ -126,6 +126,10 @@ function StartCountdownGoGameLobby(uiManager, seekerPlayer)
         updateTimerGoGameLobby:FireServer()
 
         if countdownGoGame.value <= 0 then
+            uiManager.DisableAllImgInstructions()
+            uiManager.IsShowBtnInstructionsGame(true)
+            uiManager.IsShowingInfoInstruction(false)
+            
             updateGoGameCountdown:FireServer(true)
             countdownGame:Stop()
         end
@@ -143,6 +147,7 @@ function StartCountdownEndGame(uiManager, seekerPlayer, txt)
             resetAllParametersGame:FireServer()
             uiManager.showTxtGreetingPLayer(false)
             uiManager.UIShowInfoRolePlayer(true)
+            uiManager.DisableAllImgInstructions()
             uiManager.IsShowBtnInstructionsGame(true)
             uiManager.IsShowingInfoInstruction(false)
             uiManager.SetTextRolePlayer(txt)

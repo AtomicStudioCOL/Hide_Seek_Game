@@ -46,9 +46,18 @@ local function numPlayersInLobby()
     return numPlayers
 end
 
-local function textInterface()
+local function textInterface(endGame)
     uiManager.timeCurrent = ''
-    uiManager.SetInfoPlayers('Waiting for 3 players to start the game')
+    print(`Has Sent Players: {hasSentPlayersToGame.value} - End Game: {endGame}`)
+    if hasSentPlayersToGame.value then
+        if endGame then
+            uiManager.SetInfoPlayers('Waiting for 3 players to start the game')
+        else
+            uiManager.SetInfoPlayers('Round Ongoing. RIGHT NOW!')
+        end
+    else
+        uiManager.SetInfoPlayers('Waiting for 3 players to start the game')
+    end
 end
 
 function sendPlayersToLobby(character : Character, namePlayer : string, objCharacter : GameObject)
@@ -66,7 +75,7 @@ function settingLobbyPlayer(endGame : boolean)
         localCharacterInstantiatedEvent = nil
     end
 
-    textInterface()
+    textInterface(endGame)
     eventFoundNumPlayersInLobby:FireServer()
     if hasSentPlayersToGame.value and endGame then
         updateHasSentPlayerToGame:FireServer()
@@ -126,11 +135,13 @@ function self:ClientAwake()
     timeBeforeStartGameLobby:Connect(function()
         scriptCreateMapRandomly.resetChosenMap:FireServer()
         countdownGame.StartCountdownGoGameLobby(uiManager, chosenPlayer.value)
+        uiManager.SetInfoPlayers('Waiting for 3 players to start the game')
     end)
 
     stopTimeBeforeStartGame:Connect(function()
-        textInterface()
+        textInterface(false)
         countdownGame.StopCountdownGoGameLobby()
+        uiManager.SetInfoPlayers('Waiting for 3 players to start the game')
     end)
 end
 
