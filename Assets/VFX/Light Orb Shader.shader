@@ -1,4 +1,4 @@
-Shader "Unlit/LightOrb" {
+Shader "Highrise/Unlit/LightOrb" {
     Properties { // input data
         _Color ("Color A", Color) = (1, 1, 1, 1)
         _Intensity ("Intensity", Range (.1, 5)) = 1

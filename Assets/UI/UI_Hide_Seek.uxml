@@ -7,12 +7,62 @@
     xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
 >
 
-  <hr:UILuaView class="hide_seek" picking-mode="Ignore">
+  <hr:UILuaView class="hide_seek" name="HideSeek" picking-mode="Ignore">
+    <hr:UILabel name="UIInfoPlayers" picking-mode="Ignore">
+      <hr:UILabel name="TxtGreetingPLayer"></hr:UILabel>
+      <hr:UIImage name="RolePlayer" picking-mode="Ignore" />
+      <hr:UILabel name="DescriptionRolePlayer"></hr:UILabel>
+      <hr:UIImage name="ClosePopup" />
+    </hr:UILabel>
+
     <hr:UILabel name="infoPlayers" picking-mode="Ignore">
     </hr:UILabel>
 
-    <hr:UILabel name="infoPlayerHiding" picking-mode="Ignore">
+    <hr:UILabel name="countdownGame" picking-mode="Ignore">
     </hr:UILabel>
+
+    <hr:UILabel name="alertSeekerPlayer" picking-mode="Ignore">
+    </hr:UILabel>
+
+    <hr:UILabel class="instructions" name="Instructions" picking-mode="Ignore">
+      <hr:UIButton class="btn_backward btn_imgs" name="BTN_Backward" />
+      <hr:UILabel class="txt_btn_backward txt_buttons" name="Txt_Btn_Backward"></hr:UILabel>
+      
+      <hr:UIImage class="instruction_seeker_01 img_instruction" name="Instruction_Seeker_01" />
+      <hr:UIImage class="instruction_seeker_02 img_instruction" name="Instruction_Seeker_02" />
+      <hr:UIImage class="instruction_seeker_03 img_instruction" name="Instruction_Seeker_03" />
+      <hr:UIImage class="instruction_seeker_04 img_instruction" name="Instruction_Seeker_04" />
+      <hr:UIImage class="instruction_seeker_05 img_instruction" name="Instruction_Seeker_05" />
+      <hr:UIImage class="instruction_seeker_06 img_instruction" name="Instruction_Seeker_06" />
+      <hr:UIImage class="instruction_seeker_07 img_instruction" name="Instruction_Seeker_07" />
+      <hr:UIImage class="instruction_seeker_08 img_instruction" name="Instruction_Seeker_08" />
+      <hr:UIImage class="instruction_seeker_09 img_instruction" name="Instruction_Seeker_09" />
+
+      <hr:UIImage class="instruction_hiding_01 img_instruction" name="Instruction_Hiding_01" />
+      <hr:UIImage class="instruction_hiding_02 img_instruction" name="Instruction_Hiding_02" />
+      <hr:UIImage class="instruction_hiding_03 img_instruction" name="Instruction_Hiding_03" />
+      <hr:UIImage class="instruction_hiding_04 img_instruction" name="Instruction_Hiding_04" />
+      <hr:UIImage class="instruction_hiding_05 img_instruction" name="Instruction_Hiding_05" />
+      
+      <hr:UIButton class="btn_forward btn_imgs" name="BTN_Forward" />
+      <hr:UILabel class="txt_btn_forward txt_buttons" name="Txt_Btn_Forward"></hr:UILabel>
+      
+      <hr:UILabel class="info_instruction" name="Info_Instruction"></hr:UILabel>
+      <hr:UIImage class="close_instruction" name="Close_Instructions" />
+    </hr:UILabel>
+
+    <hr:UIButton class="btn_select_seeker" name="Btn_Select_Seeker" />
+    <hr:UILabel class="txt_btn_select_seeker txt_buttons" name="Txt_Btn_Select_Seeker"></hr:UILabel>
+    
+    <hr:UIButton class="btn_select_hider" name="Btn_Select_Hider" />
+    <hr:UILabel class="txt_btn_select_hider txt_buttons" name="Txt_Btn_Select_Hider"></hr:UILabel>
+
+    <hr:UIImage class="close_select_instruction" name="Close_Select_Instruction" />
+
+    <hr:UIButton class="btn_instructions" name="Btn_Instructions" />
+    <hr:UILabel class="txt_btn_instructions txt_buttons" name="Txt_Btn_Instructions"></hr:UILabel>
+    
+    <hr:UIImage class="img_flashlight" name="Img_Flashlight" />
   </hr:UILuaView>
 
 </UXML>

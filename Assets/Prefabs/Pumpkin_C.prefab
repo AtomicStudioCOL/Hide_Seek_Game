@@ -11,17 +11,17 @@ PrefabInstance:
     - target: {fileID: 3942236668726152164, guid: bad15bf9648b35346a364933a7c3600b,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 6
+      value: 7.5
       objectReference: {fileID: 0}
     - target: {fileID: 3942236668726152164, guid: bad15bf9648b35346a364933a7c3600b,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 6
+      value: 8.5
       objectReference: {fileID: 0}
     - target: {fileID: 3942236668726152164, guid: bad15bf9648b35346a364933a7c3600b,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 6
+      value: 7.5
       objectReference: {fileID: 0}
     - target: {fileID: 3942236668726152164, guid: bad15bf9648b35346a364933a7c3600b,
         type: 3}
@@ -76,17 +76,17 @@ PrefabInstance:
     - target: {fileID: 3942236668726152164, guid: bad15bf9648b35346a364933a7c3600b,
         type: 3}
       propertyPath: m_ConstrainProportionsScale
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4467135361893618014, guid: bad15bf9648b35346a364933a7c3600b,
         type: 3}
       propertyPath: m_Name
-      value: Pumpkin_C Variant
+      value: Pumpkin_C
       objectReference: {fileID: 0}
     - target: {fileID: 4467135361893618014, guid: bad15bf9648b35346a364933a7c3600b,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
